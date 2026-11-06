@@ -4,11 +4,12 @@
 #
 #   bin/pr-triage advance   CI passed on HEAD_SHA. A sensitive PR waits for a person.
 #                           A PR labelled do-not-auto-merge stays as it is. Any other PR
-#                           is marked ready and merged.
+#                           is marked ready and merged, and its branch is deleted.
 #   bin/pr-triage check     Fails while PR_NUMBER is on hold or needs a person's review.
 #                           EVENT_ACTION=synchronize also takes off an earlier review.
 #
 # Anything it can't confirm counts as sensitive, or stops with nothing merged.
+require "uri"
 require_relative "../script/review_policy"
 
 class PullRequestTriage
@@ -92,6 +93,16 @@ class PullRequestTriage
   def merge(pull_request, head)
     mark_ready(pull_request)
     @policy.gh("-X", "PUT", "-f", "merge_method=merge", "-f", "sha=#{head}", "repos/#{@repository}/pulls/#{pull_request.fetch("number")}/merge")
+    delete_branch(pull_request)
+  end
+
+  # GitHub's delete-on-merge setting doesn't cover merges made with the workflow's token.
+  # Deleting a branch through the API closes any PR based on it, so those keep their branch.
+  def delete_branch(pull_request)
+    branch = pull_request.dig("head", "ref")
+    return if @policy.api("pulls?state=open&base=#{URI.encode_www_form_component(branch)}").any?
+
+    @policy.gh("-X", "DELETE", "repos/#{@repository}/git/refs/heads/#{branch}")
   end
 
   def mark_ready(pull_request)

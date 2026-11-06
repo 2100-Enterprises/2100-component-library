@@ -15,6 +15,7 @@ class PrTriageTest < Minitest::Test
   AFTER_COMMIT = "2026-01-03T12:00:00Z"
 
   MERGE = "api -X PUT -f merge_method=merge -f sha=#{HEAD} repos/#{REPOSITORY}/pulls/1/merge"
+  DELETE_BRANCH = "api -X DELETE repos/#{REPOSITORY}/git/refs/heads/feature/thing"
   READY = "pr ready 1 --repo #{REPOSITORY}"
   NEEDED = "api -X POST -f labels[]=needs-human-review repos/#{REPOSITORY}/issues/1/labels"
   REMOVE_NEEDED = "api -X DELETE repos/#{REPOSITORY}/issues/1/labels/needs-human-review"
@@ -43,7 +44,7 @@ class PrTriageTest < Minitest::Test
   def pull_request(paths: ["README.md"], labels: [], events: [], draft: true, listed: {}, files: nil)
     files ||= paths.map { |path| {filename: path} }
     summary = {
-      number: 1, state: "open", head: {sha: HEAD, repo: {full_name: REPOSITORY}}, base: {ref: "development"}
+      number: 1, state: "open", head: {sha: HEAD, ref: "feature/thing", repo: {full_name: REPOSITORY}}, base: {ref: "development"}
     }.merge(listed)
 
     @responses["repos/#{REPOSITORY}/commits/#{HEAD}/pulls"] = [summary]
@@ -53,6 +54,7 @@ class PrTriageTest < Minitest::Test
     )
     @responses["repos/#{REPOSITORY}/pulls/1/files?per_page=100"] = [files]
     @responses["repos/#{REPOSITORY}/issues/1/events?per_page=100"] = [events]
+    @responses["repos/#{REPOSITORY}/pulls?state=open&base=feature%2Fthing"] = []
   end
 
   def labeled(at, type: "User")
@@ -86,11 +88,18 @@ class PrTriageTest < Minitest::Test
   def test_merges_a_harmless_draft
     pull_request
     advance
-    assert_equal [READY, MERGE], calls
+    assert_equal [READY, MERGE, DELETE_BRANCH], calls
   end
 
   def test_merges_a_harmless_pr_thats_ready
     pull_request(draft: false)
+    advance
+    assert_equal [MERGE, DELETE_BRANCH], calls
+  end
+
+  def test_keeps_a_branch_that_another_pr_is_based_on
+    pull_request(draft: false)
+    @responses["repos/#{REPOSITORY}/pulls?state=open&base=feature%2Fthing"] = [{number: 2}]
     advance
     assert_equal [MERGE], calls
   end

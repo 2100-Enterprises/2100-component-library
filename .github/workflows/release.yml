@@ -1,0 +1,43 @@
+# Publishes a tag and GitHub Release when the version changes. See bin/release.
+name: Release
+
+# version.rb is sensitive, so a person merges every bump, and that merge fires this push.
+# Start it by hand to retry a release that failed.
+on:
+  push:
+    branches: [development]
+    paths: [lib/component_library_2100/version.rb]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: CI
+    if: github.ref == 'refs/heads/development'
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Publish
+    needs: ci
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # One release at a time, and never cancel one partway through.
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    # Creates the tag and the release.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          ruby-version: "3.4"
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bin/release publish
