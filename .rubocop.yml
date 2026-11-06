@@ -28,3 +28,5 @@ Style/DisableCopsWithinSourceCodeDirective:
   Enabled: true
   AllowedCops:
     - Lint/UselessMethodDefinition
+
+# Throwaway change to test that a sensitive PR is blocked. Never merge this.
