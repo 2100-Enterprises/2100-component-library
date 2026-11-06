@@ -3,6 +3,8 @@
  * Assumes Tailwind's preflight. Override any token in your own @theme block after importing this file:
  *
  *   @theme { --color-primary: #7c3aed; --radius-ui: .5rem; }
+ *
+ * The README lists what each token is for. Don't reuse these names for something else.
  */
 
 /* Resolved relative to this file, so classes used inside the gem's components are generated. */

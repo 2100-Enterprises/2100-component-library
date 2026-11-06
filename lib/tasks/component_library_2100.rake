@@ -1,11 +1,7 @@
 namespace :component_library_2100 do
-  desc "Write app/assets/builds/component_library_2100.css so Tailwind loads the gem's theme and scans its components"
+  desc "Write app/assets/tailwind/component_library_2100.css so Tailwind loads the gem's theme and scans its components"
   task tailwind: :environment do
-    engine_css = ComponentLibrary2100::Engine.root.join("app/assets/tailwind/component_library_2100/engine.css")
-    output = Rails.root.join("app/assets/builds/component_library_2100.css")
-
-    FileUtils.mkdir_p(output.dirname)
-    File.write(output, %(@import "#{engine_css}";\n))
+    ComponentLibrary2100.write_tailwind_entry(Rails.root)
   end
 end
 
