@@ -101,10 +101,17 @@ It also defines `--radius-ui`, `--radius-ui-sm` and `--radius-ui-lg`. Your own `
 ```sh
 bundle install
 bundle exec rake test
+bundle exec rubocop
 ```
 
 Tests boot a tiny in-process Rails app (`test/test_helper.rb`) and render each component with `ViewComponent::TestCase`.
 
+CI runs on every PR: the tests on each supported Ruby and on the oldest gem versions the gemspec allows (`gemfiles/oldest.gemfile`, so keep the two in step), RuboCop, `bundler-audit`, a gem build and a workflow audit. A weekly run repeats this against the latest gems and opens an issue if it fails.
+
 ## Roadmap
 
 Navbar, Carousel, and a form builder.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

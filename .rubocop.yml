@@ -1,0 +1,24 @@
+# Catches bugs and unsafe HTML, not style. Rails/OutputSafety fails on html_safe and raw,
+# which matters because PRs that only touch app/components can merge without a person.
+plugins:
+  - rubocop-rails
+
+AllCops:
+  DisabledByDefault: true
+  NewCops: disable
+  SuggestExtensions: false
+  TargetRubyVersion: 3.2
+  Exclude:
+    - "gemfiles/**/*"
+    - "pkg/**/*"
+    - "tmp/**/*"
+    - "vendor/**/*"
+
+Lint:
+  Enabled: true
+
+Security:
+  Enabled: true
+
+Rails/OutputSafety:
+  Enabled: true

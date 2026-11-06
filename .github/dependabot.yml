@@ -1,0 +1,23 @@
+# Gemfile.lock isn't committed, so the bundler entry only sees the gemspec and Gemfile and
+# rarely opens a PR. weekly.yml is what catches new dependency releases.
+version: 2
+updates:
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      gems:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
