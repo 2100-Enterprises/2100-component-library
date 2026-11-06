@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+# Publishes the version in version.rb as a tag and GitHub Release, from
+# .github/workflows/release.yml. version.rb is a sensitive path, so a person has approved
+# every release by the time this runs.
+#
+#   bin/release check     Fails if a new version can't be released. CI runs this, so a bad
+#                         bump stops at the PR rather than after the merge.
+#   bin/release publish   Releases GITHUB_SHA, unless this version already has a tag.
+#
+# A version that already has a tag is nothing to do. Tags are never moved or replaced.
+require "json"
+require "open3"
+require "tempfile"
+
+class Release
+  VERSION_FILE = "lib/component_library_2100/version.rb".freeze
+  CHANGELOG = "CHANGELOG.md".freeze
+
+  Stop = Class.new(StandardError)
+
+  def initialize(repository:)
+    @repository = repository
+  end
+
+  def check
+    return puts("v#{version} is already released.") if released?
+
+    verify
+    puts "v#{version} is ready to release."
+  end
+
+  def publish(commit)
+    return puts("v#{version} is already released.") if released?
+
+    verify
+    Tempfile.create("notes") do |file|
+      file.write(notes)
+      file.close
+      run("gh", "release", "create", "v#{version}", "--repo", @repository, "--target", commit, "--title", "v#{version}", "--notes-file", file.path)
+    end
+    puts "Released v#{version}."
+  end
+
+  private
+
+  def verify
+    latest = tags.max
+    raise Stop, "#{version} isn't newer than the latest release, #{latest}." if latest && latest >= Gem::Version.new(version)
+    raise Stop, "#{CHANGELOG} has no notes under \"## #{version}\"." if notes.empty?
+  end
+
+  def version
+    @version ||= File.read(VERSION_FILE)[/VERSION = "(\d+\.\d+\.\d+)"/, 1] || raise(Stop, "#{VERSION_FILE} has no X.Y.Z version.")
+  end
+
+  def released? = tags.include?(Gem::Version.new(version))
+
+  def tags
+    @tags ||= JSON.parse(run("gh", "api", "--paginate", "--slurp", "repos/#{@repository}/tags?per_page=100")).flatten
+      .filter_map { |tag| tag.fetch("name")[/\Av(\d+\.\d+\.\d+)\z/, 1] }
+      .map { |name| Gem::Version.new(name) }
+  end
+
+  # Everything between this version's heading and the next one.
+  def notes
+    @notes ||= File.read(CHANGELOG)[/^## #{Regexp.escape(version)}[ \t]*\n(.*?)(?=^## |\z)/m, 1].to_s.strip
+  end
+
+  def run(*command)
+    output, status = Open3.capture2e(*command)
+    raise Stop, "#{command.first(3).join(" ")} failed: #{output.strip}" unless status.success?
+
+    output
+  end
+end
+
+begin
+  release = Release.new(repository: ENV.fetch("GITHUB_REPOSITORY"))
+
+  case ARGV.first
+  when "check" then release.check
+  when "publish" then release.publish(ENV.fetch("GITHUB_SHA"))
+  else abort "Usage: bin/release check|publish"
+  end
+rescue StandardError => error
+  warn "Release stopped: #{error.message}"
+  exit 1
+end

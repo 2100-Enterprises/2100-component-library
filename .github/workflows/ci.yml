@@ -90,6 +90,10 @@ jobs:
         with:
           ruby-version: "3.4"
       - run: gem build component_library_2100.gemspec --strict
+      - name: Check the version can be released
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bin/release check
 
   workflows:
     name: Workflow audit

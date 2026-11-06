@@ -168,6 +168,10 @@ Once CI is green, `bin/pr-triage` merges a PR into `development` unless one of t
 - **It's labelled `do-not-auto-merge`:** it stays open, and **Human review** stays red until the label comes off. This includes drafts, which otherwise merge like any other PR.
 - **It's from a fork:** it never merges itself.
 
+### Releasing
+
+Add notes to `## Unreleased` in `CHANGELOG.md` as you go. To release, open a PR that changes `VERSION` in `lib/component_library_2100/version.rb`, renames `## Unreleased` to the new version, adds a fresh `## Unreleased` above it, and updates the tag in the install instructions. CI fails the PR if the notes are missing. Merging it runs CI again, then creates the tag and GitHub Release. Tags can't be moved or deleted, so a fix goes out as a new version.
+
 ## Roadmap
 
 Navbar, Carousel, and a form builder.
