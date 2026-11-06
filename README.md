@@ -2,7 +2,7 @@
 
 Bootstrap 5-style components for Rails, built with [ViewComponent](https://viewcomponent.org), Stimulus and Tailwind CSS v4. Small by design: components render semantic HTML with Tailwind utilities, take plain keyword arguments, and let you override anything.
 
-**Status:** 0.1.0 scaffold. Components: Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, ListGroup, Pagination, Progress, Spinner, Table. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
+**Status:** 0.1.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Offcanvas, Pagination, Popover, Progress, Spinner, Table, Tabs, Toast, Tooltip. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
 
 ## Install
 
@@ -44,6 +44,24 @@ For local development: `bundle config local.component_library_2100 ../2100-compo
 ```
 
 Every component accepts the Bootstrap vocabulary it has (`variant:`, `size:`, `outline:`, `pill:`, `striped:` ...) plus any HTML attributes. A `ui_*` helper exists for every component (`ui_button_group`, `ui_list_group`, ...).
+
+## Interactive components
+
+These lean on the platform instead of re-implementing it, so there is little JavaScript to maintain:
+
+| Component | Built on | Notes |
+|---|---|---|
+| Accordion | `<details name>` | No JavaScript. `always_open: true` drops the shared name. |
+| Collapse | grid-rows transition | `cl-collapse` toggles attributes; no heights are measured. |
+| Dropdown, Popover | popover API (`popover="auto"`) | Browser handles outside click, Escape and focus return; `cl-popover` places it and adds arrow-key navigation for menus. |
+| Modal, Offcanvas | `<dialog>` + `showModal()` | Focus trap, inert page and Escape come from the browser. `static_backdrop: true` ignores backdrop clicks. |
+| Tabs | WAI-ARIA tabs pattern | `cl-tabs`; tabs and panels pair by position. |
+| Toast | `cl-dismiss` + `aria-live` container | Render toasts inside a `ToastContainerComponent`. `delay: 0` keeps one open. |
+| Tooltip | popover API (`popover="manual"`) | Wrap something focusable. Shows on hover and keyboard focus. |
+
+Triggers are slots that take Button options: `modal.with_trigger(variant: :danger) { "Delete" }`. Open or close from anywhere inside a component with `data-action="cl-dialog#open"`, `cl-dialog#close`, `cl-collapse#toggle` or `cl-popover#close`.
+
+Floating elements use a small placement helper (`position.js`) that flips and clamps to the viewport. It does not follow scrolling ancestors or draw arrows. It needs a browser with the popover API and `<dialog>` (all current evergreen browsers).
 
 ## Overriding
 
@@ -89,4 +107,4 @@ Tests boot a tiny in-process Rails app (`test/test_helper.rb`) and render each c
 
 ## Roadmap
 
-Interactive components (Accordion, Collapse, Dropdown, Modal on native `<dialog>`, Offcanvas, Tabs, Toast, Tooltip, Popover), Navbar, Carousel, and a form builder.
+Navbar, Carousel, and a form builder.

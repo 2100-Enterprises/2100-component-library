@@ -9,8 +9,8 @@ module ComponentLibrary2100
   # through (so slots work: `ui_card { |c| c.with_header { "Hi" } }`).
   module Helpers
     NAMES = %w[
-      alert badge breadcrumb button button_group card close_button
-      list_group pagination progress spinner table
+      accordion alert badge breadcrumb button button_group card close_button collapse dropdown
+      list_group modal offcanvas pagination popover progress spinner table tabs toast toast_container tooltip
     ].freeze
 
     NAMES.each do |name|

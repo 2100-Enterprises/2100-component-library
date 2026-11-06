@@ -15,6 +15,12 @@ module ComponentLibrary2100
 
     attr_reader :html_options
 
+    # A unique DOM id such as "dropdown-k3x9ab", for wiring triggers to panels (aria-controls, popovertarget).
+    # Pass `id:` to a component to choose your own, which also keeps the id stable between renders.
+    def generated_id(prefix)
+      "#{prefix}-#{SecureRandom.alphanumeric(6).downcase}"
+    end
+
     # Attributes for the root element: component defaults, then caller overrides.
     #
     #   tag.div(**attrs("p-4 border", role: "alert"))
@@ -25,13 +31,15 @@ module ComponentLibrary2100
     # Same merge for any user-supplied hash (used by slots).
     #   - `class` is conflict-resolved, the caller's classes win
     #   - `data` / `aria` are deep merged
-    #   - `data-controller` values are concatenated rather than replaced
+    #   - `data-controller` and `data-action` values are concatenated rather than replaced
     def merge_attrs(user, css = nil, **defaults)
       merged = defaults.deep_merge(user.except(:class))
 
-      ours = defaults.dig(:data, :controller)
-      theirs = user.dig(:data, :controller)
-      merged[:data][:controller] = [ours, theirs].join(" ") if ours && theirs
+      %i[controller action].each do |key|
+        ours = defaults.dig(:data, key)
+        theirs = user.dig(:data, key)
+        merged[:data][key] = [ours, theirs].join(" ") if ours && theirs
+      end
 
       merged.merge(class: ComponentLibrary2100.merge_classes(css, user[:class]))
     end
