@@ -1,0 +1,66 @@
+module ComponentLibrary2100
+  # <%= render ModalComponent.new(title: "Delete project?", size: :sm, centered: true) do |modal| %>
+  #   <% modal.with_trigger(variant: :danger) { "Delete" } %>
+  #   This can't be undone.
+  #   <% modal.with_footer do %>
+  #     <%= ui_button "Cancel", variant: :secondary, data: { action: "cl-dialog#close" } %>
+  #     <%= ui_button "Delete", variant: :danger %>
+  #   <% end %>
+  # <% end %>
+  #
+  # Uses a native <dialog> opened with showModal(), so the page behind is inert, focus is trapped, and
+  # Escape closes it. Any element inside the component with `data-action="cl-dialog#open"` opens it
+  # and `cl-dialog#close` closes it. HTML attributes go on the <dialog>. The body scrolls when the
+  # content is taller than the screen. `static_backdrop: true` ignores clicks outside the dialog.
+  class ModalComponent < BaseComponent
+    SIZES = {sm: "max-w-[300px]", md: "max-w-[500px]", lg: "max-w-[800px]", xl: "max-w-[1140px]"}.freeze
+    DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-[#212529] bg-white border border-black/20 rounded-ui-lg " \
+             "outline-none backdrop:bg-black/50 open:flex open:flex-col"
+    HEADER = "flex items-center justify-between gap-4 p-4 border-b border-[#dee2e6]"
+    TITLE = "m-0 text-xl font-medium leading-normal"
+    BODY = "grow min-h-0 p-4 overflow-y-auto"
+    FOOTER = "flex flex-wrap items-center justify-end gap-2 p-3 border-t border-[#dee2e6]"
+
+    renders_one :trigger, ->(**opts) { ButtonComponent.new(**merge_attrs(opts, nil, **trigger_defaults)) }
+    renders_one :footer, ->(**opts, &block) { tag.div(**merge_attrs(opts, FOOTER), &block) }
+
+    def initialize(title: nil, size: :md, centered: false, static_backdrop: false, **html_options)
+      super(**html_options)
+      @title = title
+      @size = size
+      @centered = centered
+      @static_backdrop = static_backdrop
+      @title_id = generated_id("dialog-title")
+    end
+
+    def call
+      tag.div(safe_join([trigger, dialog]), class: "contents", data: {controller: "cl-dialog", cl_dialog_locked_value: @static_backdrop})
+    end
+
+    private
+
+    def dialog
+      options = attrs(dialog_css, data: {cl_dialog_target: "dialog", action: "click->cl-dialog#backdrop"})
+      options[:aria] = {labelledby: @title_id}.merge(options[:aria] || {}) if @title
+
+      tag.dialog(safe_join([header, tag.div(content, class: BODY), footer]), **options)
+    end
+
+    def header
+      return unless @title
+
+      close = render(CloseButtonComponent.new(data: {action: "cl-dialog#close"}))
+      tag.div(safe_join([tag.h5(@title, id: @title_id, class: TITLE), close]), class: header_css)
+    end
+
+    def dialog_css
+      [DIALOG, Variants.fetch(SIZES, @size, kind: "size"), (@centered ? "my-auto" : "mt-7 mb-auto")]
+    end
+
+    def header_css = HEADER
+
+    def trigger_defaults
+      {variant: :primary, aria: {haspopup: "dialog"}, data: {action: "cl-dialog#open"}}
+    end
+  end
+end

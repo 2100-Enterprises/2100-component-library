@@ -7,7 +7,7 @@ module ComponentLibrary2100
   # except `data-controller`, which joins `cl-dismiss` on the wrapper so it hears `cl-dismiss:close`.
   class AlertComponent < BaseComponent
     BASE = "relative p-4 border rounded-ui"
-    WRAPPER = "relative transition-opacity duration-150 motion-reduce:transition-none"
+    WRAPPER = "relative transition-opacity duration-150 motion-reduce:transition-none data-closing:opacity-0"
     CLOSE = "absolute top-0 end-0 z-[2] px-4 py-5"
 
     def initialize(variant: :primary, dismissible: false, **html_options)
