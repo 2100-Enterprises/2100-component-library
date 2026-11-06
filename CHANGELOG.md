@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- README shows an image of each component, regenerated with `rake screenshots`.
 - Needs `tailwind_merge` 1.5.1 or newer. Older versions allowed by the gemspec crashed on the first render, because they can't read `MERGER_CONFIG`.
 - Sets upper limits on `rails` (`< 9`) and `tailwind_merge` (`< 2`).
 - Licensed under MIT.
