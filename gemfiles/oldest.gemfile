@@ -1,0 +1,14 @@
+# The oldest versions the gemspec allows, so CI tests its lower bounds. Keep the two in step.
+source "https://rubygems.org"
+
+gemspec path: ".."
+
+gem "rails", "~> 7.1.0"
+gem "view_component", "= 4.0.0"
+gem "tailwind_merge", "= 1.5.1"
+
+group :development, :test do
+  gem "capybara"
+  gem "minitest", "< 6" # Rails 7.1 predates minitest 6.
+  gem "rake"
+end

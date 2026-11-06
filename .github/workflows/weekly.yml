@@ -1,0 +1,40 @@
+name: Weekly dependency check
+
+# Gemfile.lock isn't committed and the gemspec allows ranges, so a new release of a dependency
+# can break the library, or an advisory can land, with no PR open. This run finds both.
+# GitHub turns scheduled workflows off after 60 days without repo activity.
+on:
+  schedule:
+    - cron: "17 12 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+
+  report:
+    name: Open an issue
+    needs: ci
+    if: failure()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      TITLE: Weekly dependency check failed
+    steps:
+      # One open issue at a time. A later failure adds a comment.
+      - run: |
+          number="$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "Failed again: $RUN_URL"
+          else
+            gh issue create --title "$TITLE" --body "A fresh install against the latest allowed gems failed: $RUN_URL"
+          fi

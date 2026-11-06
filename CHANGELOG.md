@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Needs `tailwind_merge` 1.5.1 or newer. Older versions allowed by the gemspec crashed on the first render, because they can't read `MERGER_CONFIG`.
+- Sets upper limits on `rails` (`< 9`) and `tailwind_merge` (`< 2`).
+- Licensed under MIT.
 - Initial scaffold: engine, theme tokens, install/eject generators.
 - Components: Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, ListGroup, Pagination, Progress, Spinner, Table.
 - The Tailwind entry file moves from `app/assets/builds/` to `app/assets/tailwind/`, because `stylesheet_link_tag :app` linked it and published an absolute server path. Existing apps need to change their import to `@import "./component_library_2100.css";`, git-ignore the new path, and delete the old file.

@@ -28,7 +28,7 @@ module ComponentLibrary2100
     end
 
     # Declared here so ViewComponent compiles this subclass; the markup is the parent's.
-    def call = super
+    def call = super # rubocop:disable Lint/UselessMethodDefinition
 
     private
 

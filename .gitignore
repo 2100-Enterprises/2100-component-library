@@ -1,5 +1,7 @@
 /.bundle/
 /Gemfile.lock
+/gemfiles/*.lock
+/*.gem
 /pkg/
 /tmp/
 /log/
