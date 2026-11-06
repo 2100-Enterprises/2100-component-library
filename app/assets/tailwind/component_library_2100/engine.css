@@ -1,0 +1,83 @@
+/*
+ * ComponentLibrary2100: Tailwind v4 theme tokens (Bootstrap 5.0 palette) and source scanning.
+ * Assumes Tailwind's preflight. Override any token in your own @theme block after importing this file:
+ *
+ *   @theme { --color-primary: #7c3aed; --radius-ui: .5rem; }
+ */
+
+/* Resolved relative to this file, so classes used inside the gem's components are generated. */
+@source "../../../components";
+
+@theme {
+  /* Solid fills */
+  --color-primary: #0d6efd;
+  --color-secondary: #6c757d;
+  --color-success: #198754;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #0dcaf0;
+  --color-light: #f8f9fa;
+  --color-dark: #212529;
+
+  /* Text that sits on a solid fill */
+  --color-primary-on: #fff;
+  --color-secondary-on: #fff;
+  --color-success-on: #fff;
+  --color-danger-on: #fff;
+  --color-warning-on: #000;
+  --color-info-on: #000;
+  --color-light-on: #000;
+  --color-dark-on: #fff;
+
+  /* Tinted surfaces (alerts, list group items) */
+  --color-primary-subtle: #cfe2ff;
+  --color-secondary-subtle: #e2e3e5;
+  --color-success-subtle: #d1e7dd;
+  --color-danger-subtle: #f8d7da;
+  --color-warning-subtle: #fff3cd;
+  --color-info-subtle: #cff4fc;
+  --color-light-subtle: #fefefe;
+  --color-dark-subtle: #d3d3d4;
+
+  --color-primary-border: #b6d4fe;
+  --color-secondary-border: #d3d6d8;
+  --color-success-border: #badbcc;
+  --color-danger-border: #f5c2c7;
+  --color-warning-border: #ffecb5;
+  --color-info-border: #b6effb;
+  --color-light-border: #fdfdfe;
+  --color-dark-border: #bcbebf;
+
+  --color-primary-emphasis: #084298;
+  --color-secondary-emphasis: #41464b;
+  --color-success-emphasis: #0f5132;
+  --color-danger-emphasis: #842029;
+  --color-warning-emphasis: #664d03;
+  --color-info-emphasis: #055160;
+  --color-light-emphasis: #636464;
+  --color-dark-emphasis: #141619;
+
+  /* Corner radii: rounded-ui, rounded-ui-sm, rounded-ui-lg */
+  --radius-ui: 0.25rem;
+  --radius-ui-sm: 0.2rem;
+  --radius-ui-lg: 0.3rem;
+
+  --animate-spinner-grow: spinner-grow 0.75s linear infinite;
+  --animate-progress-stripes: progress-stripes 1s linear infinite;
+
+  @keyframes spinner-grow {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes progress-stripes {
+    0% {
+      background-position-x: 1rem;
+    }
+  }
+}

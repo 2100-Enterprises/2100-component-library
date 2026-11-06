@@ -1,0 +1,36 @@
+require "test_helper"
+
+class FeedbackComponentsTest < ViewComponent::TestCase
+  include ComponentLibrary2100
+
+  def test_progress_sets_width_and_aria
+    render_inline(ProgressComponent.new(value: 25, variant: :success, label: true))
+
+    assert_selector "[role=progressbar].bg-success[aria-valuenow='25'][aria-valuemin='0'][aria-valuemax='100']", text: "25%"
+    assert_selector "[role=progressbar][style='width: 25.0%']"
+  end
+
+  def test_progress_clamps_and_animates
+    render_inline(ProgressComponent.new(value: 500, animated: true))
+
+    assert_selector "[role=progressbar][style='width: 100.0%'].animate-progress-stripes"
+  end
+
+  def test_spinner_has_accessible_label
+    render_inline(SpinnerComponent.new(variant: :danger, label: "Saving..."))
+
+    assert_selector "div[role=status].animate-spin.text-danger .sr-only", text: "Saving..."
+  end
+
+  def test_grow_spinner
+    render_inline(SpinnerComponent.new(type: :grow, size: :sm))
+
+    assert_selector "div.animate-spinner-grow.size-4"
+  end
+
+  def test_close_button_label
+    render_inline(CloseButtonComponent.new(label: "Dismiss"))
+
+    assert_selector "button[type=button][aria-label=Dismiss] svg"
+  end
+end
