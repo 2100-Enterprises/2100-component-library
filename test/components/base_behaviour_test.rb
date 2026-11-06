@@ -35,4 +35,10 @@ class BaseBehaviourTest < ViewComponent::TestCase
     assert_includes html, "New"
     assert_includes html, "bg-info"
   end
+
+  def test_data_action_is_concatenated_not_replaced
+    render_inline(ModalComponent.new(data: {action: "mine#run"})) { "Body" }
+
+    assert_selector "dialog[data-action='click->cl-dialog#backdrop mine#run']", visible: :all
+  end
 end

@@ -1,0 +1,121 @@
+#!/usr/bin/env ruby
+# Moves a pull request on, from .github/workflows/pr-triage.yml. The Human review check this
+# reports is required on development, so a red one stops a person pressing merge too.
+#
+#   bin/pr-triage advance   CI passed on HEAD_SHA. A sensitive PR waits for a person.
+#                           A PR labelled do-not-auto-merge stays as it is. Any other PR
+#                           is marked ready and merged.
+#   bin/pr-triage check     Fails while PR_NUMBER is on hold or needs a person's review.
+#                           EVENT_ACTION=synchronize also takes off an earlier review.
+#
+# Anything it can't confirm counts as sensitive, or stops with nothing merged.
+require_relative "../script/review_policy"
+
+class PullRequestTriage
+  NEEDED = "needs-human-review".freeze
+  BASE = "development".freeze
+
+  def initialize(repository:)
+    @repository = repository
+    @policy = ReviewPolicy.new(repository)
+  end
+
+  def advance(head)
+    candidates(head).each do |number|
+      pull_request = @policy.api("pulls/#{number}")
+
+      if sensitive_paths(pull_request).any?
+        hold(pull_request)
+      elsif @policy.held?(pull_request)
+        puts "PR ##{number} has the #{ReviewPolicy::HOLD} label, so it stays open."
+      else
+        merge(pull_request, head)
+      end
+    end
+  end
+
+  def check(number, action)
+    pull_request = @policy.api("pulls/#{number}")
+    pushed = action == "synchronize"
+    remove_label(pull_request, ReviewPolicy::REVIEWED) if pushed
+
+    raise ReviewPolicy::Stop, "PR ##{number} has the #{ReviewPolicy::HOLD} label. Remove it to merge." if @policy.held?(pull_request)
+
+    paths = sensitive_paths(pull_request)
+    return puts("PR ##{number} needs no human review.") if paths.empty?
+
+    raise ReviewPolicy::Stop, "PR ##{number} changes #{paths.join(", ")}. Review it and add the #{ReviewPolicy::REVIEWED} label." if pushed || !reviewed?(pull_request)
+
+    remove_label(pull_request, NEEDED)
+    puts "PR ##{number} has been reviewed."
+  end
+
+  private
+
+  # A newer push has its own CI run, so only the PR still on this commit moves. Stacked PRs
+  # wait until they target development, and a fork never merges itself.
+  def candidates(head)
+    @policy.api("commits/#{head}/pulls").select do |pull_request|
+      pull_request["state"] == "open" &&
+        pull_request.dig("head", "sha") == head &&
+        pull_request.dig("base", "ref") == BASE &&
+        pull_request.dig("head", "repo", "full_name") == @repository
+    end.map { |pull_request| pull_request.fetch("number") }
+  end
+
+  # A rename out of a sensitive path counts. GitHub lists at most 3,000 files, so a shorter
+  # list than the PR's own count can't be trusted.
+  def sensitive_paths(pull_request)
+    files = @policy.paginated("pulls/#{pull_request.fetch("number")}/files?per_page=100")
+    return [ "more files than GitHub will list" ] if files.size != pull_request.fetch("changed_files")
+
+    @policy.sensitive(files.flat_map { |file| [ file["filename"], file["previous_filename"] ].compact })
+  end
+
+  def reviewed?(pull_request)
+    commit = @policy.api("commits/#{pull_request.dig("head", "sha")}")
+
+    @policy.reviewed?(pull_request, last_commit_at: Time.iso8601(commit.dig("commit", "committer", "date")))
+  end
+
+  def hold(pull_request)
+    if reviewed?(pull_request)
+      remove_label(pull_request, NEEDED)
+    else
+      @policy.gh("-X", "POST", "-f", "labels[]=#{NEEDED}", "repos/#{@repository}/issues/#{pull_request.fetch("number")}/labels")
+    end
+
+    mark_ready(pull_request)
+  end
+
+  # The sha makes GitHub refuse the merge if anything was pushed after CI ran.
+  def merge(pull_request, head)
+    mark_ready(pull_request)
+    @policy.gh("-X", "PUT", "-f", "merge_method=merge", "-f", "sha=#{head}", "repos/#{@repository}/pulls/#{pull_request.fetch("number")}/merge")
+  end
+
+  def mark_ready(pull_request)
+    return unless pull_request.fetch("draft")
+
+    @policy.run_command("gh", "pr", "ready", pull_request.fetch("number").to_s, "--repo", @repository)
+  end
+
+  def remove_label(pull_request, name)
+    return unless pull_request.fetch("labels").any? { |label| label["name"] == name }
+
+    @policy.gh("-X", "DELETE", "repos/#{@repository}/issues/#{pull_request.fetch("number")}/labels/#{name}")
+  end
+end
+
+begin
+  triage = PullRequestTriage.new(repository: ENV.fetch("GITHUB_REPOSITORY"))
+
+  case ARGV.first
+  when "advance" then triage.advance(ENV.fetch("HEAD_SHA"))
+  when "check" then triage.check(ENV.fetch("PR_NUMBER"), ENV["EVENT_ACTION"])
+  else abort "Usage: bin/pr-triage advance|check"
+  end
+rescue StandardError => error
+  warn "PR triage stopped: #{error.message}"
+  exit 1
+end

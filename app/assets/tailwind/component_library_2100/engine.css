@@ -83,3 +83,10 @@
     }
   }
 }
+
+/* Stop the page behind an open modal <dialog> (Modal, Offcanvas) from scrolling. */
+@layer base {
+  body:has(dialog:modal) {
+    overflow: hidden;
+  }
+}
