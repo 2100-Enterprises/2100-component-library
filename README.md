@@ -45,6 +45,56 @@ For local development: `bundle config local.component_library_2100 ../2100-compo
 
 Every component accepts the Bootstrap vocabulary it has (`variant:`, `size:`, `outline:`, `pill:`, `striped:` ...) plus any HTML attributes. A `ui_*` helper exists for every component (`ui_button_group`, `ui_list_group`, ...).
 
+## Components
+
+### Alert
+
+<img src="docs/images/alert.png" width="720" alt="Alerts in four variants, plus a dismissible one with a close button">
+
+### Badge
+
+<img src="docs/images/badge.png" width="720" alt="Badges in all eight variants, square and pill">
+
+### Breadcrumb
+
+<img src="docs/images/breadcrumb.png" width="720" alt="Breadcrumb trail: Home / Library / Data">
+
+### Button
+
+<img src="docs/images/button.png" width="720" alt="Solid and outline buttons in each variant, then sizes, disabled and link styles">
+
+### ButtonGroup
+
+<img src="docs/images/button_group.png" width="720" alt="Horizontal solid, horizontal outline and vertical button groups">
+
+### Card
+
+<img src="docs/images/card.png" width="720" alt="Card with a header, title, body copy, button and footer">
+
+### CloseButton
+
+<img src="docs/images/close_button.png" width="720" alt="Close buttons on light and dark backgrounds">
+
+### ListGroup
+
+<img src="docs/images/list_group.png" width="720" alt="List groups showing active, plain, disabled and coloured items">
+
+### Pagination
+
+<img src="docs/images/pagination.png" width="720" alt="Pagination at default and small sizes">
+
+### Progress
+
+<img src="docs/images/progress.png" width="720" alt="Progress bars with labels, stripes and variants">
+
+### Spinner
+
+<img src="docs/images/spinner.png" width="720" alt="Border and grow spinners in several colours and sizes">
+
+### Table
+
+<img src="docs/images/table.png" width="720" alt="Striped table of people with status badges">
+
 ## Overriding
 
 | Need | How |
@@ -86,6 +136,8 @@ bundle exec rake test
 ```
 
 Tests boot a tiny in-process Rails app (`test/test_helper.rb`) and render each component with `ViewComponent::TestCase`.
+
+The images above come from `bundle exec rake screenshots`, which renders the examples in `script/screenshots.rb` and writes `docs/images/`. It needs Chrome installed. Rerun it after changing how a component looks.
 
 ## Roadmap
 

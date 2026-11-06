@@ -7,3 +7,8 @@ Rake::TestTask.new(:test) do |t|
 end
 
 task default: :test
+
+desc "Regenerate the component images in docs/images used by the README"
+task :screenshots do
+  ruby "script/screenshots.rb"
+end

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- README shows an image of each component, regenerated with `rake screenshots`.
 - Initial scaffold: engine, theme tokens, install/eject generators.
 - Components: Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, ListGroup, Pagination, Progress, Spinner, Table.
 - The Tailwind entry file moves from `app/assets/builds/` to `app/assets/tailwind/`, because `stylesheet_link_tag :app` linked it and published an absolute server path. Existing apps need to change their import to `@import "./component_library_2100.css";`, git-ignore the new path, and delete the old file.
