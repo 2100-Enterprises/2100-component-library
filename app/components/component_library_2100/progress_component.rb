@@ -39,7 +39,7 @@ module ComponentLibrary2100
     def percent
       return 0 if @max == @min
 
-      ((@value - @min).to_f / (@max - @min) * 100).clamp(0, 100).round(2)
+      ((@value - @min).to_f / (@max - @min) * 100).clamp(0.0, 100.0).round(2)
     end
 
     def label_text

@@ -16,9 +16,11 @@ class DummyApp < Rails::Application
   config.eager_load = false
   config.secret_key_base = "test"
   config.logger = Logger.new(nil)
-  config.view_component.test_controller = "ActionController::Base"
 end
 
 DummyApp.initialize!
+
+# ViewComponent 4 renders tests through ApplicationController unless told otherwise.
+class ApplicationController < ActionController::Base; end
 
 require "view_component/test_case"
