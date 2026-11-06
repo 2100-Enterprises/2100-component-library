@@ -2,13 +2,13 @@
 
 Bootstrap 5-style components for Rails, built with [ViewComponent](https://viewcomponent.org), Stimulus and Tailwind CSS v4. Small by design: components render semantic HTML with Tailwind utilities, take plain keyword arguments, and let you override anything.
 
-**Status:** 0.1.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Offcanvas, Pagination, Popover, Progress, Spinner, Table, Tabs, Toast, Tooltip. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
+**Status:** 0.2.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Offcanvas, Pagination, Popover, Progress, Spinner, Table, Tabs, Toast, Tooltip. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
 
 ## Install
 
 ```ruby
 # Gemfile
-gem "component_library_2100", github: "the-codetrane/2100-component-library", tag: "v0.1.0"
+gem "component_library_2100", github: "the-codetrane/2100-component-library", tag: "v0.2.0"
 ```
 
 ```sh
