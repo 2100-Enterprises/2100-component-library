@@ -22,3 +22,9 @@ Security:
 
 Rails/OutputSafety:
   Enabled: true
+
+# An inline disable would get past Rails/OutputSafety in a PR that merges without a person.
+Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: true
+  AllowedCops:
+    - Lint/UselessMethodDefinition
