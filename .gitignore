@@ -4,3 +4,9 @@
 /tmp/
 /log/
 .DS_Store
+
+# ignore Claude
+.claude/
+
+# Ignore JetBrains
+.idea/
