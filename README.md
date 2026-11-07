@@ -2,13 +2,13 @@
 
 Bootstrap 5-style components for Rails, built with [ViewComponent](https://viewcomponent.org), Stimulus and Tailwind CSS v4. Small by design: components render semantic HTML with Tailwind utilities, take plain keyword arguments, and let you override anything.
 
-**Status:** 0.6.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Nav, Navbar, Offcanvas, Pagination, Popover, Progress, Spinner, Switch, Table, Tabs, Toast, Tooltip, plus a form builder and the [extras](#extras) PageHeader, EmptyState, Avatar and Stepper. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
+**Status:** 0.6.1 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Nav, Navbar, Offcanvas, Pagination, Popover, Progress, Spinner, Switch, Table, Tabs, Toast, Tooltip, plus a form builder and the [extras](#extras) PageHeader, EmptyState, Avatar and Stepper. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
 
 ## Install
 
 ```ruby
 # Gemfile
-gem "component_library_2100", github: "the-codetrane/2100-component-library", tag: "v0.6.0"
+gem "component_library_2100", github: "the-codetrane/2100-component-library", tag: "v0.6.1"
 ```
 
 ```sh
@@ -117,6 +117,8 @@ It's a `<nav>` landmark named by `label:`. Below the `expand:` breakpoint (`:sm`
 ### Progress
 
 <img src="docs/images/progress.png" width="720" alt="Progress bars with labels, stripes and variants">
+
+Unlike Bootstrap's, the bar doesn't animate a change of value: width is a layout property, and animating `scaleX` instead would squash a `label:`. A new value shows at once. Striped bars still move with `animated: true`.
 
 ### Spinner
 

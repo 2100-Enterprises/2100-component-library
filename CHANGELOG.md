@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.6.1
+
+### Progress
+
+- The bar no longer has a width transition, so a change of value shows at once instead of animating a layout property. `scaleX` was ruled out because it would squash a `label:`. Striped `animated: true` bars still move.
+
 ### Mobile
 
 Needs Tailwind 4.1 or later, for `pointer-coarse:` and `wrap-anywhere`. Every touch change below applies only on touch screens, so mouse users see no difference.

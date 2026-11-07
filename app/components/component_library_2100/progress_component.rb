@@ -4,9 +4,12 @@ module ComponentLibrary2100
   # `class:` and other attributes go on the track, so `class: "h-1"` makes a thin bar. `aria:` goes on
   # the role="progressbar" element, so `aria: {label: "Upload"}` names the bar for screen readers.
   # `label: true` shows the percentage; a string shows that text.
+  #
+  # Unlike Bootstrap, the bar doesn't animate a change of value. Width is a layout property, and
+  # scaleX would squash the label, so a new value simply shows at once.
   class ProgressComponent < BaseComponent
     TRACK = "flex h-4 overflow-hidden text-[.75rem] bg-surface-muted rounded-ui"
-    BAR = "flex flex-col justify-center overflow-hidden text-center whitespace-nowrap text-white transition-[width] duration-[600ms] motion-reduce:transition-none"
+    BAR = "flex flex-col justify-center overflow-hidden text-center whitespace-nowrap text-white"
     STRIPED = "bg-[length:1rem_1rem] " \
               "bg-[linear-gradient(45deg,rgba(255,255,255,.15)_25%,transparent_25%,transparent_50%,rgba(255,255,255,.15)_50%,rgba(255,255,255,.15)_75%,transparent_75%,transparent)]"
     ANIMATED = "animate-progress-stripes motion-reduce:animate-none"
