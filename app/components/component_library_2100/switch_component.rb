@@ -22,13 +22,13 @@ module ComponentLibrary2100
   class SwitchComponent < BaseComponent
     WRAPPER = "flex items-start gap-2"
     INLINE = "inline-flex items-start gap-2 mr-4"
-    LABEL = "cursor-pointer select-none"
+    LABEL = "cursor-pointer select-none pointer-coarse:block pointer-coarse:py-2.5"
 
     FOCUS = "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/25"
     INPUTS = {
-      checkbox: "mt-1 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-default #{FOCUS}",
-      radio: "mt-1 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-default #{FOCUS}",
-      switch: "mt-1 w-8 h-4 shrink-0 cursor-pointer appearance-none rounded-full border border-switch bg-surface " \
+      checkbox: "mt-1 pointer-coarse:mt-3.5 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-default #{FOCUS}",
+      radio: "mt-1 pointer-coarse:mt-3.5 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-default #{FOCUS}",
+      switch: "mt-1 pointer-coarse:mt-3.5 w-8 h-4 shrink-0 cursor-pointer appearance-none rounded-full border border-switch bg-surface " \
               "bg-no-repeat bg-left bg-[length:0.875rem_0.875rem] bg-[radial-gradient(circle,var(--color-switch)_0.3rem,transparent_0.33rem)] " \
               "transition-[background-position] duration-150 " \
               "checked:bg-right checked:bg-primary checked:border-primary " \

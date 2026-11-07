@@ -8,6 +8,12 @@ module ComponentLibrary2100
   module Variants
     NAMES = %i[primary secondary success danger warning info light dark].freeze
 
+    # Makes a small control answer to at least 44px on a touch screen, through an invisible
+    # ::before, so it changes neither layout nor look. Use real size for controls stacked or
+    # side by side (dropdown items, page links): these areas would overlap their neighbours.
+    TOUCH_TARGET = "relative pointer-coarse:before:absolute pointer-coarse:before:top-1/2 pointer-coarse:before:left-1/2 " \
+                   "pointer-coarse:before:h-11 pointer-coarse:before:w-full pointer-coarse:before:min-w-11 pointer-coarse:before:-translate-1/2"
+
     # Solid fill with readable text.
     FILL = {
       primary: "bg-primary text-primary-on border-primary",
