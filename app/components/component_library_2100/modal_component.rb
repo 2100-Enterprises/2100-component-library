@@ -12,24 +12,27 @@ module ComponentLibrary2100
   # Escape closes it. Any element inside the component with `data-action="cl-dialog#open"` opens it
   # and `cl-dialog#close` closes it. HTML attributes go on the <dialog>. The body scrolls when the
   # content is taller than the screen. `static_backdrop: true` ignores clicks outside the dialog.
+  # `close:` takes CloseButtonComponent options (`close: {white: true}` on a dark dialog). A trigger with
+  # `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step with the dialog.
   class ModalComponent < BaseComponent
     SIZES = {sm: "max-w-[300px]", md: "max-w-[500px]", lg: "max-w-[800px]", xl: "max-w-[1140px]"}.freeze
-    DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-[#212529] bg-white border border-black/20 rounded-ui-lg " \
-             "outline-none backdrop:bg-black/50 open:flex open:flex-col"
-    HEADER = "flex items-center justify-between gap-4 p-4 border-b border-[#dee2e6]"
+    DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-body bg-surface border border-border-overlay rounded-ui-lg " \
+             "outline-none backdrop:bg-backdrop open:flex open:flex-col"
+    HEADER = "flex items-center justify-between gap-4 p-4 border-b border-border"
     TITLE = "m-0 text-xl font-medium leading-normal"
     BODY = "grow min-h-0 p-4 overflow-y-auto"
-    FOOTER = "flex flex-wrap items-center justify-end gap-2 p-3 border-t border-[#dee2e6]"
+    FOOTER = "flex flex-wrap items-center justify-end gap-2 p-3 border-t border-border"
 
     renders_one :trigger, ->(**opts) { ButtonComponent.new(**merge_attrs(opts, nil, **trigger_defaults)) }
     renders_one :footer, ->(**opts, &block) { tag.div(**merge_attrs(opts, FOOTER), &block) }
 
-    def initialize(title: nil, size: :md, centered: false, static_backdrop: false, **html_options)
+    def initialize(title: nil, size: :md, centered: false, static_backdrop: false, close: {}, **html_options)
       super(**html_options)
       @title = title
       @size = size
       @centered = centered
       @static_backdrop = static_backdrop
+      @close = close
       @title_id = generated_id("dialog-title")
     end
 
@@ -49,7 +52,7 @@ module ComponentLibrary2100
     def header
       return unless @title
 
-      close = render(CloseButtonComponent.new(data: {action: "cl-dialog#close"}))
+      close = render(CloseButtonComponent.new(**merge_attrs(@close, nil, data: {action: "cl-dialog#close"})))
       tag.div(safe_join([tag.h5(@title, id: @title_id, class: TITLE), close]), class: header_css)
     end
 

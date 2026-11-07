@@ -7,14 +7,14 @@ module ComponentLibrary2100
   # a horizontally scrolling div: `true` always, or a breakpoint (:sm, :md, :lg, :xl, :xxl)
   # below which it scrolls. Breakpoints are Tailwind's, not Bootstrap's pixel values.
   class TableComponent < BaseComponent
-    BASE = "w-full border-collapse align-top text-[#212529] " \
-           "[&_:is(th,td)]:border-b [&_:is(th,td)]:border-[#dee2e6] [&_thead_th]:align-bottom " \
+    BASE = "w-full border-collapse align-top text-body " \
+           "[&_:is(th,td)]:border-b [&_:is(th,td)]:border-border [&_thead_th]:align-bottom " \
            "[&>tbody:not(:first-child)]:border-t-2 [&>tbody:not(:first-child)]:border-current"
     CELL = "[&_:is(th,td)]:p-2"
     CELL_SMALL = "[&_:is(th,td)]:p-1"
     BORDERED = "[&_:is(th,td)]:border"
-    STRIPED = "[&_tbody_tr:nth-of-type(odd)]:bg-black/5"
-    HOVER = "[&_tbody_tr:hover]:bg-black/[.075]"
+    STRIPED = "[&_tbody_tr:nth-of-type(odd)]:bg-surface-stripe"
+    HOVER = "[&_tbody_tr:hover]:bg-surface-hover"
 
     RESPONSIVE = {
       true => "overflow-x-auto",

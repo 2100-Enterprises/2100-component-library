@@ -7,9 +7,9 @@ module ComponentLibrary2100
   # A click-to-open panel on the native popover API (outside click and Escape close it).
   # HTML attributes go on the panel; the trigger takes ButtonComponent options.
   class PopoverComponent < BaseComponent
-    PANEL = "m-0 inset-auto max-w-[276px] p-0 text-sm text-[#212529] bg-white border border-black/20 rounded-ui-lg shadow-sm " \
+    PANEL = "m-0 inset-auto max-w-[276px] p-0 text-sm text-body bg-surface border border-border-overlay rounded-ui-lg shadow-sm " \
             "not-data-positioned:invisible"
-    TITLE = "px-4 py-2 mb-0 text-base font-medium bg-[#f0f0f0] border-b border-black/20 rounded-t-[calc(var(--radius-ui-lg)-1px)]"
+    TITLE = "px-4 py-2 mb-0 text-base font-medium bg-popover-header border-b border-border-overlay rounded-t-[calc(var(--radius-ui-lg)-1px)]"
     BODY = "px-4 py-3"
 
     renders_one :trigger, ->(**opts) { ButtonComponent.new(**merge_attrs(opts, nil, **trigger_defaults)) }

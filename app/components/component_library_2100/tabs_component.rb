@@ -10,14 +10,14 @@ module ComponentLibrary2100
   # style: :tabs (default) or :pills.
   class TabsComponent < BaseComponent
     LIST = {
-      tabs: "flex flex-wrap pl-0 mb-0 list-none border-b border-[#dee2e6]",
+      tabs: "flex flex-wrap pl-0 mb-0 list-none border-b border-border",
       pills: "flex flex-wrap gap-1 pl-0 mb-0 list-none"
     }.freeze
 
     TAB = {
       tabs: "block px-4 py-2 -mb-px text-primary bg-transparent border border-transparent rounded-t-ui cursor-pointer " \
-            "hover:border-[#e9ecef] hover:border-b-[#dee2e6] aria-selected:text-[#495057] aria-selected:bg-white " \
-            "aria-selected:border-[#dee2e6] aria-selected:border-b-white",
+            "hover:border-border-subtle hover:border-b-border aria-selected:text-body-muted aria-selected:bg-surface " \
+            "aria-selected:border-border aria-selected:border-b-surface",
       pills: "block px-4 py-2 text-primary bg-transparent border-0 rounded-ui cursor-pointer " \
              "aria-selected:text-primary-on aria-selected:bg-primary"
     }.freeze

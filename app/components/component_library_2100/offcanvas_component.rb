@@ -5,10 +5,10 @@ module ComponentLibrary2100
   # <% end %>
   #
   # A modal <dialog> docked to an edge. Same slots, actions and behaviour as ModalComponent
-  # (`trigger`, `footer`, `cl-dialog#open`, `static_backdrop:`). placement: :start (default), :end, :top, :bottom.
+  # (`trigger`, `footer`, `cl-dialog#open`, `static_backdrop:`, `close:`). placement: :start (default), :end, :top, :bottom.
   # It slides in with a CSS transition where the browser supports `@starting-style`, and just appears elsewhere.
   class OffcanvasComponent < ModalComponent
-    DOCK = "m-0 max-w-none max-h-none w-auto p-0 text-[#212529] bg-white border-0 border-black/20 outline-none backdrop:bg-black/50 " \
+    DOCK = "m-0 max-w-none max-h-none w-auto p-0 text-body bg-surface border-0 border-border-overlay outline-none backdrop:bg-backdrop " \
            "open:flex open:flex-col transition-transform duration-300 transition-discrete motion-reduce:transition-none"
 
     PLACEMENTS = {
@@ -22,8 +22,8 @@ module ComponentLibrary2100
               "translate-y-full open:translate-y-0 starting:open:translate-y-full"
     }.freeze
 
-    def initialize(title: nil, placement: :start, static_backdrop: false, **html_options)
-      super(title: title, static_backdrop: static_backdrop, **html_options)
+    def initialize(title: nil, placement: :start, static_backdrop: false, close: {}, **html_options)
+      super(title: title, static_backdrop: static_backdrop, close: close, **html_options)
       @placement = placement
     end
 

@@ -5,7 +5,7 @@ module ComponentLibrary2100
   # the role="progressbar" element, so `aria: {label: "Upload"}` names the bar for screen readers.
   # `label: true` shows the percentage; a string shows that text.
   class ProgressComponent < BaseComponent
-    TRACK = "flex h-4 overflow-hidden text-[.75rem] bg-[#e9ecef] rounded-ui"
+    TRACK = "flex h-4 overflow-hidden text-[.75rem] bg-surface-muted rounded-ui"
     BAR = "flex flex-col justify-center overflow-hidden text-center whitespace-nowrap text-white transition-[width] duration-[600ms] motion-reduce:transition-none"
     STRIPED = "bg-[length:1rem_1rem] " \
               "bg-[linear-gradient(45deg,rgba(255,255,255,.15)_25%,transparent_25%,transparent_50%,rgba(255,255,255,.15)_50%,rgba(255,255,255,.15)_75%,transparent_75%,transparent)]"

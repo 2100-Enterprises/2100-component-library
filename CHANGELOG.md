@@ -10,6 +10,14 @@
 - Styled confirm: ConfirmDialog (`ui_confirm_dialog`) and the `cl-confirm` controller, plus `confirmMethod` and `useStyledConfirm(Turbo)` exported from `component_library_2100`, which set Turbo's confirm method (`Turbo.config.forms.confirm`, or `Turbo.setConfirmMethod` on older Turbo).
 - Extras, beyond Bootstrap: PageHeader (breadcrumb, title, badges, subtitle, actions that wrap on small screens), EmptyState (icon, title, text, action) and Avatar (initials from a name, `:sm`/`:md`, colour variants, accessible label). Helpers `ui_page_header`, `ui_empty_state`, `ui_avatar`.
 
+### For 0.5.0 (app shell)
+
+- Navbar: brand, links with `active:` (`aria-current="page"`) and an `actions` slot that stays in the bar. Below `expand:` (`:sm` to `:xxl`, default `:lg`; `true` never collapses, `false` always does) the links move into an Offcanvas behind a menu button with an accessible name (`menu_label:`), `aria-controls` and `aria-expanded`. `theme: :light` or `:dark`. Helper `ui_navbar`.
+- Stepper (extra): an `<ol>` of steps that are `:complete`, `:current` (`aria-current="step"`) or `:upcoming`, set per step or from `current:`. Steps can be text, links (`href:`) or submit buttons (`name:`/`value:`), with an optional `hint:`. Stacked first, a row from `breakpoint:` (`:sm`, `:md` default, `:lg`, `:xl`, `:xxl`; `false` always stacks). Helper `ui_stepper`.
+- Theme tokens for the neutral greys: `--color-body`, `--color-body-muted`, `--color-border`, `--color-border-subtle`, `--color-border-input`, `--color-border-translucent`, `--color-border-menu`, `--color-border-overlay`, `--color-surface`, `--color-surface-subtle`, `--color-surface-muted`, `--color-surface-tint`, `--color-surface-stripe`, `--color-surface-hover`, `--color-backdrop` and `--color-link-hover`, plus `--color-tooltip`, `--color-tooltip-on`, `--color-toast-border`, `--color-switch` and `--color-popover-header`. Table, Card, Dropdown, Modal, Offcanvas, Popover, Tooltip, Toast, Switch, Tabs, Nav, Pagination, ListGroup, Accordion, Progress, RadioCardGroup and form controls use them instead of hard-coded values. The defaults are the old values, so nothing looks different.
+- Modal and Offcanvas take `close:`, options for the header's close button.
+- `cl-dialog` keeps `aria-expanded` on its `trigger` targets in step with the dialog.
+
 ## 0.3.0
 
 - Progress puts `aria:` on the `role="progressbar"` element rather than the track, so `aria: {label: "Upload"}` names the bar.

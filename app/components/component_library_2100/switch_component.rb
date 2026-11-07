@@ -28,8 +28,8 @@ module ComponentLibrary2100
     INPUTS = {
       checkbox: "mt-1 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-default #{FOCUS}",
       radio: "mt-1 size-4 shrink-0 cursor-pointer accent-primary disabled:cursor-default #{FOCUS}",
-      switch: "mt-1 w-8 h-4 shrink-0 cursor-pointer appearance-none rounded-full border border-black/25 bg-white " \
-              "bg-no-repeat bg-left bg-[length:0.875rem_0.875rem] bg-[radial-gradient(circle,rgb(0_0_0/0.25)_0.3rem,transparent_0.33rem)] " \
+      switch: "mt-1 w-8 h-4 shrink-0 cursor-pointer appearance-none rounded-full border border-switch bg-surface " \
+              "bg-no-repeat bg-left bg-[length:0.875rem_0.875rem] bg-[radial-gradient(circle,var(--color-switch)_0.3rem,transparent_0.33rem)] " \
               "transition-[background-position] duration-150 " \
               "checked:bg-right checked:bg-primary checked:border-primary " \
               "checked:bg-[radial-gradient(circle,var(--color-primary-on)_0.3rem,transparent_0.33rem)] " \

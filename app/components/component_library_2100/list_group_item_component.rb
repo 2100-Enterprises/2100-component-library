@@ -1,10 +1,10 @@
 module ComponentLibrary2100
   class ListGroupItemComponent < BaseComponent
-    BASE = "relative block px-4 py-2 text-[#212529] bg-white border border-black/[.125] " \
+    BASE = "relative block px-4 py-2 text-body bg-surface border border-border-translucent " \
            "first:rounded-t-ui last:rounded-b-ui not-first:border-t-0"
-    ACTION = "w-full text-left text-[#495057] no-underline hover:z-[1] hover:bg-[#f8f9fa] hover:text-[#495057] focus:z-[1] focus:bg-[#e9ecef]"
+    ACTION = "w-full text-left text-body-muted no-underline hover:z-[1] hover:bg-surface-subtle hover:text-body-muted focus:z-[1] focus:bg-surface-muted"
     ACTIVE = "z-[2] bg-primary text-primary-on border-primary"
-    DISABLED = "pointer-events-none text-secondary bg-white"
+    DISABLED = "pointer-events-none text-secondary bg-surface"
 
     def initialize(variant: nil, active: false, disabled: false, href: nil, action: false, **html_options)
       super(**html_options)

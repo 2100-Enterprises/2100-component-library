@@ -60,6 +60,32 @@
   --color-light-emphasis: #636464;
   --color-dark-emphasis: #141619;
 
+  /* Neutral greys for text, borders and surfaces (Bootstrap 5.0 values). Override these to retint
+     every component; translucent ones darken whatever sits behind them. */
+  --color-body: #212529;
+  --color-body-muted: #495057;
+  --color-border: #dee2e6;
+  --color-border-subtle: #e9ecef;
+  --color-border-input: #ced4da;
+  --color-border-translucent: rgb(0 0 0 / 0.125);
+  --color-border-menu: rgb(0 0 0 / 0.15);
+  --color-border-overlay: rgb(0 0 0 / 0.2);
+  --color-surface: #fff;
+  --color-surface-subtle: #f8f9fa;
+  --color-surface-muted: #e9ecef;
+  --color-surface-tint: rgb(0 0 0 / 0.03);
+  --color-surface-stripe: rgb(0 0 0 / 0.05);
+  --color-surface-hover: rgb(0 0 0 / 0.075);
+  --color-backdrop: rgb(0 0 0 / 0.5);
+  --color-link-hover: #0a58ca;
+
+  /* One-component shades */
+  --color-tooltip: rgb(0 0 0 / 0.9);
+  --color-tooltip-on: #fff;
+  --color-toast-border: rgb(0 0 0 / 0.1);
+  --color-switch: rgb(0 0 0 / 0.25);
+  --color-popover-header: #f0f0f0;
+
   /* Corner radii: rounded-ui, rounded-ui-sm, rounded-ui-lg */
   --radius-ui: 0.25rem;
   --radius-ui-sm: 0.2rem;

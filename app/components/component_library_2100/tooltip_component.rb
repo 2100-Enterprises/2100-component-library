@@ -9,7 +9,7 @@ module ComponentLibrary2100
   # placement: "top" (default), "bottom", "left", "right", with optional "-start" / "-end".
   class TooltipComponent < BaseComponent
     WRAPPER = "inline-block"
-    TIP = "m-0 inset-auto max-w-[200px] px-2 py-1 text-xs text-center text-white bg-black/90 border-0 rounded-ui overflow-visible " \
+    TIP = "m-0 inset-auto max-w-[200px] px-2 py-1 text-xs text-center text-tooltip-on bg-tooltip border-0 rounded-ui overflow-visible " \
           "pointer-events-none not-data-positioned:invisible"
 
     def initialize(text:, placement: "top", **html_options)
