@@ -269,7 +269,7 @@ Initials come from the first and last words of `name:`. `size:` is `:sm` or `:md
 <% end %>
 ```
 
-An `<ol>` named by `label:`. Each step's `state:` is `:complete`, `:current` or `:upcoming`; or give the stepper `current:` (the 1-based number of the current step) and leave `state:` off. The current step has `aria-current="step"`, and complete steps end with visually hidden `complete_text:` ("(completed)" by default; `nil` for none). A step is plain text, a link (`href:`) or a submit button (`name:` and `value:`); other options (`form:`, `disabled:`, `data:` ...) go on that element. `hint:` adds a line under the label, tied to a link or button with `aria-describedby`. Steps sit in a row from the `md` breakpoint and stack below it; `vertical: true` always stacks.
+An `<ol>` named by `label:`. Each step's `state:` is `:complete`, `:current` or `:upcoming`; or give the stepper `current:` (the 1-based number of the current step) and leave `state:` off. The current step has `aria-current="step"`, and complete steps end with visually hidden `complete_text:` ("(completed)" by default; `nil` for none). A step is plain text, a link (`href:`) or a submit button (`name:` and `value:`); other options (`form:`, `disabled:`, `data:` ...) go on that element. `hint:` adds a line under the label, tied to a link or button with `aria-describedby`. Steps stack by default (mobile first) and switch to a row from `breakpoint:`, which is `:sm`, `:md` (default), `:lg`, `:xl` or `:xxl`; `breakpoint: false` always stacks.
 
 ## Overriding
 
@@ -307,12 +307,20 @@ It also defines `--radius-ui`, `--radius-ui-sm` and `--radius-ui-lg`, and these 
 | `--color-border-translucent` | `rgb(0 0 0 / 0.125)` | Card, list group and accordion edges |
 | `--color-border-menu` | `rgb(0 0 0 / 0.15)` | Dropdown menu edge and divider |
 | `--color-border-overlay` | `rgb(0 0 0 / 0.2)` | Modal, Offcanvas and Popover edges |
+| `--color-surface` | `#fff` | Card, menu, dialog, list group, pagination, form control and active tab backgrounds; Toast at 85% |
+| `--color-surface-subtle` | `#f8f9fa` | List group action hover |
 | `--color-surface-muted` | `#e9ecef` | Menu and pagination hover, disabled controls, progress track |
 | `--color-surface-tint` | `rgb(0 0 0 / 0.03)` | Card header and footer |
 | `--color-surface-stripe` | `rgb(0 0 0 / 0.05)` | Striped table rows |
 | `--color-surface-hover` | `rgb(0 0 0 / 0.075)` | Hovered table rows |
+| `--color-backdrop` | `rgb(0 0 0 / 0.5)` | Modal and Offcanvas backdrops |
+| `--color-link-hover` | `#0a58ca` | Pagination link hover (primary, darkened) |
+| `--color-tooltip`, `--color-tooltip-on` | `rgb(0 0 0 / 0.9)`, `#fff` | Tooltip background and text |
+| `--color-toast-border` | `rgb(0 0 0 / 0.1)` | Toast edge |
+| `--color-switch` | `rgb(0 0 0 / 0.25)` | Unchecked switch border and knob |
+| `--color-popover-header` | `#f0f0f0` | Popover title bar |
 
-Override them in your `@theme` to retint every component at once. The translucent ones darken whatever is behind them. White backgrounds (`bg-white`), backdrops, Tooltip, Toast and a few one-off shades are not tokens yet.
+Override them in your `@theme` to retint every component at once. The translucent ones darken whatever is behind them. Not tokens: the CloseButton `white:` icon and the Progress bar's white label and stripes, which are always white on a coloured fill.
 
 Your own `@theme` wins over these, so a token with the same name but another purpose changes the components. A pale `--color-success` meant for borders makes success buttons unreadable. Give those tokens other names.
 
@@ -351,7 +359,7 @@ Add notes to `## Unreleased` in `CHANGELOG.md` as you go. To release, open a PR 
 
 ## Roadmap
 
-Carousel, and tokens for the remaining one-off shades (white surfaces, backdrops, Tooltip, Toast).
+Carousel. Planned breaking change: merge `--color-border-translucent`, `--color-border-menu` and `--color-border-overlay` into one translucent border token, which changes the Dropdown, Modal, Offcanvas and Popover edges slightly.
 
 ## License
 

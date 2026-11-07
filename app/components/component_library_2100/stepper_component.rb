@@ -13,40 +13,59 @@ module ComponentLibrary2100
   # The current step has `aria-current="step"`; complete steps end with `complete_text:`, hidden
   # visually ("(completed)" by default, `nil` for none). A step is plain text, a link (`href:`)
   # or a submit button (`name:` and `value:`, for a form that saves and moves on). `hint:` adds a
-  # line under the label, tied to a link or button with `aria-describedby`. Horizontal from the
-  # `md` breakpoint, stacked below it; `vertical: true` always stacks. Other step options are
+  # line under the label, tied to a link or button with `aria-describedby`. Steps stack (mobile
+  # first) and switch to a row from `breakpoint:` (:sm, :md default, :lg, :xl, :xxl); `false` always stacks. Other step options are
   # HTML attributes for the link, button or text (`form:`, `disabled:`, `data:` ...).
   class StepperComponent < BaseComponent
     STATES = %i[complete current upcoming].freeze
 
-    LIST = {
-      responsive: "flex flex-col m-0 p-0 list-none md:flex-row",
-      vertical: "flex flex-col m-0 p-0 list-none"
+    LIST = "flex flex-col m-0 p-0 list-none"
+
+    # Stacked by default (mobile first). The connector is the step's ::after: down from the marker
+    # when stacked, across to the next marker in a row.
+    STEP = "relative flex flex-col gap-1 pb-6 last:pb-0 " \
+           "not-last:after:absolute not-last:after:content-[''] not-last:after:left-4 not-last:after:top-9 " \
+           "not-last:after:bottom-1 not-last:after:w-0.5 not-last:after:-translate-x-1/2 not-last:after:bg-border " \
+           "data-[state=complete]:not-last:after:bg-primary"
+    TARGET = "group flex items-center gap-3 text-left"
+    HINT = "pl-11 text-sm text-secondary"
+
+    # Classes that switch to a row from `breakpoint:`, written out in full for Tailwind's scanner.
+    LIST_ROW = {
+      sm: "sm:flex-row",
+      md: "md:flex-row",
+      lg: "lg:flex-row",
+      xl: "xl:flex-row",
+      xxl: "2xl:flex-row"
     }.freeze
 
-    # The connector is the step's ::after: down from the marker when stacked, across to the next marker when horizontal.
-    STEP = {
-      responsive: "relative flex flex-col gap-1 pb-6 last:pb-0 " \
-                  "not-last:after:absolute not-last:after:content-[''] not-last:after:left-4 not-last:after:top-9 " \
-                  "not-last:after:bottom-1 not-last:after:w-0.5 not-last:after:-translate-x-1/2 not-last:after:bg-border " \
-                  "data-[state=complete]:not-last:after:bg-primary " \
-                  "md:flex-1 md:items-center md:pb-0 md:text-center md:not-last:after:top-4 md:not-last:after:bottom-auto " \
-                  "md:not-last:after:left-[calc(50%+1.5rem)] md:not-last:after:right-[calc(-50%+1.5rem)] " \
-                  "md:not-last:after:w-auto md:not-last:after:h-0.5 md:not-last:after:translate-x-0 md:not-last:after:-translate-y-1/2",
-      vertical: "relative flex flex-col gap-1 pb-6 last:pb-0 " \
-                "not-last:after:absolute not-last:after:content-[''] not-last:after:left-4 not-last:after:top-9 " \
-                "not-last:after:bottom-1 not-last:after:w-0.5 not-last:after:-translate-x-1/2 not-last:after:bg-border " \
-                "data-[state=complete]:not-last:after:bg-primary"
+    STEP_ROW = {
+      sm: "sm:flex-1 sm:items-center sm:pb-0 sm:text-center sm:not-last:after:top-4 sm:not-last:after:bottom-auto " \
+          "sm:not-last:after:left-[calc(50%+1.5rem)] sm:not-last:after:right-[calc(-50%+1.5rem)] sm:not-last:after:w-auto sm:not-last:after:h-0.5 sm:not-last:after:translate-x-0 sm:not-last:after:-translate-y-1/2",
+      md: "md:flex-1 md:items-center md:pb-0 md:text-center md:not-last:after:top-4 md:not-last:after:bottom-auto " \
+          "md:not-last:after:left-[calc(50%+1.5rem)] md:not-last:after:right-[calc(-50%+1.5rem)] md:not-last:after:w-auto md:not-last:after:h-0.5 md:not-last:after:translate-x-0 md:not-last:after:-translate-y-1/2",
+      lg: "lg:flex-1 lg:items-center lg:pb-0 lg:text-center lg:not-last:after:top-4 lg:not-last:after:bottom-auto " \
+          "lg:not-last:after:left-[calc(50%+1.5rem)] lg:not-last:after:right-[calc(-50%+1.5rem)] lg:not-last:after:w-auto lg:not-last:after:h-0.5 lg:not-last:after:translate-x-0 lg:not-last:after:-translate-y-1/2",
+      xl: "xl:flex-1 xl:items-center xl:pb-0 xl:text-center xl:not-last:after:top-4 xl:not-last:after:bottom-auto " \
+          "xl:not-last:after:left-[calc(50%+1.5rem)] xl:not-last:after:right-[calc(-50%+1.5rem)] xl:not-last:after:w-auto xl:not-last:after:h-0.5 xl:not-last:after:translate-x-0 xl:not-last:after:-translate-y-1/2",
+      xxl: "2xl:flex-1 2xl:items-center 2xl:pb-0 2xl:text-center 2xl:not-last:after:top-4 2xl:not-last:after:bottom-auto " \
+           "2xl:not-last:after:left-[calc(50%+1.5rem)] 2xl:not-last:after:right-[calc(-50%+1.5rem)] 2xl:not-last:after:w-auto 2xl:not-last:after:h-0.5 2xl:not-last:after:translate-x-0 2xl:not-last:after:-translate-y-1/2"
     }.freeze
 
-    TARGET = {
-      responsive: "group flex items-center gap-3 text-left md:flex-col md:gap-2 md:text-center",
-      vertical: "group flex items-center gap-3 text-left"
+    TARGET_ROW = {
+      sm: "sm:flex-col sm:gap-2 sm:text-center",
+      md: "md:flex-col md:gap-2 md:text-center",
+      lg: "lg:flex-col lg:gap-2 lg:text-center",
+      xl: "xl:flex-col xl:gap-2 xl:text-center",
+      xxl: "2xl:flex-col 2xl:gap-2 2xl:text-center"
     }.freeze
 
-    HINT = {
-      responsive: "pl-11 text-sm text-secondary md:pl-0",
-      vertical: "pl-11 text-sm text-secondary"
+    HINT_ROW = {
+      sm: "sm:pl-0",
+      md: "md:pl-0",
+      lg: "lg:pl-0",
+      xl: "xl:pl-0",
+      xxl: "2xl:pl-0"
     }.freeze
 
     # Links and buttons; plain text gets only TARGET.
@@ -80,25 +99,27 @@ module ComponentLibrary2100
       hint_id = generated_id("step-hint") if hint && (href || name)
 
       tag.li(safe_join([target(number, state, text, href, name, value, hint_id, opts), hint_tag(hint, hint_id)].compact),
-        class: STEP.fetch(layout), data: {state: state})
+        class: [STEP, row(STEP_ROW)], data: {state: state})
     }
 
-    def initialize(label:, current: nil, vertical: false, complete_text: "(completed)", **html_options)
+    def initialize(label:, current: nil, breakpoint: :md, complete_text: "(completed)", **html_options)
       super(**html_options)
       @label = label
       @current = current&.to_i
-      @vertical = vertical
+      @breakpoint = breakpoint.is_a?(String) ? breakpoint.to_sym : breakpoint
+      Variants.fetch(LIST_ROW, @breakpoint, kind: "breakpoint") if @breakpoint
       @complete_text = complete_text
       @step_count = 0
     end
 
     def call
-      tag.ol(safe_join(steps), **attrs(LIST.fetch(layout), aria: {label: @label}))
+      tag.ol(safe_join(steps), **attrs([LIST, row(LIST_ROW)], aria: {label: @label}))
     end
 
     private
 
-    def layout = @vertical ? :vertical : :responsive
+    # The `breakpoint:` entry of a *_ROW table, or nothing when the stepper always stacks.
+    def row(table) = (table.fetch(@breakpoint) if @breakpoint)
 
     def resolve_state(state, number)
       return Variants.fetch(STATES.index_by(&:itself), state, kind: "state") if state
@@ -113,7 +134,7 @@ module ComponentLibrary2100
     def target(number, state, text, href, name, value, hint_id, opts)
       inner = safe_join([marker(number, state), label_tag(text, state, interactive: href || name)])
       aria = {current: ("step" if state == :current), describedby: hint_id}.compact
-      css = [TARGET.fetch(layout), (ACTION if href || name)]
+      css = [TARGET, row(TARGET_ROW), (ACTION if href || name)]
 
       if href
         tag.a(inner, **merge_attrs(opts, css, href: href, aria: aria))
@@ -141,7 +162,7 @@ module ComponentLibrary2100
     def hint_tag(hint, hint_id)
       return unless hint
 
-      tag.span(hint, id: hint_id, class: HINT.fetch(layout))
+      tag.span(hint, id: hint_id, class: [HINT, row(HINT_ROW)])
     end
   end
 end

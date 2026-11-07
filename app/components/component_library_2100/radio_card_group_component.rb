@@ -15,7 +15,7 @@ module ComponentLibrary2100
     FIELDSET = "m-0 p-0 border-0 min-w-0"
     LEGEND = "mb-2 p-0"
     GRID = {1 => "grid gap-2", 2 => "grid gap-2 sm:grid-cols-2", 3 => "grid gap-2 sm:grid-cols-3"}.freeze
-    CARD = "flex items-start gap-3 p-4 bg-white border border-border rounded-ui cursor-pointer transition duration-150 " \
+    CARD = "flex items-start gap-3 p-4 bg-surface border border-border rounded-ui cursor-pointer transition duration-150 " \
            "hover:border-primary-border has-checked:border-primary has-checked:bg-primary-subtle " \
            "has-focus-visible:ring-4 has-focus-visible:ring-primary/25 " \
            "has-disabled:opacity-50 has-disabled:cursor-default has-disabled:hover:border-border"

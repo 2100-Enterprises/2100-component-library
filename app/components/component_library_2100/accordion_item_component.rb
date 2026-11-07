@@ -1,7 +1,7 @@
 module ComponentLibrary2100
   # One section of an AccordionComponent. Create these through `accordion.with_item`.
   class AccordionItemComponent < BaseComponent
-    BASE = "group overflow-hidden bg-white border border-border-translucent first:rounded-t-ui last:rounded-b-ui not-first:border-t-0"
+    BASE = "group overflow-hidden bg-surface border border-border-translucent first:rounded-t-ui last:rounded-b-ui not-first:border-t-0"
     SUMMARY = "relative flex items-center justify-between gap-4 px-5 py-4 text-base text-body cursor-pointer list-none " \
               "[&::-webkit-details-marker]:hidden group-open:bg-primary-subtle group-open:text-primary-emphasis " \
               "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/25"

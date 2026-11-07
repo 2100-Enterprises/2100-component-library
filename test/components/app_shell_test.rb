@@ -91,7 +91,7 @@ class AppShellTest < ViewComponent::TestCase
   end
 
   def test_stepper_links_and_hints
-    render_inline(StepperComponent.new(label: "Onboarding", vertical: true, complete_text: nil)) do |stepper|
+    render_inline(StepperComponent.new(label: "Onboarding", breakpoint: false, complete_text: nil)) do |stepper|
       stepper.with_step("Account", state: :complete, href: "/account", hint: "Done")
       stepper.with_step("Team", state: :current, href: "/team")
       stepper.with_step("Billing", state: :upcoming, hint: "Next")
@@ -103,7 +103,22 @@ class AppShellTest < ViewComponent::TestCase
     assert_selector "li:last-child > span:not([aria-describedby])", text: "Billing"
     assert_selector "li:last-child > span.text-sm", text: "Next"
     assert_no_selector ".sr-only"
-    assert_no_selector "ol.md\\:flex-row"
+    assert_no_selector "ol[class*=flex-row]"
+    assert_no_selector "li[class*=':flex-1']"
+  end
+
+  def test_stepper_stacks_first_and_switches_to_a_row_at_its_breakpoint
+    render_inline(StepperComponent.new(label: "Steps", breakpoint: :lg)) { |stepper| stepper.with_step("One", href: "/one", hint: "Hi") }
+
+    assert_selector "ol.flex-col.lg\\:flex-row:not(.md\\:flex-row)"
+    assert_selector "li.pb-6.lg\\:flex-1.lg\\:pb-0"
+    assert_selector "a.lg\\:flex-col.lg\\:text-center"
+    assert_selector "span.pl-11.lg\\:pl-0", text: "Hi"
+
+    render_inline(StepperComponent.new(label: "Steps", breakpoint: :xxl)) { |stepper| stepper.with_step("One") }
+    assert_selector "ol[class~='2xl:flex-row']"
+
+    assert_raises(ArgumentError) { StepperComponent.new(label: "Steps", breakpoint: :huge) }
   end
 
   def test_stepper_buttons_submit_the_surrounding_form

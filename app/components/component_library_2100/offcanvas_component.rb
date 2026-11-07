@@ -8,7 +8,7 @@ module ComponentLibrary2100
   # (`trigger`, `footer`, `cl-dialog#open`, `static_backdrop:`, `close:`). placement: :start (default), :end, :top, :bottom.
   # It slides in with a CSS transition where the browser supports `@starting-style`, and just appears elsewhere.
   class OffcanvasComponent < ModalComponent
-    DOCK = "m-0 max-w-none max-h-none w-auto p-0 text-body bg-white border-0 border-border-overlay outline-none backdrop:bg-black/50 " \
+    DOCK = "m-0 max-w-none max-h-none w-auto p-0 text-body bg-surface border-0 border-border-overlay outline-none backdrop:bg-backdrop " \
            "open:flex open:flex-col transition-transform duration-300 transition-discrete motion-reduce:transition-none"
 
     PLACEMENTS = {

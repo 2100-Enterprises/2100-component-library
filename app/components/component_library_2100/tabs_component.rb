@@ -16,8 +16,8 @@ module ComponentLibrary2100
 
     TAB = {
       tabs: "block px-4 py-2 -mb-px text-primary bg-transparent border border-transparent rounded-t-ui cursor-pointer " \
-            "hover:border-border-subtle hover:border-b-border aria-selected:text-body-muted aria-selected:bg-white " \
-            "aria-selected:border-border aria-selected:border-b-white",
+            "hover:border-border-subtle hover:border-b-border aria-selected:text-body-muted aria-selected:bg-surface " \
+            "aria-selected:border-border aria-selected:border-b-surface",
       pills: "block px-4 py-2 text-primary bg-transparent border-0 rounded-ui cursor-pointer " \
              "aria-selected:text-primary-on aria-selected:bg-primary"
     }.freeze

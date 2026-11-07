@@ -9,7 +9,7 @@ module ComponentLibrary2100
   #
   # Pass `body: false` when the content should sit edge to edge (a ListGroup or Table).
   class CardComponent < BaseComponent
-    BASE = "relative flex flex-col min-w-0 break-words bg-white bg-clip-border border border-border-translucent rounded-ui"
+    BASE = "relative flex flex-col min-w-0 break-words bg-surface bg-clip-border border border-border-translucent rounded-ui"
     BODY = "flex-auto p-4"
     HEADER = "px-4 py-3 mb-0 bg-surface-tint border-b border-border-translucent first:rounded-t-[calc(var(--radius-ui)-1px)]"
     FOOTER = "px-4 py-3 bg-surface-tint border-t border-border-translucent last:rounded-b-[calc(var(--radius-ui)-1px)]"

@@ -13,10 +13,13 @@ class ThemeTokensTest < ViewComponent::TestCase
     "border-translucent" => "rgb(0 0 0 / 0.125)", "border-menu" => "rgb(0 0 0 / 0.15)",
     "border-overlay" => "rgb(0 0 0 / 0.2)",
     "surface-muted" => "#e9ecef", "surface-tint" => "rgb(0 0 0 / 0.03)",
-    "surface-stripe" => "rgb(0 0 0 / 0.05)", "surface-hover" => "rgb(0 0 0 / 0.075)"
+    "surface-stripe" => "rgb(0 0 0 / 0.05)", "surface-hover" => "rgb(0 0 0 / 0.075)",
+    "surface" => "#fff", "surface-subtle" => "#f8f9fa", "backdrop" => "rgb(0 0 0 / 0.5)", "link-hover" => "#0a58ca",
+    "tooltip" => "rgb(0 0 0 / 0.9)", "tooltip-on" => "#fff", "toast-border" => "rgb(0 0 0 / 0.1)",
+    "switch" => "rgb(0 0 0 / 0.25)", "popover-header" => "#f0f0f0"
   }.freeze
 
-  GREYS = /#(212529|495057|dee2e6|e9ecef|ced4da)|black\/(\[\.125\]|\[\.03\]|15|20|5\b|\[\.075\])/
+  GREYS = /#(212529|495057|dee2e6|e9ecef|ced4da|f8f9fa|f0f0f0|0a58ca)|black\/|bg-white|border-b-white|rgb\(0_0_0/
 
   def test_engine_css_defines_each_token_with_the_bootstrap_value
     TOKENS.each { |name, value| assert_includes ENGINE_CSS, "--color-#{name}: #{value};" }
@@ -70,6 +73,33 @@ class ThemeTokensTest < ViewComponent::TestCase
       tabs.with_tab(title: "One") { "1" }
     end
     assert_selector "[role=tablist].border-border"
+  end
+
+  def test_surfaces_and_overlays_use_tokens
+    render_inline(OffcanvasComponent.new(title: "Menu")) { "x" }
+    assert_selector "dialog.bg-surface.backdrop\\:bg-backdrop", visible: :all
+
+    render_inline(TooltipComponent.new(text: "Tip")) { "<button>?</button>".html_safe }
+    assert_selector "[popover].bg-tooltip.text-tooltip-on", visible: :all
+
+    render_inline(ToastComponent.new) { "Saved" }
+    assert_selector ".bg-surface\\/85.border-toast-border"
+
+    render_inline(PopoverComponent.new(title: "Title")) { |popover| popover.with_trigger { "?" } }
+    assert_selector ".bg-popover-header", text: "Title", visible: :all
+  end
+
+  def test_switch_list_group_and_pagination_use_tokens
+    render_inline(SwitchComponent.new(name: "on", label: "On"))
+    switch = page.find("input[type=checkbox][role=switch], input[type=checkbox]:not([type=hidden])", match: :first)
+    assert_includes switch["class"].split, "border-switch"
+    assert_includes switch["class"], "var(--color-switch)"
+
+    render_inline(ListGroupComponent.new) { |list| list.with_item(href: "/a") { "A" } }
+    assert_selector "a.bg-surface.hover\\:bg-surface-subtle"
+
+    render_inline(PaginationComponent.new) { |pages| pages.with_item("1", href: "?page=1") }
+    assert_selector "a.bg-surface.hover\\:text-link-hover"
   end
 
   def test_a_caller_class_still_replaces_a_token
