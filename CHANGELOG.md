@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.3.0
+
 - Progress puts `aria:` on the `role="progressbar"` element rather than the track, so `aria: {label: "Upload"}` names the bar.
 - Toast takes `close:`, options for its close button.
 - Toast no longer runs off narrow screens.
