@@ -9,6 +9,7 @@
 
 /* Resolved relative to this file, so classes used inside the gem's components are generated. */
 @source "../../../components";
+@source "../../../form_builders";
 
 @theme {
   /* Solid fills */

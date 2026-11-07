@@ -6,11 +6,14 @@ module ComponentLibrary2100
   #   <% menu.with_item("Archive", data: { action: "archive#run" }) %>
   #   <% menu.with_divider %>
   #   <% menu.with_item("Delete", href: "/delete", disabled: true) %>
+  #   <% menu.with_item("Sign out", href: "/session", method: :delete) %>
   # <% end %>
   #
   # The menu is a native popover: the browser handles opening, outside clicks, Escape and returning
   # focus. Arrow keys, Home and End move between items. Items with `href:` are links, the rest are
-  # buttons. HTML attributes go on the menu; the trigger takes ButtonComponent options.
+  # buttons. An item with `href:` and a `method:` other than GET is a `button_to` form, so it submits
+  # (with Rails' `_method` and CSRF fields) while staying a menu item; `params:` and `form:` go to
+  # `button_to`. HTML attributes go on the menu; the trigger takes ButtonComponent options.
   # placement: "bottom-start" (default), "bottom-end", "top-start", "right", ... (see position.js).
   class DropdownComponent < BaseComponent
     MENU = "m-0 inset-auto min-w-40 px-0 py-2 text-base text-[#212529] bg-white border border-black/15 rounded-ui shadow-lg " \
@@ -29,12 +32,15 @@ module ComponentLibrary2100
     renders_many :entries, types: {
       item: {
         as: :item,
-        renders: ->(label = nil, href: nil, active: false, disabled: false, **opts, &block) {
+        renders: ->(label = nil, href: nil, method: nil, active: false, disabled: false, params: {}, form: {}, **opts, &block) {
           text = block ? capture(&block) : label
           css = [ITEM, (ACTIVE if active), (DISABLED if disabled)]
           shared = {role: "menuitem", tabindex: -1, data: {action: "click->cl-popover#close"}}
 
-          if href
+          if href && method && method.to_s.downcase != "get"
+            button = merge_attrs(opts, css, type: :submit, disabled: disabled, **shared)
+            button_to(href, method: method, params: params, form: merge_attrs(form, "m-0"), **button) { text }
+          elsif href
             aria = {current: (true if active), disabled: (true if disabled)}.compact
             tag.a(text, **merge_attrs(opts, css, href: href, aria: aria, **shared))
           else

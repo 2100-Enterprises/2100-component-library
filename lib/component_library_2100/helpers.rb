@@ -11,6 +11,8 @@ module ComponentLibrary2100
     NAMES = %w[
       accordion alert badge breadcrumb button button_group card close_button collapse dropdown
       list_group modal offcanvas pagination popover progress spinner table tabs toast toast_container tooltip
+      nav switch form_field radio_card_group error_summary confirm_dialog
+      page_header empty_state avatar
     ].freeze
 
     NAMES.each do |name|
@@ -25,6 +27,15 @@ module ComponentLibrary2100
           render(component)
         end
       end
+    end
+
+    # `form_with` using ComponentLibrary2100::FormBuilder:
+    #
+    #   <%= ui_form_with model: @user do |f| %>
+    #     <%= f.email_field :email, hint: "We never share it." %>
+    #   <% end %>
+    def ui_form_with(**options, &block)
+      form_with(**options, builder: ComponentLibrary2100::FormBuilder, &block)
     end
   end
 end
