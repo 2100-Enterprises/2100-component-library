@@ -142,6 +142,25 @@ class InteractiveComponentsTest < ViewComponent::TestCase
     assert_selector "button[data-action='cl-dismiss#close']"
   end
 
+  def test_toast_takes_close_button_options
+    render_inline(ToastComponent.new(close: {label: "Dismiss", class: "top-0 size-4", data: {action: "click->analytics#track"}})) { "Done." }
+
+    button = page.find("button[aria-label=Dismiss]")
+    classes = button[:class].split
+    assert_equal "cl-dismiss#close click->analytics#track", button["data-action"]
+    assert_includes classes, "top-0"
+    assert_includes classes, "size-4"
+    assert_includes classes, "absolute"
+    refute_includes classes, "top-2"
+    refute_includes classes, "size-[1em]"
+  end
+
+  def test_toast_fits_a_narrow_screen
+    render_inline(ToastComponent.new) { "Done." }
+
+    assert_selector "[class~='w-[min(350px,calc(100vw-1.5rem))]']"
+  end
+
   def test_toast_without_close_button
     render_inline(ToastComponent.new(dismissible: false)) { "Done." }
 

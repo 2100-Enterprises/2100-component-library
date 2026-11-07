@@ -4,19 +4,21 @@ module ComponentLibrary2100
   # Render toasts inside a ToastContainerComponent: its `aria-live` region is what makes screen readers
   # announce a toast that is appended later (for example with a Turbo Stream). A toast closes itself after
   # `delay` milliseconds (5000 by default; `delay: 0` keeps it until dismissed) and has a close button
-  # unless `dismissible: false`. `variant:` tints it like an Alert.
+  # unless `dismissible: false`. `variant:` tints it like an Alert. `close:` passes options to that button,
+  # so `close: {label: "Dismiss", class: "top-0 end-0 size-4 p-3.5"}` renames it and gives it a 44px tap target.
   class ToastComponent < BaseComponent
-    BASE = "relative w-[350px] max-w-full text-sm text-[#212529] bg-white/85 bg-clip-padding border border-black/10 rounded-ui shadow-md " \
+    BASE = "relative w-[min(350px,calc(100vw-1.5rem))] text-sm text-[#212529] bg-white/85 bg-clip-padding border border-black/10 rounded-ui shadow-md " \
            "backdrop-blur transition-opacity duration-150 motion-reduce:transition-none data-closing:opacity-0"
     MESSAGE = "p-3"
     CLOSE = "absolute top-2 end-2"
 
-    def initialize(title: nil, variant: nil, delay: 5000, dismissible: true, **html_options)
+    def initialize(title: nil, variant: nil, delay: 5000, dismissible: true, close: {}, **html_options)
       super(**html_options)
       @title = title
       @variant = variant
       @delay = delay
       @dismissible = dismissible
+      @close = close
     end
 
     def call
@@ -34,7 +36,7 @@ module ComponentLibrary2100
     end
 
     def close_button
-      render(CloseButtonComponent.new(class: CLOSE, data: {action: "cl-dismiss#close"})) if @dismissible
+      render(CloseButtonComponent.new(**merge_attrs(@close, CLOSE, data: {action: "cl-dismiss#close"}))) if @dismissible
     end
   end
 end

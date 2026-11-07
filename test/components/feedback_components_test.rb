@@ -16,6 +16,18 @@ class FeedbackComponentsTest < ViewComponent::TestCase
     assert_selector "[role=progressbar][style='width: 100.0%'].animate-progress-stripes"
   end
 
+  def test_progress_puts_aria_on_the_bar_and_other_attributes_on_the_track
+    render_inline(ProgressComponent.new(value: 25, id: "upload", class: "h-1", aria: {label: "Upload"}))
+
+    assert_selector "#upload.h-1:not([aria-label]) > [role=progressbar][aria-label=Upload][aria-valuenow='25']"
+  end
+
+  def test_progress_can_be_hidden_from_screen_readers
+    render_inline(ProgressComponent.new(value: 25, aria: {hidden: true}))
+
+    assert_selector "[role=progressbar][aria-hidden=true]", visible: :all
+  end
+
   def test_spinner_has_accessible_label
     render_inline(SpinnerComponent.new(variant: :danger, label: "Saving..."))
 

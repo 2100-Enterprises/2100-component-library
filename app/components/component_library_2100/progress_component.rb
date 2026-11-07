@@ -1,7 +1,8 @@
 module ComponentLibrary2100
   # <%= render ProgressComponent.new(value: 40, variant: :success, striped: true, label: true) %>
   #
-  # `class:` and other attributes go on the track, so `class: "h-1"` makes a thin bar.
+  # `class:` and other attributes go on the track, so `class: "h-1"` makes a thin bar. `aria:` goes on
+  # the role="progressbar" element, so `aria: {label: "Upload"}` names the bar for screen readers.
   # `label: true` shows the percentage; a string shows that text.
   class ProgressComponent < BaseComponent
     TRACK = "flex h-4 overflow-hidden text-[.75rem] bg-[#e9ecef] rounded-ui"
@@ -22,14 +23,14 @@ module ComponentLibrary2100
     end
 
     def call
-      tag.div(bar, **attrs(TRACK))
+      tag.div(bar, **merge_attrs(html_options.except(:aria), TRACK))
     end
 
     private
 
     def bar
       tag.div(label_text, class: ComponentLibrary2100.merge_classes(bar_classes), role: "progressbar", style: "width: #{percent}%",
-        aria: {valuenow: @value, valuemin: @min, valuemax: @max})
+        aria: {valuenow: @value, valuemin: @min, valuemax: @max}.merge(html_options.fetch(:aria, {})))
     end
 
     def bar_classes
