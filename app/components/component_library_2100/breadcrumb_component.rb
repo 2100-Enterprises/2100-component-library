@@ -7,7 +7,7 @@ module ComponentLibrary2100
   class BreadcrumbComponent < BaseComponent
     LIST = "flex flex-wrap p-0 m-0 list-none"
     ITEM = "not-first:before:content-['/'] not-first:before:px-2 not-first:before:text-secondary"
-    LINK = "text-primary underline"
+    LINK = "#{Variants::TOUCH_TARGET} text-primary underline"
 
     renders_many :items, ->(label = nil, href: nil, **opts, &block) {
       text = block ? capture(&block) : label

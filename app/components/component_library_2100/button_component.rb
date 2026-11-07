@@ -4,7 +4,7 @@ module ComponentLibrary2100
   #
   # Renders an <a> when `href:` is given, otherwise a <button>.
   class ButtonComponent < BaseComponent
-    BASE = "inline-block align-middle text-center font-normal leading-normal border cursor-pointer select-none no-underline " \
+    BASE = "#{Variants::TOUCH_TARGET} inline-block align-middle text-center font-normal leading-normal border cursor-pointer select-none no-underline " \
            "transition duration-150 focus-visible:outline-none focus-visible:ring-4 " \
            "disabled:opacity-65 disabled:pointer-events-none aria-disabled:opacity-65 aria-disabled:pointer-events-none"
 

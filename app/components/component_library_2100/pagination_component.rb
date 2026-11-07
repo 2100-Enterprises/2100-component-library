@@ -5,9 +5,10 @@ module ComponentLibrary2100
   #   <% pages.with_item("Next", disabled: true) %>
   # <% end %>
   class PaginationComponent < BaseComponent
-    LIST = "flex pl-0 m-0 list-none"
+    LIST = "flex flex-wrap pl-0 m-0 list-none"
     ITEM = "not-first:-ml-px first:*:rounded-s-ui last:*:rounded-e-ui"
-    LINK = "relative block text-primary bg-surface border border-border no-underline " \
+    LINK = "relative block pointer-coarse:flex pointer-coarse:min-h-11 pointer-coarse:min-w-11 pointer-coarse:items-center pointer-coarse:justify-center " \
+           "text-primary bg-surface border border-border no-underline " \
            "hover:z-[2] hover:text-link-hover hover:bg-surface-muted focus:z-[3] focus:ring-4 focus:ring-primary/25 focus:outline-none"
     ACTIVE = "z-[3] text-primary-on bg-primary border-primary hover:text-primary-on hover:bg-primary"
     DISABLED = "pointer-events-none text-secondary bg-surface border-border"

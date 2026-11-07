@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Mobile
+
+Needs Tailwind 4.1 or later, for `pointer-coarse:` and `wrap-anywhere`. Every touch change below applies only on touch screens, so mouse users see no difference.
+
+- Button, CloseButton and Breadcrumb links answer to at least 44px on touch screens, through an invisible `::before`, with no change to look or layout. `Variants::TOUCH_TARGET` holds the classes.
+- Dropdown items, Pagination links, Switch rows and text inputs and selects are at least 44px tall on touch screens.
+- Dropdown menus stay within the screen. Long items and headers wrap instead of running off the edge.
+- Pagination wraps onto a second line when it runs out of room.
+
 ## 0.6.0
 
 ### Breaking

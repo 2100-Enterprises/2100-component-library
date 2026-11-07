@@ -5,7 +5,7 @@ module ComponentLibrary2100
   # announce a toast that is appended later (for example with a Turbo Stream). A toast closes itself after
   # `delay` milliseconds (5000 by default; `delay: 0` keeps it until dismissed) and has a close button
   # unless `dismissible: false`. `variant:` tints it like an Alert. `close:` passes options to that button,
-  # so `close: {label: "Dismiss", class: "top-0 end-0 size-4 p-3.5"}` renames it and gives it a 44px tap target.
+  # so `close: {label: "Dismiss"}` renames it.
   class ToastComponent < BaseComponent
     BASE = "relative w-[min(350px,calc(100vw-1.5rem))] text-sm text-body bg-surface/85 bg-clip-padding border border-toast-border rounded-ui shadow-md " \
            "backdrop-blur transition-opacity duration-150 motion-reduce:transition-none data-closing:opacity-0"

@@ -17,13 +17,13 @@ module ComponentLibrary2100
     HINT = "mt-1 text-sm text-secondary"
     ERROR = "mt-1 text-sm text-danger"
 
-    CONTROL = "block w-full px-3 py-1.5 text-base font-normal leading-normal text-body bg-surface bg-clip-padding " \
+    CONTROL = "block w-full pointer-coarse:min-h-11 px-3 py-1.5 text-base font-normal leading-normal text-body bg-surface bg-clip-padding " \
               "border border-border-input rounded-ui appearance-none transition duration-150 placeholder:text-secondary " \
               "focus:outline-none focus:border-primary-border focus:ring-4 focus:ring-primary/25 " \
               "disabled:bg-surface-muted read-only:bg-surface-muted " \
               "aria-invalid:border-danger aria-invalid:focus:border-danger aria-invalid:focus:ring-danger/25"
     # A native select keeps the browser's arrow, so it doesn't use `appearance-none`.
-    SELECT = "block w-full px-3 py-1.5 text-base font-normal leading-normal text-body bg-surface bg-clip-padding " \
+    SELECT = "block w-full pointer-coarse:min-h-11 px-3 py-1.5 text-base font-normal leading-normal text-body bg-surface bg-clip-padding " \
              "border border-border-input rounded-ui transition duration-150 " \
              "focus:outline-none focus:border-primary-border focus:ring-4 focus:ring-primary/25 disabled:bg-surface-muted " \
              "aria-invalid:border-danger aria-invalid:focus:border-danger aria-invalid:focus:ring-danger/25"
