@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.5.0
+
+0.4.0 was never tagged: its changes ship here with the app shell.
+
+### Building blocks
+
 - Nav: Bootstrap `.nav` tabs and pills made of links, with `active:` (`aria-current="page"`), `disabled:`, `fill:`, `justified:` and an optional `label:` landmark. Looks like Tabs. Helper `ui_nav`.
 - Form builder: `ComponentLibrary2100::FormBuilder` and `ui_form_with`. Field helpers render a label, Bootstrap form-control styling, the model's inline error and a hint, with `aria-describedby`/`aria-invalid` wired, plus `optional:`, `label: false`, `error:` and `wrapper: false`. Covers text, email, password (Show/Hide button, new `cl-password` controller), tel, number, url, search, date, select and textarea; `rich_text_area` when Action Text is present; `radio_cards`, `switch`, `check`, `error_summary`, and `submit` as a ButtonComponent.
 - New form components: FormField (wraps any control), RadioCardGroup, ErrorSummary. Helpers `ui_form_field`, `ui_radio_card_group`, `ui_error_summary`.
@@ -10,7 +16,7 @@
 - Styled confirm: ConfirmDialog (`ui_confirm_dialog`) and the `cl-confirm` controller, plus `confirmMethod` and `useStyledConfirm(Turbo)` exported from `component_library_2100`, which set Turbo's confirm method (`Turbo.config.forms.confirm`, or `Turbo.setConfirmMethod` on older Turbo).
 - Extras, beyond Bootstrap: PageHeader (breadcrumb, title, badges, subtitle, actions that wrap on small screens), EmptyState (icon, title, text, action) and Avatar (initials from a name, `:sm`/`:md`, colour variants, accessible label). Helpers `ui_page_header`, `ui_empty_state`, `ui_avatar`.
 
-### For 0.5.0 (app shell)
+### App shell
 
 - Navbar: brand, links with `active:` (`aria-current="page"`) and an `actions` slot that stays in the bar. Below `expand:` (`:sm` to `:xxl`, default `:lg`; `true` never collapses, `false` always does) the links move into an Offcanvas behind a menu button with an accessible name (`menu_label:`), `aria-controls` and `aria-expanded`. `theme: :light` or `:dark`. Helper `ui_navbar`.
 - Stepper (extra): an `<ol>` of steps that are `:complete`, `:current` (`aria-current="step"`) or `:upcoming`, set per step or from `current:`. Steps can be text, links (`href:`) or submit buttons (`name:`/`value:`), with an optional `hint:`. Stacked first, a row from `breakpoint:` (`:sm`, `:md` default, `:lg`, `:xl`, `:xxl`; `false` always stacks). Helper `ui_stepper`.
