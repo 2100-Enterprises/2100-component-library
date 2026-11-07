@@ -9,10 +9,10 @@ module ComponentLibrary2100
   #
   # Pass `body: false` when the content should sit edge to edge (a ListGroup or Table).
   class CardComponent < BaseComponent
-    BASE = "relative flex flex-col min-w-0 break-words bg-white bg-clip-border border border-black/[.125] rounded-ui"
+    BASE = "relative flex flex-col min-w-0 break-words bg-white bg-clip-border border border-border-translucent rounded-ui"
     BODY = "flex-auto p-4"
-    HEADER = "px-4 py-3 mb-0 bg-black/[.03] border-b border-black/[.125] first:rounded-t-[calc(var(--radius-ui)-1px)]"
-    FOOTER = "px-4 py-3 bg-black/[.03] border-t border-black/[.125] last:rounded-b-[calc(var(--radius-ui)-1px)]"
+    HEADER = "px-4 py-3 mb-0 bg-surface-tint border-b border-border-translucent first:rounded-t-[calc(var(--radius-ui)-1px)]"
+    FOOTER = "px-4 py-3 bg-surface-tint border-t border-border-translucent last:rounded-b-[calc(var(--radius-ui)-1px)]"
     IMAGE = "w-full"
 
     # Header, footer and images accept the usual HTML attributes, including `class:`.

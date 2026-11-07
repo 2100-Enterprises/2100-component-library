@@ -7,7 +7,7 @@ module ComponentLibrary2100
   # unless `dismissible: false`. `variant:` tints it like an Alert. `close:` passes options to that button,
   # so `close: {label: "Dismiss", class: "top-0 end-0 size-4 p-3.5"}` renames it and gives it a 44px tap target.
   class ToastComponent < BaseComponent
-    BASE = "relative w-[min(350px,calc(100vw-1.5rem))] text-sm text-[#212529] bg-white/85 bg-clip-padding border border-black/10 rounded-ui shadow-md " \
+    BASE = "relative w-[min(350px,calc(100vw-1.5rem))] text-sm text-body bg-white/85 bg-clip-padding border border-black/10 rounded-ui shadow-md " \
            "backdrop-blur transition-opacity duration-150 motion-reduce:transition-none data-closing:opacity-0"
     MESSAGE = "p-3"
     CLOSE = "absolute top-2 end-2"

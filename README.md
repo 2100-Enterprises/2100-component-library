@@ -93,6 +93,23 @@ Tabs or pills made of links, for moving between pages (TabsComponent switches pa
 
 `style:` is `:tabs` (default) or `:pills`. `fill: true` stretches the items across the width and `justified: true` makes them equal widths. `label:` wraps the list in a `<nav aria-label>` landmark; without it you get the bare `<ul>`. HTML attributes go on the `<ul>`; extra item options (`data:`, `class:` ...) go on the link.
 
+### Navbar
+
+The bar across the top of an app: brand, links, and actions such as an account dropdown.
+
+```erb
+<%= ui_navbar label: "Main", expand: :lg, theme: :dark do |navbar| %>
+  <% navbar.with_brand(href: root_path) { "2100" } %>                <%# or with_brand("2100") for plain text %>
+  <% navbar.with_item("Projects", href: projects_path, active: true) %>   <%# aria-current="page" %>
+  <% navbar.with_item("Clients", href: clients_path) %>
+  <% navbar.with_actions do %>
+    <%= ui_dropdown(placement: "bottom-end") { |menu| menu.with_trigger { "Account" }; menu.with_item("Sign out", href: session_path, method: :delete) } %>
+  <% end %>
+<% end %>
+```
+
+It's a `<nav>` landmark named by `label:`. Below the `expand:` breakpoint (`:sm`, `:md`, `:lg` default, `:xl`, `:xxl`) the links move into an Offcanvas opened by a menu button, which has `menu_label:` (default "Menu") as its accessible name, `aria-controls` pointing at the panel, and `aria-expanded` kept in step by `cl-dialog`. `expand: true` never collapses; `expand: false` always does. Actions stay in the bar at every width. `theme:` is `:light` (default) or `:dark`, coloured from the `light`/`dark` tokens; the panel matches. `placement:` docks the panel (`:end` default). HTML attributes go on the `<nav>`; extra item options go on the link.
+
 ### Pagination
 
 <img src="docs/images/pagination.png" width="720" alt="Pagination at default and small sizes">
@@ -159,7 +176,7 @@ These lean on the platform instead of re-implementing it, so there is little Jav
 | Accordion | `<details name>` | No JavaScript. `always_open: true` drops the shared name. |
 | Collapse | grid-rows transition | `cl-collapse` toggles attributes; no heights are measured. |
 | Dropdown, Popover | popover API (`popover="auto"`) | Browser handles outside click, Escape and focus return; `cl-popover` places it and adds arrow-key navigation for menus. |
-| Modal, Offcanvas | `<dialog>` + `showModal()` | Focus trap, inert page and Escape come from the browser. `static_backdrop: true` ignores backdrop clicks. |
+| Modal, Offcanvas | `<dialog>` + `showModal()` | Focus trap, inert page and Escape come from the browser. `static_backdrop: true` ignores backdrop clicks. `close:` takes CloseButton options (`close: {white: true}` on a dark panel). A trigger with `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step. |
 | Tabs | WAI-ARIA tabs pattern | `cl-tabs`; tabs and panels pair by position. |
 | Toast | `cl-dismiss` + `aria-live` container | Render toasts inside a `ToastContainerComponent`. `delay: 0` keeps one open. `close:` takes options for the close button, which is small by default. |
 | Tooltip | popover API (`popover="manual"`) | Wrap something focusable. Shows on hover and keyboard focus. |
@@ -229,6 +246,31 @@ Actions sit to the right from the `sm` breakpoint and wrap under the title on na
 
 Initials come from the first and last words of `name:`. `size:` is `:sm` or `:md` (default); `variant:` is any colour variant (default `:secondary`). It has `role="img"` and the name (or `label:`) as its `aria-label`; with neither, it's hidden from assistive technology.
 
+### Stepper
+
+```erb
+<%# A lifecycle: steps before current: are complete, after it upcoming %>
+<%= ui_stepper label: "Project status", current: 3 do |stepper| %>
+  <% %w[Draft Proposed Approved In\ progress Complete].each { |name| stepper.with_step(name) } %>
+<% end %>
+
+<%# Onboarding with links and hints %>
+<%= ui_stepper label: "Getting started" do |stepper| %>
+  <% stepper.with_step("Account", state: :complete, href: account_path, hint: "Done") %>
+  <% stepper.with_step("Team", state: :current, href: team_path) %>
+  <% stepper.with_step("Billing", state: :upcoming) %>
+<% end %>
+
+<%# Inside a form: each step is a submit button, so the form saves and moves on %>
+<%= ui_stepper label: "Plan", current: 2 do |stepper| %>
+  <% stepper.with_step("What", name: "step", value: "what") %>
+  <% stepper.with_step("When", name: "step", value: "when") %>
+  <% stepper.with_step("Who", name: "step", value: "who") %>
+<% end %>
+```
+
+An `<ol>` named by `label:`. Each step's `state:` is `:complete`, `:current` or `:upcoming`; or give the stepper `current:` (the 1-based number of the current step) and leave `state:` off. The current step has `aria-current="step"`, and complete steps end with visually hidden `complete_text:` ("(completed)" by default; `nil` for none). A step is plain text, a link (`href:`) or a submit button (`name:` and `value:`); other options (`form:`, `disabled:`, `data:` ...) go on that element. `hint:` adds a line under the label, tied to a link or button with `aria-describedby`. Steps sit in a row from the `md` breakpoint and stack below it; `vertical: true` always stacks.
+
 ## Overriding
 
 | Need | How |
@@ -253,7 +295,26 @@ Initials come from the first and last words of `name:`. `size:` is `:sm` or `:md
 | `--color-<name>-border` | Borders on tinted surfaces |
 | `--color-<name>-emphasis` | Text on tinted surfaces |
 
-It also defines `--radius-ui`, `--radius-ui-sm` and `--radius-ui-lg`. Your own `@theme` wins over these, so a token with the same name but another purpose changes the components. A pale `--color-success` meant for borders makes success buttons unreadable. Give those tokens other names.
+It also defines `--radius-ui`, `--radius-ui-sm` and `--radius-ui-lg`, and these neutral greys, set to Bootstrap 5.0's values:
+
+| Token | Default | Used for |
+|---|---|---|
+| `--color-body` | `#212529` | Text in tables, cards, menus, dialogs, form controls |
+| `--color-body-muted` | `#495057` | Active tab text, list group action text |
+| `--color-border` | `#dee2e6` | Table rules, tab and modal dividers, pagination, radio cards, upcoming Stepper markers and connectors |
+| `--color-border-subtle` | `#e9ecef` | Tab hover borders |
+| `--color-border-input` | `#ced4da` | Form control borders |
+| `--color-border-translucent` | `rgb(0 0 0 / 0.125)` | Card, list group and accordion edges |
+| `--color-border-menu` | `rgb(0 0 0 / 0.15)` | Dropdown menu edge and divider |
+| `--color-border-overlay` | `rgb(0 0 0 / 0.2)` | Modal, Offcanvas and Popover edges |
+| `--color-surface-muted` | `#e9ecef` | Menu and pagination hover, disabled controls, progress track |
+| `--color-surface-tint` | `rgb(0 0 0 / 0.03)` | Card header and footer |
+| `--color-surface-stripe` | `rgb(0 0 0 / 0.05)` | Striped table rows |
+| `--color-surface-hover` | `rgb(0 0 0 / 0.075)` | Hovered table rows |
+
+Override them in your `@theme` to retint every component at once. The translucent ones darken whatever is behind them. White backgrounds (`bg-white`), backdrops, Tooltip, Toast and a few one-off shades are not tokens yet.
+
+Your own `@theme` wins over these, so a token with the same name but another purpose changes the components. A pale `--color-success` meant for borders makes success buttons unreadable. Give those tokens other names.
 
 ## Differences from Bootstrap
 
@@ -290,7 +351,7 @@ Add notes to `## Unreleased` in `CHANGELOG.md` as you go. To release, open a PR 
 
 ## Roadmap
 
-Navbar, Stepper, Carousel, and theme tokens for the remaining hard-coded greys.
+Carousel, and tokens for the remaining one-off shades (white surfaces, backdrops, Tooltip, Toast).
 
 ## License
 

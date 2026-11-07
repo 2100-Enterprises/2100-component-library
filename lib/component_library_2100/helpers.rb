@@ -12,7 +12,7 @@ module ComponentLibrary2100
       accordion alert badge breadcrumb button button_group card close_button collapse dropdown
       list_group modal offcanvas pagination popover progress spinner table tabs toast toast_container tooltip
       nav switch form_field radio_card_group error_summary confirm_dialog
-      page_header empty_state avatar
+      page_header empty_state avatar navbar stepper
     ].freeze
 
     NAMES.each do |name|

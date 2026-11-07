@@ -14,8 +14,8 @@ module ComponentLibrary2100
     # Same utilities as TabsComponent::TAB, keyed on aria-current instead of aria-selected.
     LINK = {
       tabs: "block px-4 py-2 -mb-px text-primary no-underline bg-transparent border border-transparent rounded-t-ui " \
-            "hover:border-[#e9ecef] hover:border-b-[#dee2e6] aria-[current=page]:text-[#495057] aria-[current=page]:bg-white " \
-            "aria-[current=page]:border-[#dee2e6] aria-[current=page]:border-b-white",
+            "hover:border-border-subtle hover:border-b-border aria-[current=page]:text-body-muted aria-[current=page]:bg-white " \
+            "aria-[current=page]:border-border aria-[current=page]:border-b-white",
       pills: "block px-4 py-2 text-primary no-underline bg-transparent border-0 rounded-ui " \
              "aria-[current=page]:text-primary-on aria-[current=page]:bg-primary"
     }.freeze
