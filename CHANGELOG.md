@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Nav: Bootstrap `.nav` tabs and pills made of links, with `active:` (`aria-current="page"`), `disabled:`, `fill:`, `justified:` and an optional `label:` landmark. Looks like Tabs. Helper `ui_nav`.
+- Form builder: `ComponentLibrary2100::FormBuilder` and `ui_form_with`. Field helpers render a label, Bootstrap form-control styling, the model's inline error and a hint, with `aria-describedby`/`aria-invalid` wired, plus `optional:`, `label: false`, `error:` and `wrapper: false`. Covers text, email, password (Show/Hide button, new `cl-password` controller), tel, number, url, search, date, select and textarea; `rich_text_area` when Action Text is present; `radio_cards`, `switch`, `check`, `error_summary`, and `submit` as a ButtonComponent.
+- New form components: FormField (wraps any control), RadioCardGroup, ErrorSummary. Helpers `ui_form_field`, `ui_radio_card_group`, `ui_error_summary`.
+- Switch: Bootstrap form-check and form-switch (`type: :switch`, `:checkbox`, `:radio`) with label, hint, error and Rails' hidden unchecked value. `autosubmit: true` submits its form on change (new `cl-autosubmit` controller). Helper `ui_switch`.
+- Dropdown: `with_item(..., href:, method: :delete)` (any non-GET method) renders a `button_to` form inside the menu, keeping the menuitem role and arrow keys. `params:` and `form:` pass through. Existing items are unchanged.
+- Styled confirm: ConfirmDialog (`ui_confirm_dialog`) and the `cl-confirm` controller, plus `confirmMethod` and `useStyledConfirm(Turbo)` exported from `component_library_2100`, which set Turbo's confirm method (`Turbo.config.forms.confirm`, or `Turbo.setConfirmMethod` on older Turbo).
+- Extras, beyond Bootstrap: PageHeader (breadcrumb, title, badges, subtitle, actions that wrap on small screens), EmptyState (icon, title, text, action) and Avatar (initials from a name, `:sm`/`:md`, colour variants, accessible label). Helpers `ui_page_header`, `ui_empty_state`, `ui_avatar`.
+
 ## 0.3.0
 
 - Progress puts `aria:` on the `role="progressbar"` element rather than the track, so `aria: {label: "Upload"}` names the bar.

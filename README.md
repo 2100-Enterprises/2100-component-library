@@ -2,7 +2,7 @@
 
 Bootstrap 5-style components for Rails, built with [ViewComponent](https://viewcomponent.org), Stimulus and Tailwind CSS v4. Small by design: components render semantic HTML with Tailwind utilities, take plain keyword arguments, and let you override anything.
 
-**Status:** 0.3.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Offcanvas, Pagination, Popover, Progress, Spinner, Table, Tabs, Toast, Tooltip. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
+**Status:** 0.3.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Nav, Offcanvas, Pagination, Popover, Progress, Spinner, Switch, Table, Tabs, Toast, Tooltip, plus a form builder and the [extras](#extras) PageHeader, EmptyState and Avatar. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
 
 ## Install
 
@@ -79,6 +79,20 @@ Every component accepts the Bootstrap vocabulary it has (`variant:`, `size:`, `o
 
 <img src="docs/images/list_group.png" width="720" alt="List groups showing active, plain, disabled and coloured items">
 
+### Nav
+
+Tabs or pills made of links, for moving between pages (TabsComponent switches panels on one page, and looks the same).
+
+```erb
+<%= ui_nav style: :pills, label: "Account" do |nav| %>
+  <% nav.with_item("Profile", href: profile_path, active: true) %>   <%# aria-current="page" %>
+  <% nav.with_item("Billing", href: billing_path) %>
+  <% nav.with_item("Archived", href: "#", disabled: true) %>
+<% end %>
+```
+
+`style:` is `:tabs` (default) or `:pills`. `fill: true` stretches the items across the width and `justified: true` makes them equal widths. `label:` wraps the list in a `<nav aria-label>` landmark; without it you get the bare `<ul>`. HTML attributes go on the `<ul>`; extra item options (`data:`, `class:` ...) go on the link.
+
 ### Pagination
 
 <img src="docs/images/pagination.png" width="720" alt="Pagination at default and small sizes">
@@ -95,6 +109,47 @@ Every component accepts the Bootstrap vocabulary it has (`variant:`, `size:`, `o
 
 <img src="docs/images/table.png" width="720" alt="Striped table of people with status badges">
 
+## Forms
+
+`ComponentLibrary2100::FormBuilder` turns each field helper into a whole field: label, Bootstrap form-control styling, the model's error under the control, and a hint. `aria-describedby` and `aria-invalid` are wired for you, and `aria-invalid` is also what turns the border red.
+
+```erb
+<%= ui_form_with model: @user do |f| %>   <%# form_with(..., builder: ComponentLibrary2100::FormBuilder) %>
+  <%= f.error_summary %>                  <%# lists errors, each linking to its field %>
+  <%= f.text_field :name, hint: "As it appears on your ID" %>
+  <%= f.email_field :email, required: true %>
+  <%= f.password_field :password %>       <%# Show/Hide button (cl-password); toggle: false for none %>
+  <%= f.telephone_field :phone, optional: true %>
+  <%= f.number_field :age, label: "Age in years" %>
+  <%= f.select :role, %w[Admin Member], {include_blank: true} %>
+  <%= f.text_area :bio, rows: 4 %>
+  <%= f.radio_cards :plan, [["Basic", "basic", "One project"], ["Pro", "pro", "Unlimited projects"]], columns: 2 %>
+  <%= f.switch :newsletter, label: "Email me updates" %>   <%# f.check for a plain checkbox %>
+  <%= f.submit "Save" %>                  <%# a ButtonComponent; takes variant:, size: %>
+<% end %>
+```
+
+To use it for every form, set `config.action_view.default_form_builder = "ComponentLibrary2100::FormBuilder"`.
+
+Every field helper (`text_field`, `email_field`, `password_field`, `telephone_field`/`phone_field`, `number_field`, `url_field`, `search_field`, `date_field`, `text_area`/`textarea`, `select`) also takes:
+
+| Option | Does |
+|---|---|
+| `label:` | Label text, or `false` for none (then give the control an `aria: {label:}`). Defaults to `human_attribute_name` |
+| `hint:` | Help text under the control |
+| `optional:` | `true` adds "(optional)" to the label; a string changes the wording |
+| `error:` | Replaces the message from `object.errors`; `false` hides it |
+| `wrapper:` | HTML attributes for the field's `<div>` (`wrapper: {class: "mb-3"}`), or `false` for just the styled control |
+
+Everything else (`class:`, `data:`, `required:` ...) goes on the control, and `class:` merges. For `select`, put these options in the options hash (the third argument), as Rails does. `rich_text_area` gets the same label/hint/error wrapper when the app has Action Text; the gem doesn't depend on it.
+
+Pieces you can use without the builder:
+
+- **FormField** wraps any control: `ui_form_field(label: "Email", control_id: "email", hint: "...", error: @error) { |field| email_field_tag "email", nil, **field.control_options }`. `control_options(class: ..., kind: :select)` returns the id, classes and aria attributes.
+- **Switch** is Bootstrap's form-check: `ui_switch name: "user[newsletter]", label: "Email me", checked: true` (`type: :checkbox` or `:radio`, `inline: true`, `hint:`, `error:`). A switch is a checkbox with `role="switch"`. Checkboxes and switches with a `name:` include a hidden `unchecked_value:` ("0"; `false` for none), like Rails' `check_box`. HTML attributes go on the `<input>`; `wrapper:` takes the `<div>`'s. `autosubmit: true` submits the surrounding form on change (`cl-autosubmit`), for a toggle that saves itself inside a `form_with`.
+- **RadioCardGroup** is a `<fieldset>` of radio cards: `ui_radio_card_group name: "plan", legend: "Plan", checked: "pro", choices: [{value: "pro", label: "Pro", description: "Unlimited"}]`. Choices can also be `[label, value, description]` arrays or strings.
+- **ErrorSummary**: `ui_error_summary errors: @user.errors` (or an array of messages and `[message, href]` pairs). It renders nothing when there are no errors.
+
 ## Interactive components
 
 These lean on the platform instead of re-implementing it, so there is little JavaScript to maintain:
@@ -109,9 +164,70 @@ These lean on the platform instead of re-implementing it, so there is little Jav
 | Toast | `cl-dismiss` + `aria-live` container | Render toasts inside a `ToastContainerComponent`. `delay: 0` keeps one open. `close:` takes options for the close button, which is small by default. |
 | Tooltip | popover API (`popover="manual"`) | Wrap something focusable. Shows on hover and keyboard focus. |
 
+Dropdown items with `href:` and a non-GET `method:` render a `button_to` form inside the menu, so they submit with `_method` and the CSRF token while keeping the menu item role and arrow-key navigation: `menu.with_item("Sign out", href: session_path, method: :delete)`. `params:` and `form:` pass through to `button_to`, and `data: {turbo_confirm: "..."}` goes on the button.
+
 Triggers are slots that take Button options: `modal.with_trigger(variant: :danger) { "Delete" }`. Open or close from anywhere inside a component with `data-action="cl-dialog#open"`, `cl-dialog#close`, `cl-collapse#toggle` or `cl-popover#close`.
 
 Floating elements use a small placement helper (`position.js`) that flips and clamps to the viewport. It does not follow scrolling ancestors or draw arrows. It needs a browser with the popover API and `<dialog>` (all current evergreen browsers).
+
+### Styled confirm
+
+`data-turbo-confirm` can open a ModalComponent-style dialog instead of the browser's `confirm()`. Render the dialog once in your layout and hand the library's confirm method to Turbo:
+
+```erb
+<%# app/views/layouts/application.html.erb, inside <body> %>
+<%= ui_confirm_dialog %>   <%# title: "Are you sure?", accept: "Confirm", cancel: "Cancel", variant: :danger %>
+```
+
+```js
+// app/javascript/application.js
+import { Turbo } from "@hotwired/turbo-rails"
+import { useStyledConfirm } from "component_library_2100"
+useStyledConfirm(Turbo)
+```
+
+`useStyledConfirm` sets `Turbo.config.forms.confirm` (Turbo 8) or calls `Turbo.setConfirmMethod` (older Turbo). To do it by hand, pass `confirmMethod` from the same import to either. The method returns a Promise that resolves `true` on Confirm and `false` on Cancel, Escape or a backdrop click, and falls back to `window.confirm` on a page without the dialog. A form or its submit button can set `data-turbo-confirm-title` and `data-turbo-confirm-accept` to change the title and the confirm button's text. The dialog has `role="alertdialog"` and opens with Cancel focused.
+
+## Extras
+
+These go beyond Bootstrap 5. They follow the same conventions (`class:` merging, HTML attributes on the root, a `ui_*` helper).
+
+### PageHeader
+
+```erb
+<%= ui_page_header title: "Projects", subtitle: "Everything your team is working on" do |header| %>
+  <% header.with_breadcrumb do %>
+    <%= ui_breadcrumb { |c| c.with_item("Home", href: root_path); c.with_item("Projects") } %>
+  <% end %>
+  <% header.with_badge(variant: :success) { "Live" } %>   <%# BadgeComponent options; repeatable %>
+  <% header.with_actions do %>
+    <%= ui_button "New project", href: new_project_path %>
+  <% end %>
+<% end %>
+```
+
+Actions sit to the right from the `sm` breakpoint and wrap under the title on narrow screens. `level:` picks the heading tag (default `h1`). Block content renders under the subtitle.
+
+### EmptyState
+
+```erb
+<%= ui_empty_state title: "No projects yet", text: "Projects you create appear here." do |empty| %>
+  <% empty.with_icon { inline_svg_tag "folder.svg" } %>   <%# decorative; an <svg> is sized to 3rem %>
+  <% empty.with_action { ui_button "New project", href: new_project_path } %>
+<% end %>
+```
+
+`level:` picks the heading tag (default `h2`).
+
+### Avatar
+
+```erb
+<%= ui_avatar name: "Ada Lovelace" %>                               <%# "AL", read out as "Ada Lovelace" %>
+<%= ui_avatar name: "Ada Lovelace", size: :sm, variant: :primary %>
+<%= ui_avatar initials: "AL", label: "Your account" %>
+```
+
+Initials come from the first and last words of `name:`. `size:` is `:sm` or `:md` (default); `variant:` is any colour variant (default `:secondary`). It has `role="img"` and the name (or `label:`) as its `aria-label`; with neither, it's hidden from assistive technology.
 
 ## Overriding
 
@@ -174,7 +290,7 @@ Add notes to `## Unreleased` in `CHANGELOG.md` as you go. To release, open a PR 
 
 ## Roadmap
 
-Navbar, Carousel, and a form builder.
+Navbar, Stepper, Carousel, and theme tokens for the remaining hard-coded greys.
 
 ## License
 
