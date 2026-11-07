@@ -10,8 +10,7 @@ class ThemeTokensTest < ViewComponent::TestCase
   TOKENS = {
     "body" => "#212529", "body-muted" => "#495057",
     "border" => "#dee2e6", "border-subtle" => "#e9ecef", "border-input" => "#ced4da",
-    "border-translucent" => "rgb(0 0 0 / 0.125)", "border-menu" => "rgb(0 0 0 / 0.15)",
-    "border-overlay" => "rgb(0 0 0 / 0.2)",
+    "border-translucent" => "rgb(0 0 0 / 0.125)",
     "surface-muted" => "#e9ecef", "surface-tint" => "rgb(0 0 0 / 0.03)",
     "surface-stripe" => "rgb(0 0 0 / 0.05)", "surface-hover" => "rgb(0 0 0 / 0.075)",
     "surface" => "#fff", "surface-subtle" => "#f8f9fa", "backdrop" => "rgb(0 0 0 / 0.5)", "link-hover" => "#0a58ca",
@@ -59,14 +58,14 @@ class ThemeTokensTest < ViewComponent::TestCase
       menu.with_divider
     end
 
-    assert_selector "[role=menu].text-body.border-border-menu", visible: :all
+    assert_selector "[role=menu].text-body.border-border-translucent", visible: :all
     assert_selector "a.text-body.hover\\:bg-surface-muted", text: "Edit", visible: :all
-    assert_selector "[role=separator].border-border-menu", visible: :all
+    assert_selector "[role=separator].border-border-translucent", visible: :all
   end
 
   def test_modal_and_tabs_use_tokens
     render_inline(ModalComponent.new(title: "Hi")) { "Body" }
-    assert_selector "dialog.text-body.border-border-overlay", visible: :all
+    assert_selector "dialog.text-body.border-border-translucent", visible: :all
     assert_selector "dialog div.border-b.border-border", visible: :all
 
     render_inline(TabsComponent.new) do |tabs|
