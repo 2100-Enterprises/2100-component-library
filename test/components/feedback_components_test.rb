@@ -10,6 +10,15 @@ class FeedbackComponentsTest < ViewComponent::TestCase
     assert_selector "[role=progressbar][style='width: 25.0%']"
   end
 
+  # Width is a layout property, and scaleX would squash a label, so the bar doesn't animate.
+  def test_progress_has_no_transition
+    [{}, {label: "Uploading"}, {animated: true}].each do |options|
+      render_inline(ProgressComponent.new(value: 25, **options))
+
+      assert_empty page.find("[role=progressbar]")[:class].split.grep(/transition|duration/), options.inspect
+    end
+  end
+
   def test_progress_clamps_and_animates
     render_inline(ProgressComponent.new(value: 500, animated: true))
 
