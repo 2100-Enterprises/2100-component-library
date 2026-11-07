@@ -16,14 +16,14 @@ module ComponentLibrary2100
   # `button_to`. HTML attributes go on the menu; the trigger takes ButtonComponent options.
   # placement: "bottom-start" (default), "bottom-end", "top-start", "right", ... (see position.js).
   class DropdownComponent < BaseComponent
-    MENU = "m-0 inset-auto min-w-40 px-0 py-2 text-base text-body bg-surface border border-border-menu rounded-ui shadow-lg " \
+    MENU = "m-0 inset-auto min-w-40 px-0 py-2 text-base text-body bg-surface border border-border-translucent rounded-ui shadow-lg " \
            "not-data-positioned:invisible"
     ITEM = "block w-full px-4 py-1 text-left font-normal text-body no-underline whitespace-nowrap bg-transparent border-0 cursor-pointer " \
            "hover:bg-surface-muted focus-visible:bg-surface-muted focus:outline-none"
     ACTIVE = "text-primary-on bg-primary hover:bg-primary focus-visible:bg-primary"
     DISABLED = "pointer-events-none text-secondary bg-transparent"
     HEADER = "block px-4 py-1 mb-0 text-sm whitespace-nowrap text-secondary"
-    DIVIDER = "h-0 my-2 border-t border-border-menu"
+    DIVIDER = "h-0 my-2 border-t border-border-translucent"
     CARET = "after:inline-block after:ml-[.255em] after:align-[.255em] after:content-[''] " \
             "after:border-x-[.3em] after:border-t-[.3em] after:border-b-0 after:border-x-transparent"
 

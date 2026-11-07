@@ -16,7 +16,7 @@ module ComponentLibrary2100
   # `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step with the dialog.
   class ModalComponent < BaseComponent
     SIZES = {sm: "max-w-[300px]", md: "max-w-[500px]", lg: "max-w-[800px]", xl: "max-w-[1140px]"}.freeze
-    DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-body bg-surface border border-border-overlay rounded-ui-lg " \
+    DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-body bg-surface border border-border-translucent rounded-ui-lg " \
              "outline-none backdrop:bg-backdrop open:flex open:flex-col"
     HEADER = "flex items-center justify-between gap-4 p-4 border-b border-border"
     TITLE = "m-0 text-xl font-medium leading-normal"

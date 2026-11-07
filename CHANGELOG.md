@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.6.0
+
+### Breaking
+
+- `--color-border-menu` and `--color-border-overlay` are gone. Dropdown (menu and divider), Modal, Offcanvas and Popover now use `--color-border-translucent`, like Card, ListGroup and Accordion. Their edges get slightly lighter: 12.5% black instead of 15% (Dropdown) and 20% (Modal, Offcanvas, Popover).
+- To upgrade: replace `border-border-menu` and `border-border-overlay` classes with `border-border-translucent`. If your `@theme` set either removed token, set `--color-border-translucent` instead, or pass `class:` to keep a darker edge on one component.
+
 ## 0.5.0
 
 0.4.0 was never tagged: its changes ship here with the app shell.

@@ -2,13 +2,13 @@
 
 Bootstrap 5-style components for Rails, built with [ViewComponent](https://viewcomponent.org), Stimulus and Tailwind CSS v4. Small by design: components render semantic HTML with Tailwind utilities, take plain keyword arguments, and let you override anything.
 
-**Status:** 0.5.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Nav, Navbar, Offcanvas, Pagination, Popover, Progress, Spinner, Switch, Table, Tabs, Toast, Tooltip, plus a form builder and the [extras](#extras) PageHeader, EmptyState, Avatar and Stepper. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
+**Status:** 0.6.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Nav, Navbar, Offcanvas, Pagination, Popover, Progress, Spinner, Switch, Table, Tabs, Toast, Tooltip, plus a form builder and the [extras](#extras) PageHeader, EmptyState, Avatar and Stepper. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
 
 ## Install
 
 ```ruby
 # Gemfile
-gem "component_library_2100", github: "the-codetrane/2100-component-library", tag: "v0.5.0"
+gem "component_library_2100", github: "the-codetrane/2100-component-library", tag: "v0.6.0"
 ```
 
 ```sh
@@ -304,9 +304,7 @@ It also defines `--radius-ui`, `--radius-ui-sm` and `--radius-ui-lg`, and these 
 | `--color-border` | `#dee2e6` | Table rules, tab and modal dividers, pagination, radio cards, upcoming Stepper markers and connectors |
 | `--color-border-subtle` | `#e9ecef` | Tab hover borders |
 | `--color-border-input` | `#ced4da` | Form control borders |
-| `--color-border-translucent` | `rgb(0 0 0 / 0.125)` | Card, list group and accordion edges |
-| `--color-border-menu` | `rgb(0 0 0 / 0.15)` | Dropdown menu edge and divider |
-| `--color-border-overlay` | `rgb(0 0 0 / 0.2)` | Modal, Offcanvas and Popover edges |
+| `--color-border-translucent` | `rgb(0 0 0 / 0.125)` | Card, list group, accordion, Dropdown menu and divider, Modal, Offcanvas and Popover edges |
 | `--color-surface` | `#fff` | Card, menu, dialog, list group, pagination, form control and active tab backgrounds; Toast at 85% |
 | `--color-surface-subtle` | `#f8f9fa` | List group action hover |
 | `--color-surface-muted` | `#e9ecef` | Menu and pagination hover, disabled controls, progress track |
@@ -359,7 +357,7 @@ Add notes to `## Unreleased` in `CHANGELOG.md` as you go. To release, open a PR 
 
 ## Roadmap
 
-Carousel. Planned breaking change: merge `--color-border-translucent`, `--color-border-menu` and `--color-border-overlay` into one translucent border token, which changes the Dropdown, Modal, Offcanvas and Popover edges slightly.
+Carousel.
 
 ## License
 
