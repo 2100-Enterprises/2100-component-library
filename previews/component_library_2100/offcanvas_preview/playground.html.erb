@@ -1,0 +1,7 @@
+<%= ui_offcanvas title: title, placement: placement, static_backdrop: static_backdrop do |panel| %>
+  <% panel.with_trigger(variant: :secondary) { "Open #{title.downcase}" } %>
+  <p>Panel content goes here.</p>
+  <% panel.with_footer do %>
+    <%= ui_button "Close", variant: :secondary, data: {action: "cl-dialog#close"} %>
+  <% end %>
+<% end %>

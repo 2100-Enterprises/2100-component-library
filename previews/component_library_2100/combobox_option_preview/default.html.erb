@@ -1,0 +1,8 @@
+<div role="listbox" aria-label="Suggestions" class="max-w-sm rounded-ui border border-border p-1">
+  <%= ui_combobox_option value: 1, label: "Ada Lovelace" %>
+  <%= ui_combobox_option value: 2, label: "Grace Hopper" %>
+  <%= ui_combobox_option value: 3, label: "Alan Turing", disabled: true %>
+  <%= render ComponentLibrary2100::ComboboxOptionComponent::Group.new(label: "Engineering") do %>
+    <%= ui_combobox_option value: 4, label: "Katherine Johnson" %>
+  <% end %>
+</div>

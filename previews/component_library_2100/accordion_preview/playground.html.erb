@@ -1,0 +1,5 @@
+<%= ui_accordion always_open: always_open do |accordion| %>
+  <% accordion.with_item(title: "What do you build?", open: true) { "Rails apps, from the first sketch to production." } %>
+  <% accordion.with_item(title: "How long does a project take?") { "Most first releases ship in six to ten weeks." } %>
+  <% accordion.with_item(title: "Do you work with existing apps?") { "Yes. We often start with an audit." } %>
+<% end %>

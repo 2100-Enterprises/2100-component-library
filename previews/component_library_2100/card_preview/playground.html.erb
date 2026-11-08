@@ -1,0 +1,7 @@
+<%= ui_card class: "w-72" do |card| %>
+  <% card.with_header { "Featured" } %>
+  <h5 class="mb-2 text-xl font-medium"><%= title %></h5>
+  <p class="mb-4"><%= body %></p>
+  <%= ui_button "Go somewhere" %>
+  <% card.with_footer { "2 days ago" } %>
+<% end %>

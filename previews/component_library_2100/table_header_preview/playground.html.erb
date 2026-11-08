@@ -1,0 +1,4 @@
+<%= ui_table do %>
+  <thead><tr><%= ui_table_header "Heading (scope: #{scope})", scope: scope %><%= ui_table_header "Email" %></tr></thead>
+  <tbody><tr><%= ui_table_header "Ada", scope: :row %><td>ada@example.com</td></tr></tbody>
+<% end %>

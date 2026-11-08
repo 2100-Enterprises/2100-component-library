@@ -1,0 +1,10 @@
+<div class="flex flex-wrap items-start gap-6">
+  <%= ui_button_group vertical: vertical, aria: {label: "Alignment"} do %>
+    <%= ui_button "Left" %><%= ui_button "Middle" %><%= ui_button "Right" %>
+  <% end %>
+  <%= ui_button_group vertical: vertical, aria: {label: "View"} do %>
+    <%= ui_button "Day", variant: :secondary, outline: true %>
+    <%= ui_button "Week", variant: :secondary, outline: true %>
+    <%= ui_button "Month", variant: :secondary, outline: true %>
+  <% end %>
+</div>

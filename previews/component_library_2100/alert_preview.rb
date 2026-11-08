@@ -1,5 +1,6 @@
 module ComponentLibrary2100
-  class AlertComponentPreview < ViewComponent::Preview
+  # @logical_path feedback
+  class AlertPreview < BasePreview
     # @param message text
     # @param variant select { choices: [primary, secondary, success, danger, warning, info, light, dark] }
     # @param dismissible toggle

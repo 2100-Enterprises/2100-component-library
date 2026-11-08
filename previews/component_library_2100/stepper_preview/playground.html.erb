@@ -1,0 +1,7 @@
+<%= ui_stepper label: "Project status", current: current, breakpoint: breakpoint do |stepper| %>
+  <% stepper.with_step("Draft", hint: "3 May") %>
+  <% stepper.with_step("Proposed", href: "#") %>
+  <% stepper.with_step("Approved") %>
+  <% stepper.with_step("In progress") %>
+  <% stepper.with_step("Complete") %>
+<% end %>

@@ -1,0 +1,10 @@
+<%= ui_table do %>
+  <thead><tr>
+    <%= ui_sort_header "Name", href: "#", direction: direction %>
+    <%= ui_sort_header "Revenue", href: "#", align: :end %>
+  </tr></thead>
+  <tbody>
+    <tr><td>Acme Corp</td><td class="text-end">$12,400</td></tr>
+    <tr><td>Globex</td><td class="text-end">$8,150</td></tr>
+  </tbody>
+<% end %>

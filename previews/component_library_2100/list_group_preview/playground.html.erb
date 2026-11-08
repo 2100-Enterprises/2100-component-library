@@ -1,0 +1,12 @@
+<div class="flex flex-wrap items-start gap-6">
+  <%= ui_list_group flush: flush, numbered: numbered, class: "w-64" do |list| %>
+    <% list.with_item(active: true) { "An active item" } %>
+    <% list.with_item { "A plain item" } %>
+    <% list.with_item(disabled: true) { "A disabled item" } %>
+  <% end %>
+  <%= ui_list_group flush: flush, numbered: numbered, class: "w-64" do |list| %>
+    <% %i[success warning danger].each do |variant| %>
+      <% list.with_item(variant: variant) { "A #{variant} item" } %>
+    <% end %>
+  <% end %>
+</div>

@@ -1,0 +1,5 @@
+<div class="max-w-sm">
+  <%= ui_form_field label: "Bio", control_id: "bio", counter: {max: max} do |field| %>
+    <%= text_area_tag "bio", nil, rows: 3, **field.control_options %>
+  <% end %>
+</div>

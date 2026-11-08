@@ -1,0 +1,6 @@
+<div class="flex justify-center py-24">
+  <%= ui_popover title: title, placement: placement do |popover| %>
+    <% popover.with_trigger(variant: :secondary) { "Click me" } %>
+    Rich content goes here. Click outside or press Escape to close.
+  <% end %>
+</div>

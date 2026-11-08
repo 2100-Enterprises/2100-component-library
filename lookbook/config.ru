@@ -64,7 +64,26 @@ module ComponentLibrary2100
     config.lookbook.project_name = "2100 Component Library"
     config.lookbook.preview_display_options = {theme: %w[light dark]}
 
+    PEOPLE = ["Ada Lovelace", "Alan Turing", "Barbara Liskov", "Donald Knuth", "Edsger Dijkstra", "Grace Hopper",
+      "Katherine Johnson", "Margaret Hamilton"].freeze
+
+    # The endpoint the Combobox previews load: the people whose names contain `q`, as
+    # ComboboxOptions inside the Turbo Frame the combobox asked for.
+    PEOPLE_ENDPOINT = lambda do |env|
+      request = ActionDispatch::Request.new(env)
+      query = request.params["q"].to_s.downcase
+      matches = PEOPLE.each_with_index.select { |name, _| name.downcase.include?(query) }
+      frame = request.headers["Turbo-Frame"] || "people"
+      html = ApplicationController.render(inline: <<~ERB, locals: {frame: frame, matches: matches})
+        <turbo-frame id="<%= frame %>">
+          <% matches.each do |name, index| %><%= ui_combobox_option value: index + 1, label: name %><% end %>
+        </turbo-frame>
+      ERB
+      [200, {"content-type" => "text/html; charset=utf-8"}, [html]]
+    end
+
     routes.append do
+      get "/examples/people", to: PEOPLE_ENDPOINT
       mount Lookbook::Engine, at: "/"
     end
 

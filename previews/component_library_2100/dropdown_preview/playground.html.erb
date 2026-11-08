@@ -1,0 +1,11 @@
+<div class="flex justify-center py-24">
+  <%= ui_dropdown placement: placement do |menu| %>
+    <% menu.with_trigger(variant: :secondary) { "Actions" } %>
+    <% menu.with_header("Project") %>
+    <% menu.with_item("Edit", href: "#") %>
+    <% menu.with_item("Duplicate") %>
+    <% menu.with_divider %>
+    <% menu.with_item("Archive", disabled: true) %>
+    <% menu.with_item("Delete", href: "#", method: :delete) %>
+  <% end %>
+</div>

@@ -1,0 +1,15 @@
+<div class="flex max-w-sm flex-col gap-3">
+  <%= ui_input_group size: size do |group| %>
+    <% group.with_prepend { "$" } %>
+    <% group.with_control do %>
+      <%= number_field_tag :amount, nil, class: ComponentLibrary2100::InputGroupComponent::CONTROL, aria: {label: "Amount"} %>
+    <% end %>
+    <% group.with_append { ".00" } %>
+  <% end %>
+  <%= ui_input_group size: size do |group| %>
+    <% group.with_control do %>
+      <%= search_field_tag :q, nil, class: ComponentLibrary2100::InputGroupComponent::CONTROL, aria: {label: "Search"} %>
+    <% end %>
+    <% group.with_append { ui_button "Search", variant: :secondary, outline: true } %>
+  <% end %>
+</div>

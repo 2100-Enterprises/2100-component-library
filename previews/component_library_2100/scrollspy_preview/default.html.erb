@@ -1,0 +1,16 @@
+<div class="flex gap-8">
+  <div class="sticky top-6 self-start">
+    <%= ui_scrollspy label: "On this page" do |spy| %>
+      <% %w[intro process results].each do |id| %>
+        <% spy.with_item(id.capitalize, href: "##{id}") %>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="flex flex-col gap-6">
+    <% %w[intro process results].each do |id| %>
+      <section id="<%= id %>" class="min-h-[80vh] rounded-ui border border-border p-6">
+        <h2 class="text-2xl font-medium"><%= id.capitalize %></h2>
+      </section>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<%= ui_pagination size: size, aria: {label: "Search results"} do |pages| %>
+  <% pages.with_item("Previous", disabled: true) %>
+  <% pages.with_item("1", active: true) %>
+  <% pages.with_item("2", href: "#") %>
+  <% pages.with_item("3", href: "#") %>
+  <% pages.with_item("Next", href: "#") %>
+<% end %>

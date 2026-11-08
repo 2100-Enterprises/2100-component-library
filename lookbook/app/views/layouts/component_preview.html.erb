@@ -10,12 +10,14 @@
     <link rel="stylesheet" href="/assets/lookbook.css">
     <script type="importmap"><%= JSON.generate(imports: ComponentLibrary2100::LookbookApp::IMPORTS).html_safe %></script>
     <script type="module">
-      import "@hotwired/turbo"
+      import { Turbo } from "@hotwired/turbo"
       import { Application } from "@hotwired/stimulus"
-      import { register } from "component_library_2100"
+      import { register, useStyledConfirm } from "component_library_2100"
 
       const application = new Application()
       register(application)
+      // Styled data-turbo-confirm prompts, for the ConfirmDialog preview.
+      useStyledConfirm(Turbo)
       application.start()
     </script>
   </head>

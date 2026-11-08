@@ -1,6 +1,7 @@
 module ComponentLibrary2100
   # Renders an <a> when `href:` is given, otherwise a <button>.
-  class ButtonComponentPreview < ViewComponent::Preview
+  # @logical_path basics
+  class ButtonPreview < BasePreview
     # @param label text
     # @param variant select { choices: [primary, secondary, success, danger, warning, info, light, dark, link] }
     # @param size select { choices: [sm, md, lg] }
@@ -12,7 +13,7 @@ module ComponentLibrary2100
 
     # Every variant, solid and outline.
     def variants
-      render_with_template(template: "component_library_2100/button_component_preview/variants", locals: {variants: Variants::NAMES})
+      template(:variants, variants: Variants::NAMES)
     end
 
     # @label As a link
