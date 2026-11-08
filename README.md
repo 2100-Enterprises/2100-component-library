@@ -418,6 +418,16 @@ A sortable column heading (an extra: not in Bootstrap): a `<th scope="col">` hol
 ```
 
 An activity feed (an extra: not in Bootstrap): an `<ol>` of events, each with a `<time datetime>`. Markers are aria-hidden and `variant:` only tints them, so put what happened in the title or text. `alternate: true` alternates sides from `md:` up and stacks on phones. `time_label:` replaces the default date format, and `with_icon` replaces the dot. Each event is a self-contained `<li>`, so `turbo_stream.prepend` or `append` works. No JavaScript. Helpers `ui_timeline` and `ui_timeline_event`.
+### Chip
+
+```erb
+<%= ui_chip_group label: "Active filters" do |chips| %>
+  <% chips.with_chip(label: "Status: open", remove: admin_projects_path(params.permit(:q))) %>
+  <% chips.with_chip(label: "Ada", variant: :primary, remove: {href: membership_path(@membership), method: :delete}) %>
+<% end %>
+```
+
+A value someone chose or filtered by (an extra: not in Bootstrap). Badge is for statuses. `remove:` with a URL renders a link, the server-driven way to clear a filter. With a non-GET `method:` it renders a `button_to` form. The control is named "Remove <label>", which `remove: {label:}` overrides, and answers to 44px on touch screens. Without `remove:` a chip is a static `<span>`. Removing is a server round trip, so redirect back and let the page put focus where it makes sense. Helpers `ui_chip` and `ui_chip_group`.
 
 ## Overriding
 
