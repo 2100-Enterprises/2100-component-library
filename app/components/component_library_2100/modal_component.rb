@@ -12,14 +12,23 @@ module ComponentLibrary2100
   # Escape closes it. Any element inside the component with `data-action="cl-dialog#open"` opens it
   # and `cl-dialog#close` closes it. HTML attributes go on the <dialog>. The body scrolls when the
   # content is taller than the screen. `static_backdrop: true` ignores clicks outside the dialog.
+  # The dialog fades and drops into place, and the backdrop fades, on open and on close, where the
+  # browser supports `@starting-style`. Under prefers-reduced-motion it just appears.
   # `close:` takes CloseButtonComponent options (`close: {white: true}` on a dark dialog). A trigger with
   # `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step with the dialog; the built-in
   # trigger is one and has `aria-controls`. The title is a heading, `heading_level:` 1 to 6 (default 2;
   # the size stays the same). `description_id:` points `aria-describedby` at an element inside.
   class ModalComponent < BaseComponent
     SIZES = {sm: "max-w-[300px]", md: "max-w-[500px]", lg: "max-w-[800px]", xl: "max-w-[1140px]"}.freeze
+    # The backdrop fades in and out. `display` and `overlay` transition discretely, so a closing
+    # dialog stays in the top layer until its fade ends. Offcanvas shares this.
+    BACKDROP = "backdrop:bg-backdrop backdrop:opacity-0 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 " \
+               "backdrop:transition-[opacity,display,overlay] backdrop:duration-200 backdrop:transition-discrete " \
+               "motion-reduce:backdrop:transition-none"
     DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-body bg-surface border border-border-translucent rounded-ui-lg " \
-             "outline-none backdrop:bg-backdrop open:flex open:flex-col"
+             "outline-none open:flex open:flex-col #{BACKDROP} " \
+             "opacity-0 -translate-y-6 open:opacity-100 open:translate-y-0 starting:open:opacity-0 starting:open:-translate-y-6 " \
+             "transition-[opacity,translate,display,overlay] duration-200 transition-discrete motion-reduce:transition-none"
     HEADER = "flex items-center justify-between gap-4 p-4 border-b border-border"
     TITLE = "m-0 text-xl font-medium leading-normal"
     BODY = "grow min-h-0 p-4 overflow-y-auto"
