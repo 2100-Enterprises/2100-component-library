@@ -1,0 +1,13 @@
+<div class="flex gap-3">
+  <button type="button" class="rounded-ui border border-border px-3 py-2 text-sm" onclick="
+    const event = new Event('beforeinstallprompt', { cancelable: true })
+    event.prompt = () => {}
+    event.userChoice = Promise.resolve({ outcome: 'accepted' })
+    window.dispatchEvent(event)">Simulate the browser's install offer</button>
+  <button type="button" class="rounded-ui border border-border px-3 py-2 text-sm" onclick="
+    const banner = document.querySelector('[data-controller~=cl-pwa-install]')
+    banner.hidden = false
+    banner.querySelector('[data-cl-pwa-install-target=iosActions]').hidden = false">Show the iOS guidance</button>
+</div>
+
+<%= ui_pwa_install app_name: app_name, install_label: install_label, dismiss_days: dismiss_days %>

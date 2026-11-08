@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Progressive Web App
+
+- `ui_pwa_meta_tags` renders the head tags that make a page installable: the manifest link, `theme-color`, the `apple-*` tags iOS reads and an `apple-touch-icon`. The iOS status bar defaults to opaque.
+- `component_library_2100/pwa/_service_worker.js.erb`, a service worker a host app renders from its `app/views/pwa/service-worker.js.erb`: network-first pages with an offline fallback, stale-while-revalidate static assets, versioned caches, and `skip:` prefixes that are never cached (Active Storage by default).
+- `registerServiceWorker()` and `isStandalone()`, pinned at `component_library_2100/pwa` and exported from `component_library_2100`.
+- `PwaInstallComponent` (`ui_pwa_install`) and its `cl-pwa-install` controller: a hidden install banner that offers one-tap install where the browser fires `beforeinstallprompt`, Add to Home Screen guidance on iOS Safari, and remembers a dismissal.
+
 ### Modal and Offcanvas
 
 - `ModalComponent` (and `ConfirmDialogComponent`, which renders one) fades and drops into place on open, and fades out on close, over 200ms. Its backdrop fades in and out with it.
