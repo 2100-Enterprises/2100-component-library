@@ -128,6 +128,16 @@ Unlike Bootstrap's, the bar doesn't animate a change of value: width is a layout
 
 <img src="docs/images/table.png" width="720" alt="Striped table of people with status badges">
 
+```erb
+<%= ui_table striped: true do |table| %>
+  <% table.with_caption(visible: false) { "Clients" } %>
+  <thead><tr><%= ui_table_header "Name" %><%= ui_table_header "Email" %></tr></thead>
+  <tbody><tr><%= ui_table_header "Ada", scope: :row %><td>ada@example.com</td></tr></tbody>
+<% end %>
+```
+
+Give every table a name: `with_caption` renders a `<caption>`, visible unless `visible: false`, or pass `aria: {label: ...}`. `ui_table_header` is a `<th>` with `scope` (`:col` by default, `:row` for row headers). Use `ui_sort_header` for sortable columns.
+
 ## Forms
 
 `ComponentLibrary2100::FormBuilder` turns each field helper into a whole field: label, Bootstrap form-control styling, the model's error under the control, and a hint. `aria-describedby` and `aria-invalid` are wired for you, and `aria-invalid` is also what turns the border red.

@@ -15,6 +15,10 @@
 ### Toast
 
 - Auto-dismiss pauses while a toast is hovered, while focus is inside it, or while the tab is hidden, and resumes with the time that was left, not the full delay (WCAG 2.2.1). `cl-dismiss` dispatches `cl-dismiss:paused` and `cl-dismiss:resumed`. Alerts and toasts without a delay are unchanged.
+### Table
+
+- `ui_table` takes a `caption` slot that names the table for screen readers: `table.with_caption { "Clients" }`, visible by default, or `with_caption(visible: false)` for screen readers only. It renders as the table's first child, inside the `responsive:` wrapper.
+- `TableHeaderComponent` (`ui_table_header`): a `<th>` that always has a `scope`, `:col` by default, or `:row`, `:colgroup` or `:rowgroup`. An unknown scope raises `ArgumentError`.
 
 ## 0.10.0
 
