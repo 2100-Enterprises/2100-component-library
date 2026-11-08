@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.11.0
+
 ### Breaking
 
 - `OffcanvasComponent` needs an accessible name: `title:`, `aria: {label: ...}` or `aria: {labelledby: ...}`. Without one it raises `ArgumentError`. Navbar's menu already passes its `menu_label:` (default "Menu") as the title, so a Navbar is unaffected.
