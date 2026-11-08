@@ -445,6 +445,8 @@ bundle exec rubocop
 
 Tests boot a tiny in-process Rails app (`test/test_helper.rb`) and render each component with `ViewComponent::TestCase`.
 
+`bundle exec rake test:system` runs the browser tests in `test/system`, which drive the Stimulus controllers in headless Chrome, so it needs Chrome installed. Each test subclasses `SystemTestCase` (`test/system_test_case.rb`), renders ERB with `render_page`, and can add endpoints with `serve`, for example a URL a Turbo Frame loads. The page loads Turbo, Stimulus and the library through an import map, as a host app does, and a JavaScript error in the console fails the test. `rake test` leaves these out.
+
 The images above come from `bundle exec rake screenshots`, which renders the examples in `script/screenshots.rb` and writes `docs/images/`. It needs Chrome installed. Rerun it after changing how a component looks.
 
 CI runs on every PR: the tests on each supported Ruby and on the oldest gem versions the gemspec allows (`gemfiles/oldest.gemfile`, so keep the two in step), RuboCop, `bundler-audit`, a gem build and a workflow audit. A weekly run repeats this against the latest gems and opens an issue if it fails.
