@@ -21,7 +21,7 @@ module ComponentLibrary2100
     ACTIONS = "flex items-center gap-2 ml-auto"
     LINK_BASE = "block px-2 py-2 no-underline rounded-ui focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/25"
     BRAND_BASE = "py-1 text-xl whitespace-nowrap no-underline"
-    TOGGLER_BASE = "px-3 py-1 text-xl leading-none no-underline bg-transparent rounded-ui focus-visible:ring-primary/25"
+    TOGGLER_BASE = "px-3 py-1 text-xl leading-none no-underline bg-transparent rounded-ui focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/25"
     ICON = "M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
 
     THEMES = {

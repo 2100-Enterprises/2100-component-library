@@ -2,7 +2,7 @@ module ComponentLibrary2100
   class ListGroupItemComponent < BaseComponent
     BASE = "relative block px-4 py-2 text-body bg-surface border border-border-translucent " \
            "first:rounded-t-ui last:rounded-b-ui not-first:border-t-0"
-    ACTION = "w-full text-left text-body-muted no-underline hover:z-[1] hover:bg-surface-subtle hover:text-body-muted focus:z-[1] focus:bg-surface-muted"
+    ACTION = "w-full text-left pointer-coarse:py-2.5 text-body-muted no-underline hover:z-[1] hover:bg-surface-subtle hover:text-body-muted focus:z-[1] focus:bg-surface-muted"
     ACTIVE = "z-[2] bg-primary text-primary-on border-primary"
     DISABLED = "pointer-events-none text-secondary bg-surface"
 
