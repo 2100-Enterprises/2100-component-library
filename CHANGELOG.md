@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.8.0
+
 ### Bootstrap parity
 
 - Carousel: a slideshow with controls, indicator dots, captions and autoplay, driven by `cl-carousel`. Slides are a slot (`carousel.with_slide(active:, interval:, caption_title:, caption_text:) { ... }`). `ride: true` autoplays on load; `interval:` (ms) is the default, overridable per slide; `wrap:` cycles past the ends (default true); `crossfade: true` fades instead of sliding; `controls:`/`indicators:` default true. Arrow-key navigation, swipe, pause-on-hover and pause-when-tab-hidden are built in; follows the WAI-ARIA carousel pattern and honours `prefers-reduced-motion`. Helper `ui_carousel`.
@@ -9,6 +11,17 @@
 - InputGroup: joins a form control with leading/trailing add-ons into one connected control. Slots `with_prepend`, `with_append` (plain text is wrapped in the styled add-on span; pass a block for a button) and `with_control` (your input carries `InputGroupComponent::CONTROL`). Children share borders and only the outer corners round. `size:` is nil, `:sm` or `:lg`. No JavaScript. Helper `ui_input_group`.
 - FloatingLabel: a label that sits inside the control and floats up when it is focused or filled, pure CSS via Tailwind `peer` utilities (no JavaScript). `FloatingLabelComponent.new(label:, control_id:)` with a block for the control, which must carry `FloatingLabelComponent::CONTROL` (includes `peer` and room for the label) and `placeholder: " "`. Helper `ui_floating_label`.
 - Range: a styled `<input type="range">` (Bootstrap's form-range). `RangeComponent.new(name:, value:, min:, max:, step:, label:, hint:, disabled:)`; `label:`/`hint:` are wired with `aria-describedby`. The thumb grows on touch screens. No JavaScript. Helper `ui_range`.
+
+### Mobile and accessibility
+
+- Offcanvas: `:top`/`:bottom` placements are `30dvh` tall instead of `30vh`, so the panel no longer jumps when a phone's address bar shows or hides.
+- ToastContainer: padding respects `env(safe-area-inset-*)` on each side (at least `0.75rem`), so toasts clear the notch and home indicator.
+- Navbar: the toggler's focus ring now renders (`focus-visible:ring-4` was missing, so only the ring colour was set), matching nav links.
+- ListGroupItem: actionable items (`href:` or `action: true`) get `pointer-coarse:py-2.5`, reaching 44px on touch screens.
+
+### PWA brand icons
+
+- Shared PWA icons in `app/assets/images/component_library_2100/pwa/`: `icon-192.png`, `icon-384.png`, `icon-512.png` (`purpose: any`) and `icon-192-maskable.png`, `icon-512-maskable.png` (`purpose: maskable`, glyph inside the 80% safe zone). Reference them from a host app's `manifest.json.erb` with `asset_path("component_library_2100/pwa/icon-192.png")`; see the folder README.
 
 ## 0.7.0
 
