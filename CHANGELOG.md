@@ -23,6 +23,21 @@
 
 - `f.check_boxes :roles, choices` and `f.radios :contact, choices` render a group of native checkboxes or radio buttons in a `<fieldset>` with a `<legend>`. They go through the new `ChoiceGroupComponent` (`ui_choice_group`). The hint and error are tied to the fieldset with `aria-describedby`, and `aria-invalid` goes on each input. `inline: true` lays the options in a row. Each option is a clickable label at least 44px tall. A hidden empty value is sent first, so an empty submission still sends the attribute (`hidden: false` drops it). Choices take the same shapes as `radio_cards`.
 - `time_field`, `datetime_local_field` and `month_field` get the label, hint and error wrapper, like `date_field`. Use `min:` and `max:` for limits, and validate them on the server too.
+- Live character counter: `counter: {max: 2000}` or `counter: {min: 12}` on any builder field or `FormFieldComponent`. The server adds the rule to the hint ("Up to 2,000 characters."), so it reads the same without JavaScript. The new `cl-counter` controller shows a visible count as you type ("1,950 characters left", "4 more characters needed"), and a polite live region repeats it after typing pauses, so screen readers don't announce every keystroke. `html: true` counts the text of rich text. `left:`, `over:`, `needed:` and `hint:` replace the messages. The counter never sets `aria-invalid`; only server errors do.
+### FileUpload
+
+- `FileUploadComponent` (`ui_file_upload`, `f.file_upload`): a styled native `<input type="file">` that works in a plain multipart form without JavaScript, with the server staying the source of truth for size and type. With the new `cl-file-upload` controller, each chosen file shows its name, size and a "Remove <filename>" button. A file that's too large (`max_bytes:`) or of the wrong type (`accept:`, joined with commas and no spaces) gets a warning tied to the input by `aria-describedby`. A polite live region announces changes. `multiple: true` lists every file. `dropzone: true` adds a drop area around the input, which stays the keyboard path. Active Storage `direct-upload:*` events drive a progress bar.
+### Combobox
+
+- `ComboboxComponent` (`ui_combobox`, `f.combobox`): a text input with server-side suggestions, following the WAI-ARIA 1.2 combobox pattern. After `min_length:` characters and a `delay:`, the `cl-combobox` controller loads `src?q=<text>` into a Turbo Frame. The endpoint answers with `ComboboxOptionComponent` (`ui_combobox_option`) items, optionally inside `ComboboxOptionComponent::Group`, so it never writes ARIA by hand. A hidden input holds the value and the visible input holds the label. `force_selection: true` clears unmatched text on blur.
+- Keys: Down and Up move, Enter chooses, Escape closes and a second Escape clears, Alt+Down opens, Alt+Up chooses, and Tab closes. A polite live region announces the result count, `aria-busy` marks loading, and `cl-combobox:select` carries `{value, label}`. Without JavaScript it's a plain text input in the host form. Needs Turbo.
+### Timeline
+
+- `TimelineComponent` (`ui_timeline`): an activity feed as an ordered list. Each `timeline.with_event(time:, title:, variant:, icon:, time_label:) { body }` renders a `<time datetime>`, an aria-hidden marker that `variant:` tints, and its text. `alternate: true` alternates sides from `md:` up, and `label:` names the list. No JavaScript.
+- `TimelineEventComponent` (`ui_timeline_event`): one self-contained `<li>`, so a Turbo Stream can `prepend` an event into the list. The connector line and the alternate sides are plain CSS, and they stay right when events are added.
+### Chip
+
+- `ChipComponent` (`ui_chip`) and `ChipGroupComponent` (`ui_chip_group`): removable values such as active filters, chosen members or file types. `remove:` takes a URL, which renders a link, or `{href:, method:, label:, params:}`, which renders a `button_to` form for a non-GET method so it keeps the CSRF token. The control is named "Remove <label>" and answers to 44px on touch screens. Without `remove:` a chip is a static `<span>`. `ui_chip_group(label:)` renders a labelled `<ul>`, with chips added through `with_chip`. No JavaScript.
 
 ## 0.10.0
 

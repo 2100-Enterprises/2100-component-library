@@ -9,7 +9,9 @@ module ComponentLibrary2100
   #     <%= f.password_field :password %>                  <%# with a Show/Hide button %>
   #     <%= f.telephone_field :phone, optional: true %>
   #     <%= f.select :role, %w[Admin Member] %>
+  #     <%= f.combobox :person_id, src: people_path, text: @user.person_name %>
   #     <%= f.text_area :bio, rows: 4 %>
+  #     <%= f.file_upload :avatar, accept: %w[image/*], max_bytes: 5.megabytes %>
   #     <%= f.radio_cards :plan, [["Basic", "basic", "One project"], ["Pro", "pro", "Unlimited"]], columns: 2 %>
   #     <%= f.check_boxes :roles, %w[Admin Editor], hint: "Pick any", inline: true %>
   #     <%= f.radios :contact, [["Email", "email"], ["Phone", "phone"]] %>
@@ -29,8 +31,12 @@ module ComponentLibrary2100
   #   wrapper:  HTML attributes for the wrapping <div>, or false for the bare, styled control
   # Everything else (class:, data:, required: ...) goes on the control as usual, so `min:` and `max:`
   # reach number, date, time, datetime-local and month fields.
+  #   counter:  {max: 2000} or {min: 12}, a live character count (see FormFieldComponent);
+  #             `html: true` counts rich text. Needs the wrapper, so it is ignored with `wrapper: false`
+  # Everything else (class:, data:, required: ...) goes on the control as usual.
   class FormBuilder < ActionView::Helpers::FormBuilder
-    FIELD_OPTIONS = %i[label hint optional error wrapper].freeze
+    FIELD_OPTIONS = %i[label hint optional error wrapper counter].freeze
+    COMBOBOX_OPTIONS = %i[text min_length delay force_selection frame_id messages listbox_label].freeze
 
     %i[text_field email_field telephone_field phone_field number_field url_field search_field date_field time_field datetime_local_field month_field].each do |helper|
       define_method(helper) do |method, options = {}|
@@ -101,6 +107,33 @@ module ComponentLibrary2100
       switch(method, type: :checkbox, **options)
     end
 
+    # A styled native file input (FileUploadComponent) with a staged-file list, size and type
+    # warnings, and an optional dropzone. Takes FileUploadComponent options (`accept:`,
+    # `max_bytes:`, `multiple:`, `dropzone:`, `hint:` ...). The form needs `multipart: true`.
+    def file_upload(method, label: nil, error: nil, **options)
+      @template.render(FileUploadComponent.new(
+        name: field_name(method), id: options.delete(:id) || field_id(method),
+        label: label_text(method, label),
+        error: error.nil? ? error_message(method) : error.presence,
+        **options
+      ))
+    end
+
+    # A text input with server-side suggestions (ComboboxComponent), in the usual field wrapper.
+    # `src:` is the endpoint that answers `?q=` with a Turbo Frame of ComboboxOptionComponents, and
+    # `text:` is the label shown for the current value (default: the value itself).
+    def combobox(method, src:, **options)
+      options = options.to_h.symbolize_keys
+      settings = options.extract!(*COMBOBOX_OPTIONS)
+      settings[:text] ||= value_of(method)
+
+      field(method, options) do |control_options|
+        @template.render(ComboboxComponent.new(
+          name: field_name(method), src: src, value: value_of(method), input: control_options, **settings
+        ))
+      end
+    end
+
     # Radio buttons as cards (RadioCardGroupComponent). `choices` are `[label, value, description]`
     # arrays, `{value:, label:, description:, disabled:}` hashes or strings. `label:` is the legend.
     def radio_cards(method, choices, label: nil, error: nil, **options)
@@ -153,7 +186,8 @@ module ComponentLibrary2100
 
       component = FormFieldComponent.new(
         control_id: options[:id] || field_id(method), label: label_text(method, config[:label]),
-        hint: config[:hint], error: error, optional: config[:optional], **(config[:wrapper] || {})
+        hint: config[:hint], error: error, optional: config[:optional],
+        counter: config[:counter], **(config[:wrapper] || {})
       )
       control_options = component.control_options(options, kind: kind)
       return yield(control_options) if config[:wrapper] == false
