@@ -128,6 +128,16 @@ Unlike Bootstrap's, the bar doesn't animate a change of value: width is a layout
 
 <img src="docs/images/table.png" width="720" alt="Striped table of people with status badges">
 
+```erb
+<%= ui_table striped: true do |table| %>
+  <% table.with_caption(visible: false) { "Clients" } %>
+  <thead><tr><%= ui_table_header "Name" %><%= ui_table_header "Email" %></tr></thead>
+  <tbody><tr><%= ui_table_header "Ada", scope: :row %><td>ada@example.com</td></tr></tbody>
+<% end %>
+```
+
+Give every table a name: `with_caption` renders a `<caption>`, visible unless `visible: false`, or pass `aria: {label: ...}`. `ui_table_header` is a `<th>` with `scope` (`:col` by default, `:row` for row headers). Use `ui_sort_header` for sortable columns.
+
 ## Forms
 
 `ComponentLibrary2100::FormBuilder` turns each field helper into a whole field: label, Bootstrap form-control styling, the model's error under the control, and a hint. `aria-describedby` and `aria-invalid` are wired for you, and `aria-invalid` is also what turns the border red.
@@ -199,7 +209,7 @@ These lean on the platform instead of re-implementing it, so there is little Jav
 | Dropdown, Popover | popover API (`popover="auto"`) | Browser handles outside click, Escape and focus return; `cl-popover` places it and adds arrow-key navigation for menus. |
 | Modal, Offcanvas | `<dialog>` + `showModal()` | Focus trap, inert page and Escape come from the browser. `static_backdrop: true` ignores backdrop clicks. `close:` takes CloseButton options (`close: {white: true}` on a dark panel). A trigger with `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step, as the built-in trigger does, along with `aria-controls`. The title is an `<h2>`, or `heading_level:` 1 to 6. `description_id:` sets `aria-describedby`. Offcanvas needs `title:` or `aria: {label:}`, and raises without one. |
 | Tabs | WAI-ARIA tabs pattern | `cl-tabs`; tabs and panels pair by position. |
-| Toast | `cl-dismiss` + `aria-live` container | Render toasts inside a `ToastContainerComponent`. `delay: 0` keeps one open. `close:` takes options for the close button, which is small by default. |
+| Toast | `cl-dismiss` + `aria-live` container | Render toasts inside a `ToastContainerComponent`. `delay: 0` keeps one open. The countdown pauses on hover, on focus and while the tab is hidden, then resumes with the time left. `close:` takes options for the close button, which is small by default. |
 | Tooltip | popover API (`popover="manual"`) | Wrap something focusable. Shows on hover and keyboard focus. |
 
 Dropdown items with `href:` and a non-GET `method:` render a `button_to` form inside the menu, so they submit with `_method` and the CSRF token while keeping the menu item role and arrow-key navigation: `menu.with_item("Sign out", href: session_path, method: :delete)`. `params:` and `form:` pass through to `button_to`, and `data: {turbo_confirm: "..."}` goes on the button.
