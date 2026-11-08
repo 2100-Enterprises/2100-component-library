@@ -10,6 +10,7 @@ module ComponentLibrary2100
   #     <%= f.telephone_field :phone, optional: true %>
   #     <%= f.select :role, %w[Admin Member] %>
   #     <%= f.text_area :bio, rows: 4 %>
+  #     <%= f.file_upload :avatar, accept: %w[image/*], max_bytes: 5.megabytes %>
   #     <%= f.radio_cards :plan, [["Basic", "basic", "One project"], ["Pro", "pro", "Unlimited"]], columns: 2 %>
   #     <%= f.check_boxes :roles, %w[Admin Editor], hint: "Pick any", inline: true %>
   #     <%= f.radios :contact, [["Email", "email"], ["Phone", "phone"]] %>
@@ -102,6 +103,18 @@ module ComponentLibrary2100
     # A plain checkbox in the same layout as `switch`.
     def check(method, **options)
       switch(method, type: :checkbox, **options)
+    end
+
+    # A styled native file input (FileUploadComponent) with a staged-file list, size and type
+    # warnings, and an optional dropzone. Takes FileUploadComponent options (`accept:`,
+    # `max_bytes:`, `multiple:`, `dropzone:`, `hint:` ...). The form needs `multipart: true`.
+    def file_upload(method, label: nil, error: nil, **options)
+      @template.render(FileUploadComponent.new(
+        name: field_name(method), id: options.delete(:id) || field_id(method),
+        label: label_text(method, label),
+        error: error.nil? ? error_message(method) : error.presence,
+        **options
+      ))
     end
 
     # Radio buttons as cards (RadioCardGroupComponent). `choices` are `[label, value, description]`
