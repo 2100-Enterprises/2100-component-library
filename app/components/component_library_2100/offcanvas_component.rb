@@ -16,9 +16,9 @@ module ComponentLibrary2100
              "-translate-x-full open:translate-x-0 starting:open:-translate-x-full",
       end: "inset-y-0 right-0 left-auto h-full w-[400px] max-w-full border-l " \
            "translate-x-full open:translate-x-0 starting:open:translate-x-full",
-      top: "inset-x-0 top-0 bottom-auto h-[30vh] w-full border-b " \
+      top: "inset-x-0 top-0 bottom-auto h-[30dvh] w-full border-b " \
            "-translate-y-full open:translate-y-0 starting:open:-translate-y-full",
-      bottom: "inset-x-0 bottom-0 top-auto h-[30vh] w-full border-t " \
+      bottom: "inset-x-0 bottom-0 top-auto h-[30dvh] w-full border-t " \
               "translate-y-full open:translate-y-0 starting:open:translate-y-full"
     }.freeze
 

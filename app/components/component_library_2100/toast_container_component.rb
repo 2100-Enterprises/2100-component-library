@@ -7,7 +7,9 @@ module ComponentLibrary2100
   # The element has id "toasts" unless you pass `id:`. placement: :top_start, :top_center, :top_end (default),
   # :bottom_start, :bottom_center, :bottom_end.
   class ToastContainerComponent < BaseComponent
-    BASE = "fixed z-[1090] flex flex-col gap-3 p-3 pointer-events-none *:pointer-events-auto"
+    # Padding respects the device safe-area (notch / home indicator) on each side, falling back to 0.75rem.
+    BASE = "fixed z-[1090] flex flex-col gap-3 pointer-events-none *:pointer-events-auto " \
+           "p-[max(0.75rem,env(safe-area-inset-top))_max(0.75rem,env(safe-area-inset-right))_max(0.75rem,env(safe-area-inset-bottom))_max(0.75rem,env(safe-area-inset-left))]"
 
     PLACEMENTS = {
       top_start: "top-0 left-0",
