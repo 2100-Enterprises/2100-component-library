@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.10.0
+
 ### Dark mode
 
 - Opt-in dark mode: `data-theme="dark"` on `<html>` turns it on, `data-theme="system"` follows the OS, and no attribute changes nothing. Every colour token gets a dark value, and `color-scheme: dark` is set. Solid fills lighten and take dark `-on` text, so a fill also reads as text on a dark surface. The README's [Dark mode](README.md#dark-mode) section has the details.
