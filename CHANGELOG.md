@@ -27,6 +27,10 @@
 ### FileUpload
 
 - `FileUploadComponent` (`ui_file_upload`, `f.file_upload`): a styled native `<input type="file">` that works in a plain multipart form without JavaScript, with the server staying the source of truth for size and type. With the new `cl-file-upload` controller, each chosen file shows its name, size and a "Remove <filename>" button. A file that's too large (`max_bytes:`) or of the wrong type (`accept:`, joined with commas and no spaces) gets a warning tied to the input by `aria-describedby`. A polite live region announces changes. `multiple: true` lists every file. `dropzone: true` adds a drop area around the input, which stays the keyboard path. Active Storage `direct-upload:*` events drive a progress bar.
+### Combobox
+
+- `ComboboxComponent` (`ui_combobox`, `f.combobox`): a text input with server-side suggestions, following the WAI-ARIA 1.2 combobox pattern. After `min_length:` characters and a `delay:`, the `cl-combobox` controller loads `src?q=<text>` into a Turbo Frame. The endpoint answers with `ComboboxOptionComponent` (`ui_combobox_option`) items, optionally inside `ComboboxOptionComponent::Group`, so it never writes ARIA by hand. A hidden input holds the value and the visible input holds the label. `force_selection: true` clears unmatched text on blur.
+- Keys: Down and Up move, Enter chooses, Escape closes and a second Escape clears, Alt+Down opens, Alt+Up chooses, and Tab closes. A polite live region announces the result count, `aria-busy` marks loading, and `cl-combobox:select` carries `{value, label}`. Without JavaScript it's a plain text input in the host form. Needs Turbo.
 
 ## 0.10.0
 

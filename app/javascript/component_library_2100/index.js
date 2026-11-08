@@ -1,6 +1,7 @@
 import AutosubmitController from "component_library_2100/controllers/autosubmit_controller"
 import CarouselController from "component_library_2100/controllers/carousel_controller"
 import CollapseController from "component_library_2100/controllers/collapse_controller"
+import ComboboxController from "component_library_2100/controllers/combobox_controller"
 import ConfirmController from "component_library_2100/controllers/confirm_controller"
 import CounterController from "component_library_2100/controllers/counter_controller"
 import DialogController from "component_library_2100/controllers/dialog_controller"
@@ -13,9 +14,9 @@ import TabsController from "component_library_2100/controllers/tabs_controller"
 import TooltipController from "component_library_2100/controllers/tooltip_controller"
 
 export {
-  AutosubmitController, CarouselController, CollapseController, ConfirmController, CounterController, DialogController,
-  DismissController, FileUploadController, PasswordController, PopoverController, ScrollspyController, TabsController,
-  TooltipController
+  AutosubmitController, CarouselController, CollapseController, ComboboxController, ConfirmController,
+  CounterController, DialogController, DismissController, FileUploadController, PasswordController, PopoverController,
+  ScrollspyController, TabsController, TooltipController
 }
 
 // Registers every controller the library ships. Identifiers are prefixed `cl-`
@@ -24,6 +25,7 @@ export function register(application) {
   application.register("cl-autosubmit", AutosubmitController)
   application.register("cl-carousel", CarouselController)
   application.register("cl-collapse", CollapseController)
+  application.register("cl-combobox", ComboboxController)
   application.register("cl-confirm", ConfirmController)
   application.register("cl-counter", CounterController)
   application.register("cl-dialog", DialogController)

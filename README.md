@@ -225,6 +225,20 @@ The rule is added to the hint on the server. With JavaScript, `cl-counter` shows
 ```
 
 A native file input, so it works without JavaScript and the server re-checks size and type. With JavaScript (`cl-file-upload`), chosen files appear with their size and a "Remove <filename>" button. Too-large or wrong-type files get a warning tied to the input with `aria-describedby`, and a polite live region announces what changed. A rejected file stays chosen, so the server's error still shows if it's submitted. `max_label:` ("25 MB") is derived from `max_bytes:`. `multiple: true` takes several files. `dropzone: true` adds a drop area; keyboard users still use the button. With `direct_upload: true` on the input, Active Storage's `direct-upload:*` events drive a progress bar. Helper `ui_file_upload`.
+### Combobox
+
+```erb
+<%= f.combobox :person_id, src: people_search_path, text: @membership.person&.name, force_selection: true %>
+
+<%# people_search: render the frame the request names (the Turbo-Frame header) %>
+<turbo-frame id="<%= request.headers["Turbo-Frame"] %>">
+  <% @people.each do |person| %>
+    <%= ui_combobox_option value: person.id, label: person.name %>
+  <% end %>
+</turbo-frame>
+```
+
+Server-side suggestions (PrimeVue's AutoComplete) on the WAI-ARIA 1.2 combobox pattern: `role=combobox` with `aria-autocomplete`, `aria-expanded`, `aria-controls` and `aria-activedescendant`, and a `listbox` of options. Typing loads `src?q=` into a Turbo Frame after `delay:` (250ms) once `min_length:` (1) is reached. A polite live region says "3 results" or "No results" (`messages:` replaces them). Down and Up move, Enter chooses, Escape closes and a second Escape clears, Alt+Down opens, and Tab chooses nothing. The active option is filled, outlined and checked, so it doesn't rely on colour. `ComboboxOptionComponent::Group.new(label:)` groups options. Without JavaScript the visible input submits its text. Needs Turbo in the host app. Helpers `ui_combobox` and `ui_combobox_option`.
 
 ## Interactive components
 
