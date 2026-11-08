@@ -5,7 +5,16 @@ import { Controller } from "@hotwired/stimulus"
 const ENTITY = /&(?:#\d+|#x[\da-f]+|[a-z][a-z\d]*);/gi
 const NBSP = /^&(?:nbsp|#160|#xa0);$/i
 function textOf(html) {
-  return html.replace(/<[^>]*>/g, "").replace(ENTITY, (entity) => NBSP.test(entity) ? "\u00a0" : "_")
+  let text = ""
+  for (let at = 0; at < html.length;) {
+    const open = html.indexOf("<", at)
+    const close = open < 0 ? -1 : html.indexOf(">", open)
+    if (close < 0) { text += html.slice(at); break }
+
+    text += html.slice(at, open)
+    at = close + 1
+  }
+  return text.replace(ENTITY, (entity) => NBSP.test(entity) ? "\u00a0" : "_")
 }
 
 // A live character count for a field (FormFieldComponent `counter:`). Put on the field wrapper.
