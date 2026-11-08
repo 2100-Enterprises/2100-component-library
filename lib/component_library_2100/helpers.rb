@@ -14,7 +14,7 @@ module ComponentLibrary2100
       nav switch form_field radio_card_group error_summary confirm_dialog
       page_header empty_state avatar navbar stepper
       skeleton description_list stat stats sort_header
-      carousel scrollspy input_group floating_label range table_header choice_group file_upload combobox combobox_option timeline timeline_event
+      carousel scrollspy input_group floating_label range table_header choice_group file_upload combobox combobox_option timeline timeline_event chip chip_group
     ].freeze
 
     NAMES.each do |name|
