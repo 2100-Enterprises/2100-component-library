@@ -13,7 +13,7 @@ module ComponentLibrary2100
       list_group modal offcanvas pagination popover progress spinner table tabs toast toast_container tooltip
       nav switch form_field radio_card_group error_summary confirm_dialog
       page_header empty_state avatar navbar stepper
-      skeleton description_list
+      skeleton description_list stat stats sort_header
     ].freeze
 
     NAMES.each do |name|

@@ -298,6 +298,39 @@ A `<dl>` of term/description pairs for a record's details (an extra: not in Boot
 
 A pulsing placeholder for content that is still loading (an extra: not in Bootstrap). It is decorative, so it is `aria-hidden`; put `aria-busy="true"` on the region it stands in and swap it for the real content when that arrives (for example a lazy Turbo Frame). `shape:` is `:text` (default), `:block` or `:circle`; `lines:` draws that many text rows, the last one shorter. Size it with `class:`. The pulse stops under `prefers-reduced-motion`. Helper `ui_skeleton`.
 
+### Stat and Stats
+
+<img src="docs/images/stats.png" width="720" alt="Four metric cards: clients; open invoices down and green; revenue up and green; costs up and red">
+
+```erb
+<%= ui_stats label: "This month" do |stats| %>
+  <% stats.with_stat(label: "Clients", value: "48", hint: "6 new") %>
+  <% stats.with_stat(label: "Open invoices", value: "12", change: "3", trend: :down) %>
+  <% stats.with_stat(label: "Revenue", value: "$12,400", change: "8%", trend: :up) %>
+<% end %>
+```
+
+Metrics for a dashboard (extras: not in Bootstrap). A Stat is a `<dl>` card: `label:` is the term, `value:` the headline figure, plus optional `change:` and `hint:`. `trend:` (`:up`, `:down` or `:flat`) adds an arrow and visually hidden "Increased by"/"Decreased by" text; the change is green going up and red going down, so pass `variant:` when down is good (`trend: :down, variant: :success` for falling costs). `card: false` drops the border and padding. Stats is a grid: one column on phones, two from `sm`, and `columns:` (2, 3 or 4; default 3) from `lg`. `label:` makes it a `section` named for screen readers. Helpers `ui_stat` and `ui_stats`.
+
+### SortHeader
+
+<img src="docs/images/sort_header.png" width="720" alt="A table whose Name column is sorted ascending with an arrow, and faint sort icons on the other columns">
+
+```erb
+<%= ui_table do %>
+  <thead>
+    <tr>
+      <%= ui_sort_header "Name", href: clients_path(sort: "name", dir: "desc"), direction: :asc %>
+      <%= ui_sort_header "Balance", href: clients_path(sort: "balance"), align: :end,
+                         link: {data: {turbo_frame: "clients"}} %>
+    </tr>
+  </thead>
+  ...
+<% end %>
+```
+
+A sortable column heading (an extra: not in Bootstrap): a `<th scope="col">` holding a link. You build `href:`, so it works with any sorting code and with Turbo Frames. `direction:` is the column's current sort: `:asc`, `:desc` or nil. The sorted column gets `aria-sort` and an arrow; the others show a faint icon that darkens on hover and focus. `align: :end` right-aligns numeric columns and shows the icon before the label. `link:` takes options for the `<a>`; other HTML attributes go on the `<th>`. The link answers to 44px on touch screens. Helper `ui_sort_header`.
+
 ## Overriding
 
 | Need | How |

@@ -195,6 +195,32 @@ EXAMPLES = {
     </div>
   ERB
 
+  "stats" => <<~'ERB',
+    <%= ui_stats label: "This month" do |stats| %>
+      <% stats.with_stat(label: "Clients", value: "48", hint: "6 new") %>
+      <% stats.with_stat(label: "Open invoices", value: "12", change: "3", trend: :down, variant: :success) %>
+      <% stats.with_stat(label: "Revenue", value: "$12,400", change: "8%", trend: :up) %>
+      <% stats.with_stat(label: "Costs", value: "$3,100", change: "4%", trend: :up, variant: :danger) %>
+    <% end %>
+  ERB
+
+  "sort_header" => <<~'ERB',
+    <%= ui_table hover: true do %>
+      <thead>
+        <tr>
+          <%= ui_sort_header "Name", href: "#", direction: :asc %>
+          <%= ui_sort_header "Email", href: "#" %>
+          <%= ui_sort_header "Balance", href: "#", align: :end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Ada Lovelace</td><td>ada@example.com</td><td class="text-right">$1,200</td></tr>
+        <tr><td>Alan Turing</td><td>alan@example.com</td><td class="text-right">$860</td></tr>
+        <tr><td>Grace Hopper</td><td>grace@example.com</td><td class="text-right">$2,450</td></tr>
+      </tbody>
+    <% end %>
+  ERB
+
   "skeleton" => <<~'ERB'
     <div class="flex flex-col gap-6 max-w-md">
       <%= ui_skeleton lines: 3 %>

@@ -6,6 +6,8 @@
 
 - Skeleton: a pulsing, `aria-hidden` placeholder for content that is still loading (an extra, not in Bootstrap). `shape:` is `:text` (default), `:block` or `:circle`; `lines:` draws several text rows with a shorter last line. Size it with `class:`; the pulse stops under `prefers-reduced-motion`. Helper `ui_skeleton`.
 - DescriptionList: a `<dl>` of term/description pairs for a record's details (an extra, not in Bootstrap). `layout:` is `:stacked` (default) or `:inline` (columns from `sm`); `dividers:` draws a line between rows (default true). Items take `term:` and either `description:` or a block. Helper `ui_description_list`.
+- Stat and Stats: dashboard metrics (extras, not in Bootstrap). Stat is a `<dl>` card with `label:`, `value:`, optional `change:`, `trend:` (`:up`, `:down`, `:flat`: an arrow plus visually hidden "Increased by"/"Decreased by"), `variant:` to recolour the change when down is good, `hint:` and `card: false`. Stats lays stats out in a grid: one column on phones, two from `sm`, `columns:` (2, 3 or 4) from `lg`, and `label:` makes it a named `section`. Helpers `ui_stat`, `ui_stats`.
+- SortHeader: a sortable `<th scope="col">` (an extra, not in Bootstrap). You pass `href:`; `direction:` (`:asc`, `:desc` or nil) sets `aria-sort` and the arrow, unsorted columns get a faint icon that darkens on hover. `align: :end` for numbers, `link:` for the anchor's options (e.g. a Turbo Frame). The link answers to 44px on touch screens. Helper `ui_sort_header`.
 
 ## 0.6.1
 
