@@ -1,0 +1,8 @@
+<%= render ComponentLibrary2100::ModalComponent.new(title: title, size: size, centered: centered, static_backdrop: static_backdrop) do |modal| %>
+  <% modal.with_trigger(variant: :danger) { "Delete" } %>
+  This can't be undone.
+  <% modal.with_footer do %>
+    <%= ui_button "Cancel", variant: :secondary, data: {action: "cl-dialog#close"} %>
+    <%= ui_button "Delete", variant: :danger %>
+  <% end %>
+<% end %>

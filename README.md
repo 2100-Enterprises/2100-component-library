@@ -528,6 +528,8 @@ Tests boot a tiny in-process Rails app (`test/test_helper.rb`) and render each c
 
 The images above come from `bundle exec rake screenshots`, which renders the examples in `script/screenshots.rb` and writes `docs/images/`. It needs Chrome installed. Rerun it after changing how a component looks.
 
+`bundle exec rake lookbook` serves the previews in `previews/` with [Lookbook](https://lookbook.build) at http://localhost:4000 (set `PORT` to change it). Each preview is a `ViewComponent::Preview` in `previews/component_library_2100/`, and `@param` comments give it controls. A preview that needs a template keeps it in a folder named after the class and passes `template:` to `render_with_template`, because ViewComponent looks for the folder under `component_library2100/`. The app lives in `lookbook/config.ru`. It loads Turbo, Stimulus and the library through the same import map as the system tests, compiles `engine.css` with Tailwind and rebuilds it as files change, and the theme menu switches `data-theme` between light and dark. `test/previews_test.rb` renders every preview, so `rake test` catches one that breaks.
+
 CI runs on every PR: the tests on each supported Ruby and on the oldest gem versions the gemspec allows (`gemfiles/oldest.gemfile`, so keep the two in step), RuboCop, `bundler-audit`, a gem build and a workflow audit. A weekly run repeats this against the latest gems and opens an issue if it fails.
 
 ### Merging
