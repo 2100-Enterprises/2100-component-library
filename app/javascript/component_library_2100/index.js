@@ -2,18 +2,20 @@ import AutosubmitController from "component_library_2100/controllers/autosubmit_
 import CarouselController from "component_library_2100/controllers/carousel_controller"
 import CollapseController from "component_library_2100/controllers/collapse_controller"
 import ConfirmController from "component_library_2100/controllers/confirm_controller"
+import CounterController from "component_library_2100/controllers/counter_controller"
 import DialogController from "component_library_2100/controllers/dialog_controller"
 import DismissController from "component_library_2100/controllers/dismiss_controller"
+import FileUploadController from "component_library_2100/controllers/file_upload_controller"
 import PasswordController from "component_library_2100/controllers/password_controller"
 import PopoverController from "component_library_2100/controllers/popover_controller"
 import ScrollspyController from "component_library_2100/controllers/scrollspy_controller"
 import TabsController from "component_library_2100/controllers/tabs_controller"
 import TooltipController from "component_library_2100/controllers/tooltip_controller"
-import CounterController from "component_library_2100/controllers/counter_controller"
 
 export {
-  AutosubmitController, CarouselController, CollapseController, ConfirmController, DialogController, DismissController,
-  PasswordController, PopoverController, ScrollspyController, TabsController, TooltipController, CounterController
+  AutosubmitController, CarouselController, CollapseController, ConfirmController, CounterController, DialogController,
+  DismissController, FileUploadController, PasswordController, PopoverController, ScrollspyController, TabsController,
+  TooltipController
 }
 
 // Registers every controller the library ships. Identifiers are prefixed `cl-`
@@ -23,14 +25,15 @@ export function register(application) {
   application.register("cl-carousel", CarouselController)
   application.register("cl-collapse", CollapseController)
   application.register("cl-confirm", ConfirmController)
+  application.register("cl-counter", CounterController)
   application.register("cl-dialog", DialogController)
   application.register("cl-dismiss", DismissController)
+  application.register("cl-file-upload", FileUploadController)
   application.register("cl-password", PasswordController)
   application.register("cl-popover", PopoverController)
   application.register("cl-scrollspy", ScrollspyController)
   application.register("cl-tabs", TabsController)
   application.register("cl-tooltip", TooltipController)
-  application.register("cl-counter", CounterController)
 }
 
 // A Turbo confirm method that asks with the page's ConfirmDialogComponent (`ui_confirm_dialog`

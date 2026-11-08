@@ -214,6 +214,17 @@ Pieces you can use without the builder:
 ```
 
 The rule is added to the hint on the server. With JavaScript, `cl-counter` shows a visible count that follows the typing. An `aria-live="polite"` region repeats it after a pause (`delay`, 600ms), so a screen reader isn't interrupted on every key. `html: true` counts the text content of rich text, read from the hidden input Trix writes to. Messages can be replaced with `left:`, `over:` and `needed:`, using `%{count}` for the number. `wrapper: false` drops the counter, because the wrapper holds the controller.
+### FileUpload
+
+```erb
+<%= ui_form_with model: @document, multipart: true do |f| %>
+  <%= f.file_upload :file, accept: %w[.pdf .docx image/*], max_bytes: 25.megabytes,
+                    hint: "Documents and images, up to 25 MB.", dropzone: true %>
+  <%= f.submit "Upload" %>
+<% end %>
+```
+
+A native file input, so it works without JavaScript and the server re-checks size and type. With JavaScript (`cl-file-upload`), chosen files appear with their size and a "Remove <filename>" button. Too-large or wrong-type files get a warning tied to the input with `aria-describedby`, and a polite live region announces what changed. A rejected file stays chosen, so the server's error still shows if it's submitted. `max_label:` ("25 MB") is derived from `max_bytes:`. `multiple: true` takes several files. `dropzone: true` adds a drop area; keyboard users still use the button. With `direct_upload: true` on the input, Active Storage's `direct-upload:*` events drive a progress bar. Helper `ui_file_upload`.
 
 ## Interactive components
 
