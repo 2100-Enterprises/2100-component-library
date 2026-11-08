@@ -10,7 +10,7 @@ module ComponentLibrary2100
   # (or `aria-labelledby`); without one it raises ArgumentError. It slides in and out, and its backdrop fades, where the browser supports `@starting-style`; elsewhere it just appears.
   class OffcanvasComponent < ModalComponent
     DOCK = "m-0 max-w-none max-h-none w-auto p-0 text-body bg-surface border-0 border-border-translucent outline-none #{BACKDROP} " \
-           "open:flex open:flex-col transition-[translate,display,overlay] duration-300 transition-discrete motion-reduce:transition-none"
+           "open:flex flex-col transition-[translate,display,overlay] duration-300 transition-discrete motion-reduce:transition-none"
 
     PLACEMENTS = {
       start: "inset-y-0 left-0 right-auto h-full w-[400px] max-w-full border-r " \
