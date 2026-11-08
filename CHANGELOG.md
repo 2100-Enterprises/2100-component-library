@@ -23,6 +23,7 @@
 
 - `f.check_boxes :roles, choices` and `f.radios :contact, choices` render a group of native checkboxes or radio buttons in a `<fieldset>` with a `<legend>`. They go through the new `ChoiceGroupComponent` (`ui_choice_group`). The hint and error are tied to the fieldset with `aria-describedby`, and `aria-invalid` goes on each input. `inline: true` lays the options in a row. Each option is a clickable label at least 44px tall. A hidden empty value is sent first, so an empty submission still sends the attribute (`hidden: false` drops it). Choices take the same shapes as `radio_cards`.
 - `time_field`, `datetime_local_field` and `month_field` get the label, hint and error wrapper, like `date_field`. Use `min:` and `max:` for limits, and validate them on the server too.
+- Live character counter: `counter: {max: 2000}` or `counter: {min: 12}` on any builder field or `FormFieldComponent`. The server adds the rule to the hint ("Up to 2,000 characters."), so it reads the same without JavaScript. The new `cl-counter` controller shows a visible count as you type ("1,950 characters left", "4 more characters needed"), and a polite live region repeats it after typing pauses, so screen readers don't announce every keystroke. `html: true` counts the text of rich text. `left:`, `over:`, `needed:` and `hint:` replace the messages. The counter never sets `aria-invalid`; only server errors do.
 
 ## 0.10.0
 

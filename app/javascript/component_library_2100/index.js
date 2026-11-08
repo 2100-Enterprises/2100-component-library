@@ -9,10 +9,11 @@ import PopoverController from "component_library_2100/controllers/popover_contro
 import ScrollspyController from "component_library_2100/controllers/scrollspy_controller"
 import TabsController from "component_library_2100/controllers/tabs_controller"
 import TooltipController from "component_library_2100/controllers/tooltip_controller"
+import CounterController from "component_library_2100/controllers/counter_controller"
 
 export {
   AutosubmitController, CarouselController, CollapseController, ConfirmController, DialogController, DismissController,
-  PasswordController, PopoverController, ScrollspyController, TabsController, TooltipController
+  PasswordController, PopoverController, ScrollspyController, TabsController, TooltipController, CounterController
 }
 
 // Registers every controller the library ships. Identifiers are prefixed `cl-`
@@ -29,6 +30,7 @@ export function register(application) {
   application.register("cl-scrollspy", ScrollspyController)
   application.register("cl-tabs", TabsController)
   application.register("cl-tooltip", TooltipController)
+  application.register("cl-counter", CounterController)
 }
 
 // A Turbo confirm method that asks with the page's ConfirmDialogComponent (`ui_confirm_dialog`

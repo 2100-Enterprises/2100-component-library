@@ -205,6 +205,15 @@ Pieces you can use without the builder:
 ```
 
 `check_boxes` and `radios` render a `<fieldset>` with a `<legend>`, with the hint and error tied to it by `aria-describedby`. Each option is a native input in a clickable label at least 44px tall. A hidden empty value is sent first, so a group with nothing chosen still submits. Choices are `[label, value]` pairs, `{value:, label:, disabled:}` hashes or strings. `date_field`, `time_field`, `datetime_local_field` and `month_field` are the browser's own pickers in the usual field wrapper, so there's no custom date picker to maintain. Pass Date or Time objects to `min:` and `max:`, because Rails rewrites strings for some of them.
+### Live counter
+
+```erb
+<%= f.text_area :bio, counter: {max: 2000} %>
+<%= f.password_field :password, counter: {min: 12} %>
+<%= f.rich_text_area :notes, counter: {max: 5000, html: true} %>
+```
+
+The rule is added to the hint on the server. With JavaScript, `cl-counter` shows a visible count that follows the typing. An `aria-live="polite"` region repeats it after a pause (`delay`, 600ms), so a screen reader isn't interrupted on every key. `html: true` counts the text content of rich text, read from the hidden input Trix writes to. Messages can be replaced with `left:`, `over:` and `needed:`, using `%{count}` for the number. `wrapper: false` drops the counter, because the wrapper holds the controller.
 
 ## Interactive components
 

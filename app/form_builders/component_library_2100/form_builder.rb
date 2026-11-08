@@ -29,8 +29,11 @@ module ComponentLibrary2100
   #   wrapper:  HTML attributes for the wrapping <div>, or false for the bare, styled control
   # Everything else (class:, data:, required: ...) goes on the control as usual, so `min:` and `max:`
   # reach number, date, time, datetime-local and month fields.
+  #   counter:  {max: 2000} or {min: 12}, a live character count (see FormFieldComponent);
+  #             `html: true` counts rich text. Needs the wrapper, so it is ignored with `wrapper: false`
+  # Everything else (class:, data:, required: ...) goes on the control as usual.
   class FormBuilder < ActionView::Helpers::FormBuilder
-    FIELD_OPTIONS = %i[label hint optional error wrapper].freeze
+    FIELD_OPTIONS = %i[label hint optional error wrapper counter].freeze
 
     %i[text_field email_field telephone_field phone_field number_field url_field search_field date_field time_field datetime_local_field month_field].each do |helper|
       define_method(helper) do |method, options = {}|
@@ -153,7 +156,8 @@ module ComponentLibrary2100
 
       component = FormFieldComponent.new(
         control_id: options[:id] || field_id(method), label: label_text(method, config[:label]),
-        hint: config[:hint], error: error, optional: config[:optional], **(config[:wrapper] || {})
+        hint: config[:hint], error: error, optional: config[:optional],
+        counter: config[:counter], **(config[:wrapper] || {})
       )
       control_options = component.control_options(options, kind: kind)
       return yield(control_options) if config[:wrapper] == false
