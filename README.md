@@ -404,6 +404,21 @@ Metrics for a dashboard (extras: not in Bootstrap). A Stat is a `<dl>` card: `la
 
 A sortable column heading (an extra: not in Bootstrap): a `<th scope="col">` holding a link. You build `href:`, so it works with any sorting code and with Turbo Frames. `direction:` is the column's current sort: `:asc`, `:desc` or nil. The sorted column gets `aria-sort` and an arrow; the others show a faint icon that darkens on hover and focus. `align: :end` right-aligns numeric columns and shows the icon before the label. `link:` takes options for the `<a>`; other HTML attributes go on the `<th>`. The link answers to 44px on touch screens. Helper `ui_sort_header`.
 
+### Timeline
+
+```erb
+<%= ui_timeline label: "Project activity", id: "activity" do |timeline| %>
+  <% timeline.with_event(time: update.created_at, title: "Proposal approved", variant: :success) { "Dana signed off." } %>
+<% end %>
+
+<%# app/views/updates/create.turbo_stream.erb %>
+<%= turbo_stream.prepend "activity" do %>
+  <%= ui_timeline_event time: @update.created_at, title: @update.title %>
+<% end %>
+```
+
+An activity feed (an extra: not in Bootstrap): an `<ol>` of events, each with a `<time datetime>`. Markers are aria-hidden and `variant:` only tints them, so put what happened in the title or text. `alternate: true` alternates sides from `md:` up and stacks on phones. `time_label:` replaces the default date format, and `with_icon` replaces the dot. Each event is a self-contained `<li>`, so `turbo_stream.prepend` or `append` works. No JavaScript. Helpers `ui_timeline` and `ui_timeline_event`.
+
 ## Overriding
 
 | Need | How |
