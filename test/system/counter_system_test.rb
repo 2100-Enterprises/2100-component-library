@@ -75,4 +75,19 @@ class CounterSystemTest < SystemTestCase
 
     assert_selector "[data-cl-counter-target=count]", text: "9 characters left"
   end
+
+  test "rich text counts an entity as one character and ignores edge whitespace" do
+    page_with("{max: 20, html: true}", control: <<~HTML)
+      <input type="hidden" id="body" name="body" value="">
+      <div tabindex="0" id="editor" input="body" data-cl-counter-target="input">editor</div>
+    HTML
+
+    page.execute_script(<<~JS)
+      const hidden = document.getElementById("body")
+      hidden.value = "<div>&nbsp;Tom &amp; <em>Jerry</em>&nbsp;</div>"
+      document.getElementById("editor").dispatchEvent(new Event("input", { bubbles: true }))
+    JS
+
+    assert_selector "[data-cl-counter-target=count]", text: "9 characters left"
+  end
 end

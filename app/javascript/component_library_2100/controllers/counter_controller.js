@@ -1,5 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
+// The text of an HTML string, close enough to count: tags dropped, each entity one character.
+// Plain string work, so the HTML is never parsed into a DOM; only its length is used.
+const ENTITY = /&(?:#\d+|#x[\da-f]+|[a-z][a-z\d]*);/gi
+const NBSP = /^&(?:nbsp|#160|#xa0);$/i
+function textOf(html) {
+  return html.replace(/<[^>]*>/g, "").replace(ENTITY, (entity) => NBSP.test(entity) ? "\u00a0" : "_")
+}
+
 // A live character count for a field (FormFieldComponent `counter:`). Put on the field wrapper.
 // The server already renders the rule in the hint; this adds the running count. The visible
 // `count` updates on every input. The `status` live region (aria-live="polite") is updated only
@@ -48,7 +56,7 @@ export default class extends Controller {
     const value = this.source?.value || ""
     if (!this.htmlValue) return value.length
 
-    return (new DOMParser().parseFromString(value, "text/html").body.textContent || "").trim().length
+    return textOf(value).trim().length
   }
 
   get source() {
