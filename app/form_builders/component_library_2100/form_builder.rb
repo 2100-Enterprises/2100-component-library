@@ -11,6 +11,9 @@ module ComponentLibrary2100
   #     <%= f.select :role, %w[Admin Member] %>
   #     <%= f.text_area :bio, rows: 4 %>
   #     <%= f.radio_cards :plan, [["Basic", "basic", "One project"], ["Pro", "pro", "Unlimited"]], columns: 2 %>
+  #     <%= f.check_boxes :roles, %w[Admin Editor], hint: "Pick any", inline: true %>
+  #     <%= f.radios :contact, [["Email", "email"], ["Phone", "phone"]] %>
+  #     <%= f.time_field :starts_at, min: "09:00", max: "17:00" %>
   #     <%= f.switch :newsletter, label: "Email me updates" %>
   #     <%= f.submit "Save" %>
   #   <% end %>
@@ -24,11 +27,12 @@ module ComponentLibrary2100
   #   optional: true or a string, appended to the label
   #   error:    overrides the message taken from `object.errors` (false for none)
   #   wrapper:  HTML attributes for the wrapping <div>, or false for the bare, styled control
-  # Everything else (class:, data:, required: ...) goes on the control as usual.
+  # Everything else (class:, data:, required: ...) goes on the control as usual, so `min:` and `max:`
+  # reach number, date, time, datetime-local and month fields.
   class FormBuilder < ActionView::Helpers::FormBuilder
     FIELD_OPTIONS = %i[label hint optional error wrapper].freeze
 
-    %i[text_field email_field telephone_field phone_field number_field url_field search_field date_field].each do |helper|
+    %i[text_field email_field telephone_field phone_field number_field url_field search_field date_field time_field datetime_local_field month_field].each do |helper|
       define_method(helper) do |method, options = {}|
         field(method, options) { |control_options| super(method, control_options) }
       end
@@ -108,6 +112,17 @@ module ComponentLibrary2100
       ))
     end
 
+    # A group of checkboxes (ChoiceGroupComponent) in a <fieldset>; `label:` is the legend. Submits `""`
+    # when none are checked. Choices are as for `radio_cards`; `inline: true` lays them in a row.
+    def check_boxes(method, choices, label: nil, error: nil, **options)
+      choice_group(:checkbox, method, choices, label, error, options)
+    end
+
+    # A group of radio buttons (ChoiceGroupComponent), like `check_boxes`.
+    def radios(method, choices, label: nil, error: nil, **options)
+      choice_group(:radio, method, choices, label, error, options)
+    end
+
     # The object's errors, each linked to its field. Renders nothing when there are none.
     def error_summary(title: "Please fix the following:", **options)
       return unless object.respond_to?(:errors)
@@ -144,6 +159,15 @@ module ComponentLibrary2100
       return yield(control_options) if config[:wrapper] == false
 
       @template.render(component) { yield(control_options) }
+    end
+
+    def choice_group(type, method, choices, label, error, options)
+      @template.render(ChoiceGroupComponent.new(
+        name: field_name(method, multiple: type == :checkbox), id: options.delete(:id) || field_id(method), choices: choices, type: type,
+        legend: label_text(method, label), checked: options.key?(:checked) ? options.delete(:checked) : value_of(method),
+        error: error.nil? ? error_message(method) : error.presence,
+        **options
+      ))
     end
 
     def label_text(method, label)
