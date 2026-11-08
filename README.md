@@ -196,6 +196,16 @@ Pieces you can use without the builder:
   ```
 - **Range** is a styled `<input type="range">`: `ui_range name: "volume", value: 40, min: 0, max: 100, step: 5, label: "Volume", hint: "0–100"`. `label:`/`hint:` are wired with `aria-describedby`; the thumb grows on touch screens. HTML attributes go on the input.
 
+### Choice groups and date and time fields
+
+```erb
+<%= f.check_boxes :roles, %w[Admin Editor Viewer], label: "Roles", hint: "Pick any.", inline: true %>
+<%= f.radios :contact, [["Email", "email"], ["Phone", "phone"]], label: "Best way to reach you" %>
+<%= f.datetime_local_field :starts_at, min: Time.current %>
+```
+
+`check_boxes` and `radios` render a `<fieldset>` with a `<legend>`, with the hint and error tied to it by `aria-describedby`. Each option is a native input in a clickable label at least 44px tall. A hidden empty value is sent first, so a group with nothing chosen still submits. Choices are `[label, value]` pairs, `{value:, label:, disabled:}` hashes or strings. `date_field`, `time_field`, `datetime_local_field` and `month_field` are the browser's own pickers in the usual field wrapper, so there's no custom date picker to maintain. Pass Date or Time objects to `min:` and `max:`, because Rails rewrites strings for some of them.
+
 ## Interactive components
 
 These lean on the platform instead of re-implementing it, so there is little JavaScript to maintain:
