@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Breaking
+
+- Button is `inline-flex items-center justify-center gap-1.5` instead of `inline-block align-middle`, so a label sits in the middle of a button made taller with a `min-h-` class, and an icon lines up beside it. A `class:` with a display utility (`hidden`, `block`, `inline-block`) still replaces it.
+- Button is `font-medium` instead of `font-normal`.
+- Every Button has one focus style, `ButtonComponent::FOCUS`: `focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2`. It replaces the half-transparent `ring-4` in each variant's colour. `Variants::RING` stays, but Button no longer uses it.
+- To upgrade: drop any `min-h-` workarounds that only re-centred a label, and any `class:` that restyled a Button's focus ring to make it consistent. Check buttons that relied on `inline-block` flowing their content as text.
+
+### Dropdown
+
+- The trigger's caret is spaced and centred by the button's gap, so it has no margin or `vertical-align`.
+
 ## 0.8.0
 
 ### Bootstrap parity
