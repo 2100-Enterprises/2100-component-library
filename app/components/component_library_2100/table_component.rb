@@ -1,11 +1,22 @@
 module ComponentLibrary2100
-  # <%= render TableComponent.new(striped: true, hover: true, responsive: :md) do %>
-  #   <thead>...</thead> <tbody>...</tbody>
+  # <%= render TableComponent.new(striped: true, hover: true, responsive: :md) do |table| %>
+  #   <% table.with_caption { "Clients" } %>
+  #   <thead><tr>
+  #     <%= ui_table_header "Name" %>
+  #     <%= ui_table_header "Email" %>
+  #   </tr></thead>
+  #   <tbody><tr><%= ui_table_header "Ada", scope: :row %><td>ada@example.com</td></tr></tbody>
   # <% end %>
   #
   # You write the <thead>/<tbody>; the component styles them. `responsive:` wraps the table in
   # a horizontally scrolling div: `true` always, or a breakpoint (:sm, :md, :lg, :xl, :xxl)
   # below which it scrolls. Breakpoints are Tailwind's, not Bootstrap's pixel values.
+  #
+  # `with_caption` gives the table its accessible name, rendered as the <caption> before your
+  # markup. It's visible by default; `with_caption(visible: false) { "Clients" }` hides it
+  # visually but keeps it for screen readers. Text can be passed as an argument too:
+  # `with_caption("Clients")`. For a header cell with the right `scope`, use `ui_table_header`
+  # (TableHeaderComponent).
   class TableComponent < BaseComponent
     BASE = "w-full border-collapse align-top text-body " \
            "[&_:is(th,td)]:border-b [&_:is(th,td)]:border-border [&_thead_th]:align-bottom " \
@@ -15,6 +26,14 @@ module ComponentLibrary2100
     BORDERED = "[&_:is(th,td)]:border"
     STRIPED = "[&_tbody_tr:nth-of-type(odd)]:bg-surface-stripe"
     HOVER = "[&_tbody_tr:hover]:bg-surface-hover"
+
+    CAPTION = "py-2 text-left text-secondary"
+    CAPTION_HIDDEN = "sr-only"
+
+    renders_one :caption, ->(text = nil, visible: true, **opts, &block) {
+      css = visible ? CAPTION : CAPTION_HIDDEN
+      block ? tag.caption(**merge_attrs(opts, css), &block) : tag.caption(text, **merge_attrs(opts, css))
+    }
 
     RESPONSIVE = {
       true => "overflow-x-auto",
@@ -35,7 +54,8 @@ module ComponentLibrary2100
     end
 
     def call
-      table = tag.table(content, **attrs(css))
+      body = content # evaluates the block first, which fills the caption slot
+      table = tag.table(safe_join([caption, body]), **attrs(css))
       return table unless @responsive
 
       tag.div(table, class: Variants.fetch(RESPONSIVE, @responsive, kind: "responsive option"))
