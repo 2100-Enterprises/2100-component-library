@@ -4,8 +4,12 @@ module ComponentLibrary2100
   #
   # Renders an <a> when `href:` is given, otherwise a <button>.
   class ButtonComponent < BaseComponent
-    BASE = "#{Variants::TOUCH_TARGET} inline-block align-middle text-center font-normal leading-normal border cursor-pointer select-none no-underline " \
-           "transition duration-150 focus-visible:outline-none focus-visible:ring-4 " \
+    # One focus style for every variant: a solid ring set off from the button, so it shows on any fill.
+    FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    # inline-flex centres the label in a box taller than its text (a min-h- class), and lines up an icon beside it.
+    BASE = "#{Variants::TOUCH_TARGET} inline-flex items-center justify-center gap-1.5 text-center font-medium leading-normal border " \
+           "cursor-pointer select-none no-underline transition duration-150 " \
+           "#{FOCUS} " \
            "disabled:opacity-65 disabled:pointer-events-none aria-disabled:opacity-65 aria-disabled:pointer-events-none"
 
     SIZES = {
@@ -14,7 +18,7 @@ module ComponentLibrary2100
       lg: "px-4 py-2 text-xl rounded-ui-lg"
     }.freeze
 
-    LINK = "bg-transparent text-primary border-transparent underline focus-visible:ring-primary/50"
+    LINK = "bg-transparent text-primary border-transparent underline"
 
     def initialize(variant: :primary, size: :md, outline: false, href: nil, type: :button, disabled: false, **html_options)
       super(**html_options)
@@ -42,9 +46,9 @@ module ComponentLibrary2100
 
     def color_classes
       return LINK if @variant == :link
-      return [Variants.fetch(Variants::OUTLINE, @variant), Variants.fetch(Variants::RING, @variant)] if @outline
+      return Variants.fetch(Variants::OUTLINE, @variant) if @outline
 
-      [Variants.fetch(Variants::FILL, @variant), Variants.fetch(Variants::RING, @variant), "hover:brightness-90"]
+      [Variants.fetch(Variants::FILL, @variant), "hover:brightness-90"]
     end
 
     def disabled_anchor_attrs

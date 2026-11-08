@@ -24,7 +24,8 @@ module ComponentLibrary2100
     DISABLED = "pointer-events-none text-secondary bg-transparent"
     HEADER = "block px-4 py-1 mb-0 text-sm wrap-anywhere text-secondary"
     DIVIDER = "h-0 my-2 border-t border-border-translucent"
-    CARET = "after:inline-block after:ml-[.255em] after:align-[.255em] after:content-[''] " \
+    # The button's gap spaces the caret and centres it, so it needs no margin or vertical-align.
+    CARET = "after:inline-block after:content-[''] " \
             "after:border-x-[.3em] after:border-t-[.3em] after:border-b-0 after:border-x-transparent"
 
     renders_one :trigger, ->(**opts) { ButtonComponent.new(**merge_attrs(opts, CARET, **trigger_defaults)) }

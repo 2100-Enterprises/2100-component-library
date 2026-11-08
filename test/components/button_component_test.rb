@@ -30,6 +30,40 @@ class ButtonComponentTest < ViewComponent::TestCase
     assert_selector "a[aria-disabled='true'][tabindex='-1']"
   end
 
+  def test_centres_its_label_in_a_box_taller_than_the_text
+    render_inline(ButtonComponent.new(class: "min-h-11")) { "Edit plan" }
+
+    assert_selector "button.inline-flex.items-center.justify-center.min-h-11"
+    assert_no_selector "button.inline-block"
+    assert_no_selector "button.align-middle"
+  end
+
+  def test_uses_a_medium_weight
+    render_inline(ButtonComponent.new) { "Save" }
+
+    assert_selector "button.font-medium"
+    assert_no_selector "button.font-normal"
+  end
+
+  def test_every_kind_of_button_has_the_same_focus_ring
+    [{}, {outline: true}, {variant: :danger}, {variant: :success, outline: true}, {variant: :link}, {href: "/x"}].each do |options|
+      render_inline(ButtonComponent.new(**options)) { "Go" }
+      classes = page.first("a, button")[:class].split
+
+      assert_equal ButtonComponent::FOCUS.split, classes.grep(/\Afocus-visible:/), options.inspect
+    end
+  end
+
+  def test_a_dropdown_caret_is_spaced_by_the_gap
+    render_inline(DropdownComponent.new) do |menu|
+      menu.with_trigger { "Actions" }
+      menu.with_item("Edit", href: "/edit")
+    end
+
+    assert_selector "button.inline-flex.gap-1\\.5"
+    assert_no_selector "button[class*='after:ml-']"
+  end
+
   def test_rejects_unknown_size
     assert_raises(ArgumentError) { render_inline(ButtonComponent.new(size: :huge)) { "x" } }
   end
