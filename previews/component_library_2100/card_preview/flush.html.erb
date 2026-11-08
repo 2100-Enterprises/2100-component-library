@@ -1,0 +1,8 @@
+<%= ui_card body: false, class: "w-72" do |card| %>
+  <% card.with_header { "Recent clients" } %>
+  <%= ui_list_group flush: true do |list| %>
+    <% list.with_item { "Acme Corp" } %>
+    <% list.with_item { "Globex" } %>
+    <% list.with_item { "Initech" } %>
+  <% end %>
+<% end %>

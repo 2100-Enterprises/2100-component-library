@@ -1,0 +1,7 @@
+<%= ui_carousel label: "Highlights", ride: ride, crossfade: crossfade, controls: controls, indicators: indicators, wrap: wrap, class: "max-w-xl" do |carousel| %>
+  <% [["bg-primary", "Discover"], ["bg-success", "Design"], ["bg-dark", "Deliver"]].each_with_index do |(fill, title), index| %>
+    <% carousel.with_slide(active: index.zero?, caption_title: title, caption_text: "Slide #{index + 1} of 3") do %>
+      <div class="h-64 <%= fill %>"></div>
+    <% end %>
+  <% end %>
+<% end %>

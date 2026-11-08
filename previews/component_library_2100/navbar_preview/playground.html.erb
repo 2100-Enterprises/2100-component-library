@@ -1,0 +1,13 @@
+<%= ui_navbar label: "Main", theme: theme, expand: expand do |navbar| %>
+  <% navbar.with_brand(href: "#") { "2100" } %>
+  <% navbar.with_item("Projects", href: "#", active: true) %>
+  <% navbar.with_item("Clients", href: "#") %>
+  <% navbar.with_item("Reports", href: "#") %>
+  <% navbar.with_actions do %>
+    <%= ui_dropdown(placement: "bottom-end") do |menu| %>
+      <% menu.with_trigger(variant: :secondary, size: :sm) { "Account" } %>
+      <% menu.with_item("Settings", href: "#") %>
+      <% menu.with_item("Sign out", href: "#", method: :delete) %>
+    <% end %>
+  <% end %>
+<% end %>

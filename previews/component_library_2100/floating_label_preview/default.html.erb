@@ -1,0 +1,8 @@
+<div class="flex max-w-sm flex-col gap-3">
+  <%= ui_floating_label label: "Email", control_id: "email" do %>
+    <%= email_field_tag :email, nil, id: "email", placeholder: " ", class: ComponentLibrary2100::FloatingLabelComponent::CONTROL %>
+  <% end %>
+  <%= ui_floating_label label: "Role", control_id: "role" do %>
+    <%= select_tag :role, options_for_select(%w[Admin Member Viewer], "Member"), id: "role", placeholder: " ", class: ComponentLibrary2100::FloatingLabelComponent::CONTROL %>
+  <% end %>
+</div>

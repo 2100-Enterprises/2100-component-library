@@ -1,0 +1,17 @@
+<div class="max-w-xl">
+  <%= ui_form_with model: person, scope: :person, url: "", method: :get do |f| %>
+    <%= f.error_summary %>
+    <%= f.text_field :name, hint: "As it appears on your ID" %>
+    <%= f.email_field :email %>
+    <%= f.password_field :password %>
+    <%= f.select :role, %w[Admin Member] %>
+    <%= f.combobox :role, src: "/examples/people", label: "Account manager" %>
+    <%= f.text_area :bio, rows: 3, counter: {max: 280}, optional: true %>
+    <%= f.radio_cards :plan, [["Basic", "basic", "One project"], ["Pro", "pro", "Unlimited projects"]], columns: 2 %>
+    <%= f.check_boxes :roles, %w[admin editor viewer], hint: "Pick any", inline: true %>
+    <%= f.radios :contact, [["Email", "email"], ["Phone", "phone"]] %>
+    <%= f.time_field :starts_at, min: "09:00", max: "17:00" %>
+    <%= f.switch :newsletter, label: "Email me updates" %>
+    <%= f.submit "Save" %>
+  <% end %>
+</div>

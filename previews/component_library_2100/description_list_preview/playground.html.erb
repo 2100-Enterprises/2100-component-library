@@ -1,0 +1,5 @@
+<%= ui_description_list layout: layout, dividers: dividers, class: "max-w-xl" do |dl| %>
+  <% dl.with_item(term: "Status") { ui_badge "Active", variant: :success } %>
+  <% dl.with_item(term: "Email", description: "ada@example.com") %>
+  <% dl.with_item(term: "Started", description: "3 May 2026") %>
+<% end %>

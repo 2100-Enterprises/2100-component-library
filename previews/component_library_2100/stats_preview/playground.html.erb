@@ -1,0 +1,6 @@
+<%= ui_stats columns: columns, label: "This month" do |stats| %>
+  <% stats.with_stat(label: "Clients", value: "48") %>
+  <% stats.with_stat(label: "Open invoices", value: "12", change: "3", trend: :down) %>
+  <% stats.with_stat(label: "Revenue", value: "$12,400", change: "8%", trend: :up) %>
+  <% stats.with_stat(label: "Hours logged", value: "316", change: "0", trend: :flat) %>
+<% end %>

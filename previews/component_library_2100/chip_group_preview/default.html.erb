@@ -1,0 +1,5 @@
+<%= ui_chip_group label: "Active filters" do |group| %>
+  <% group.with_chip(label: "Status: Open", remove: "#") %>
+  <% group.with_chip(label: "Owner: Ada", variant: :primary, remove: "#") %>
+  <% group.with_chip(label: "Tag: Rails", remove: "#") %>
+<% end %>

@@ -1,0 +1,13 @@
+<%= ui_table striped: striped, hover: hover, bordered: bordered, small: small, responsive: :md do |table| %>
+  <% table.with_caption { "Clients" } %>
+  <thead><tr>
+    <%= ui_table_header "Name" %>
+    <%= ui_table_header "Email" %>
+    <%= ui_table_header "Status" %>
+  </tr></thead>
+  <tbody>
+    <% [["Acme Corp", "ops@acme.test", :success], ["Globex", "hi@globex.test", :warning], ["Initech", "it@initech.test", :secondary]].each do |name, email, variant| %>
+      <tr><%= ui_table_header name, scope: :row %><td><%= email %></td><td><%= ui_badge variant.to_s.capitalize, variant: variant %></td></tr>
+    <% end %>
+  </tbody>
+<% end %>

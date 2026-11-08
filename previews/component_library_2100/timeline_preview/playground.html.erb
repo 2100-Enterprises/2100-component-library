@@ -1,0 +1,5 @@
+<%= ui_timeline label: "Project activity", alternate: alternate do |timeline| %>
+  <% timeline.with_event(time: Date.new(2026, 5, 12), title: "Proposal approved", variant: :success) { "Dana signed off." } %>
+  <% timeline.with_event(time: Date.new(2026, 5, 6), title: "Proposal sent", variant: :primary, icon: "P") { "Sent to Dana for review." } %>
+  <% timeline.with_event(time: Date.new(2026, 5, 3), title: "Draft shared", icon: "D") %>
+<% end %>

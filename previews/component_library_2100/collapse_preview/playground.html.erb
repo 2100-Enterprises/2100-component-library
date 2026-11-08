@@ -1,0 +1,4 @@
+<%= ui_collapse open: open do |collapse| %>
+  <% collapse.with_trigger(variant: :secondary) { "Show details" } %>
+  <div class="mt-3 rounded-ui border border-border p-4">Hidden until the trigger is pressed.</div>
+<% end %>

@@ -1,0 +1,27 @@
+<!doctype html>
+<%# The page Lookbook renders each preview in. Lookbook's theme toggle sets data-theme, the opt-in
+    dark-mode switch from engine.css. %>
+<% theme = params.dig(:lookbook, :display, :theme).presence_in(%w[light dark]) || "light" %>
+<html lang="en" data-theme="<%= theme %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Component preview</title>
+    <link rel="stylesheet" href="/assets/lookbook.css">
+    <script type="importmap"><%= JSON.generate(imports: ComponentLibrary2100::LookbookApp::IMPORTS).html_safe %></script>
+    <script type="module">
+      import { Turbo } from "@hotwired/turbo"
+      import { Application } from "@hotwired/stimulus"
+      import { register, useStyledConfirm } from "component_library_2100"
+
+      const application = new Application()
+      register(application)
+      // Styled data-turbo-confirm prompts, for the ConfirmDialog preview.
+      useStyledConfirm(Turbo)
+      application.start()
+    </script>
+  </head>
+  <body class="min-h-screen bg-surface text-body p-6">
+    <%= yield %>
+  </body>
+</html>

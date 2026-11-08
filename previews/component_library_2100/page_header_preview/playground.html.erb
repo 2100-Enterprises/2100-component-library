@@ -1,0 +1,10 @@
+<%= ui_page_header title: title, subtitle: subtitle do |header| %>
+  <% header.with_breadcrumb do %>
+    <%= ui_breadcrumb { |crumbs| crumbs.with_item("Home", href: "#"); crumbs.with_item("Projects") } %>
+  <% end %>
+  <% header.with_badge(variant: :success) { "Live" } %>
+  <% header.with_actions do %>
+    <%= ui_button "Export", variant: :secondary, outline: true %>
+    <%= ui_button "New project", href: "#" %>
+  <% end %>
+<% end %>

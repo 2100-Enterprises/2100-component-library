@@ -1,0 +1,5 @@
+<%= ui_tabs style: style do |tabs| %>
+  <% tabs.with_tab(title: "Profile", active: true) { "Profile content" } %>
+  <% tabs.with_tab(title: "Billing") { "Billing content" } %>
+  <% tabs.with_tab(title: "Archived", disabled: true) { "Unavailable" } %>
+<% end %>
