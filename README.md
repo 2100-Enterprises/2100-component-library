@@ -2,7 +2,7 @@
 
 Bootstrap 5-style components for Rails, built with [ViewComponent](https://viewcomponent.org), Stimulus and Tailwind CSS v4. Small by design: components render semantic HTML with Tailwind utilities, take plain keyword arguments, and let you override anything.
 
-**Status:** 0.7.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, Collapse, Dropdown, ListGroup, Modal, Nav, Navbar, Offcanvas, Pagination, Popover, Progress, Spinner, Switch, Table, Tabs, Toast, Tooltip, plus a form builder and the [extras](#extras) PageHeader, EmptyState, Avatar, Stepper, Skeleton, DescriptionList, Stat, Stats and SortHeader. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
+**Status:** 0.7.0 scaffold. Components: Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, Carousel, CloseButton, Collapse, Dropdown, ListGroup, Modal, Nav, Navbar, Offcanvas, Pagination, Popover, Progress, Scrollspy, Spinner, Switch, Table, Tabs, Toast, Tooltip, a form builder (with FormField, Switch, RadioCardGroup, ErrorSummary, InputGroup, FloatingLabel and Range) and the [extras](#extras) PageHeader, EmptyState, Avatar, Stepper, Skeleton, DescriptionList, Stat, Stats and SortHeader. Needs Ruby 3.2+, Rails 7.1+, ViewComponent 4, Tailwind v4 (`tailwindcss-rails`), importmap.
 
 ## Install
 
@@ -168,6 +168,23 @@ Pieces you can use without the builder:
 - **Switch** is Bootstrap's form-check: `ui_switch name: "user[newsletter]", label: "Email me", checked: true` (`type: :checkbox` or `:radio`, `inline: true`, `hint:`, `error:`). A switch is a checkbox with `role="switch"`. Checkboxes and switches with a `name:` include a hidden `unchecked_value:` ("0"; `false` for none), like Rails' `check_box`. HTML attributes go on the `<input>`; `wrapper:` takes the `<div>`'s. `autosubmit: true` submits the surrounding form on change (`cl-autosubmit`), for a toggle that saves itself inside a `form_with`.
 - **RadioCardGroup** is a `<fieldset>` of radio cards: `ui_radio_card_group name: "plan", legend: "Plan", checked: "pro", choices: [{value: "pro", label: "Pro", description: "Unlimited"}]`. Choices can also be `[label, value, description]` arrays or strings.
 - **ErrorSummary**: `ui_error_summary errors: @user.errors` (or an array of messages and `[message, href]` pairs). It renders nothing when there are no errors.
+- **InputGroup** joins a control with add-ons into one connected control. `with_prepend`/`with_append` add-ons (plain text is wrapped in the styled span; pass a block for a `ui_button`) sit around `with_control`, whose input carries `ComponentLibrary2100::InputGroupComponent::CONTROL`; `size:` is `:sm`/`:lg`:
+
+  ```erb
+  <%= ui_input_group do |group| %>
+    <% group.with_prepend { "$" } %>
+    <% group.with_control do %><%= number_field_tag :amount, nil, class: ComponentLibrary2100::InputGroupComponent::CONTROL %><% end %>
+    <% group.with_append { ".00" } %>
+  <% end %>
+  ```
+- **FloatingLabel** floats the label into the control when it is focused or filled, with no JavaScript. The control must carry `ComponentLibrary2100::FloatingLabelComponent::CONTROL` (which includes `peer` and leaves room for the label) and `placeholder: " "`, and share the `control_id`:
+
+  ```erb
+  <%= ui_floating_label label: "Email", control_id: "email" do %>
+    <%= email_field_tag :email, nil, id: "email", placeholder: " ", class: ComponentLibrary2100::FloatingLabelComponent::CONTROL %>
+  <% end %>
+  ```
+- **Range** is a styled `<input type="range">`: `ui_range name: "volume", value: 40, min: 0, max: 100, step: 5, label: "Volume", hint: "0–100"`. `label:`/`hint:` are wired with `aria-describedby`; the thumb grows on touch screens. HTML attributes go on the input.
 
 ## Interactive components
 
@@ -176,6 +193,8 @@ These lean on the platform instead of re-implementing it, so there is little Jav
 | Component | Built on | Notes |
 |---|---|---|
 | Accordion | `<details name>` | No JavaScript. `always_open: true` drops the shared name. |
+| Carousel | `cl-carousel` | Slides are a slot (`carousel.with_slide`). Controls, indicator dots, captions; `ride:` autoplays, `interval:` per slide, `wrap:`, `crossfade:`. Arrow keys, swipe, pause-on-hover and pause-when-hidden; WAI-ARIA carousel pattern. |
+| Scrollspy | `cl-scrollspy` | A nav (items via `spy.with_item(label, href: "#id")`) whose active link follows the section in view via IntersectionObserver. `smooth:` scrolls on click, `offset:` clears a sticky header. |
 | Collapse | grid-rows transition | `cl-collapse` toggles attributes; no heights are measured. |
 | Dropdown, Popover | popover API (`popover="auto"`) | Browser handles outside click, Escape and focus return; `cl-popover` places it and adds arrow-key navigation for menus. |
 | Modal, Offcanvas | `<dialog>` + `showModal()` | Focus trap, inert page and Escape come from the browser. `static_backdrop: true` ignores backdrop clicks. `close:` takes CloseButton options (`close: {white: true}` on a dark panel). A trigger with `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step. |

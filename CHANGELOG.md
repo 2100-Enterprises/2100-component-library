@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Bootstrap parity
+
+- Carousel: a slideshow with controls, indicator dots, captions and autoplay, driven by `cl-carousel`. Slides are a slot (`carousel.with_slide(active:, interval:, caption_title:, caption_text:) { ... }`). `ride: true` autoplays on load; `interval:` (ms) is the default, overridable per slide; `wrap:` cycles past the ends (default true); `crossfade: true` fades instead of sliding; `controls:`/`indicators:` default true. Arrow-key navigation, swipe, pause-on-hover and pause-when-tab-hidden are built in; follows the WAI-ARIA carousel pattern and honours `prefers-reduced-motion`. Helper `ui_carousel`.
+- Scrollspy: a nav whose active link follows the section in view, driven by `cl-scrollspy` with an IntersectionObserver. Items are a slot (`spy.with_item("Intro", href: "#intro", active:)`); the matching link gets `aria-current="true"`. `smooth:` (default true) smooth-scrolls on click; `offset:` (px) clears a sticky header. Helper `ui_scrollspy`.
+- InputGroup: joins a form control with leading/trailing add-ons into one connected control. Slots `with_prepend`, `with_append` (plain text is wrapped in the styled add-on span; pass a block for a button) and `with_control` (your input carries `InputGroupComponent::CONTROL`). Children share borders and only the outer corners round. `size:` is nil, `:sm` or `:lg`. No JavaScript. Helper `ui_input_group`.
+- FloatingLabel: a label that sits inside the control and floats up when it is focused or filled, pure CSS via Tailwind `peer` utilities (no JavaScript). `FloatingLabelComponent.new(label:, control_id:)` with a block for the control, which must carry `FloatingLabelComponent::CONTROL` (includes `peer` and room for the label) and `placeholder: " "`. Helper `ui_floating_label`.
+- Range: a styled `<input type="range">` (Bootstrap's form-range). `RangeComponent.new(name:, value:, min:, max:, step:, label:, hint:, disabled:)`; `label:`/`hint:` are wired with `aria-describedby`. The thumb grows on touch screens. No JavaScript. Helper `ui_range`.
+
 ## 0.7.0
 
 ### Building blocks
