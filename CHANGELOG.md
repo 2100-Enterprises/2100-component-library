@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.0
+
 ### Breaking
 
 - Button is `inline-flex items-center justify-center gap-1.5` instead of `inline-block align-middle`, so a label sits in the middle of a button made taller with a `min-h-` class, and an icon lines up beside it. A `class:` with a display utility (`hidden`, `block`, `inline-block`) still replaces it.
