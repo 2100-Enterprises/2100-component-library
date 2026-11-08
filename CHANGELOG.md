@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.0
+
 ### Building blocks
 
 - Skeleton: a pulsing, `aria-hidden` placeholder for content that is still loading (an extra, not in Bootstrap). `shape:` is `:text` (default), `:block` or `:circle`; `lines:` draws several text rows with a shorter last line. Size it with `class:`; the pulse stops under `prefers-reduced-motion`. Helper `ui_skeleton`.
