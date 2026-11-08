@@ -9,6 +9,7 @@ module ComponentLibrary2100
   #     <%= f.password_field :password %>                  <%# with a Show/Hide button %>
   #     <%= f.telephone_field :phone, optional: true %>
   #     <%= f.select :role, %w[Admin Member] %>
+  #     <%= f.combobox :person_id, src: people_path, text: @user.person_name %>
   #     <%= f.text_area :bio, rows: 4 %>
   #     <%= f.file_upload :avatar, accept: %w[image/*], max_bytes: 5.megabytes %>
   #     <%= f.radio_cards :plan, [["Basic", "basic", "One project"], ["Pro", "pro", "Unlimited"]], columns: 2 %>
@@ -35,6 +36,7 @@ module ComponentLibrary2100
   # Everything else (class:, data:, required: ...) goes on the control as usual.
   class FormBuilder < ActionView::Helpers::FormBuilder
     FIELD_OPTIONS = %i[label hint optional error wrapper counter].freeze
+    COMBOBOX_OPTIONS = %i[text min_length delay force_selection frame_id messages listbox_label].freeze
 
     %i[text_field email_field telephone_field phone_field number_field url_field search_field date_field time_field datetime_local_field month_field].each do |helper|
       define_method(helper) do |method, options = {}|
@@ -115,6 +117,21 @@ module ComponentLibrary2100
         error: error.nil? ? error_message(method) : error.presence,
         **options
       ))
+    end
+
+    # A text input with server-side suggestions (ComboboxComponent), in the usual field wrapper.
+    # `src:` is the endpoint that answers `?q=` with a Turbo Frame of ComboboxOptionComponents, and
+    # `text:` is the label shown for the current value (default: the value itself).
+    def combobox(method, src:, **options)
+      options = options.to_h.symbolize_keys
+      settings = options.extract!(*COMBOBOX_OPTIONS)
+      settings[:text] ||= value_of(method)
+
+      field(method, options) do |control_options|
+        @template.render(ComboboxComponent.new(
+          name: field_name(method), src: src, value: value_of(method), input: control_options, **settings
+        ))
+      end
     end
 
     # Radio buttons as cards (RadioCardGroupComponent). `choices` are `[label, value, description]`

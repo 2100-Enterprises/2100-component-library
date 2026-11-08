@@ -225,6 +225,20 @@ The rule is added to the hint on the server. With JavaScript, `cl-counter` shows
 ```
 
 A native file input, so it works without JavaScript and the server re-checks size and type. With JavaScript (`cl-file-upload`), chosen files appear with their size and a "Remove <filename>" button. Too-large or wrong-type files get a warning tied to the input with `aria-describedby`, and a polite live region announces what changed. A rejected file stays chosen, so the server's error still shows if it's submitted. `max_label:` ("25 MB") is derived from `max_bytes:`. `multiple: true` takes several files. `dropzone: true` adds a drop area; keyboard users still use the button. With `direct_upload: true` on the input, Active Storage's `direct-upload:*` events drive a progress bar. Helper `ui_file_upload`.
+### Combobox
+
+```erb
+<%= f.combobox :person_id, src: people_search_path, text: @membership.person&.name, force_selection: true %>
+
+<%# people_search: render the frame the request names (the Turbo-Frame header) %>
+<turbo-frame id="<%= request.headers["Turbo-Frame"] %>">
+  <% @people.each do |person| %>
+    <%= ui_combobox_option value: person.id, label: person.name %>
+  <% end %>
+</turbo-frame>
+```
+
+Server-side suggestions (PrimeVue's AutoComplete) on the WAI-ARIA 1.2 combobox pattern: `role=combobox` with `aria-autocomplete`, `aria-expanded`, `aria-controls` and `aria-activedescendant`, and a `listbox` of options. Typing loads `src?q=` into a Turbo Frame after `delay:` (250ms) once `min_length:` (1) is reached. A polite live region says "3 results" or "No results" (`messages:` replaces them). Down and Up move, Enter chooses, Escape closes and a second Escape clears, Alt+Down opens, and Tab chooses nothing. The active option is filled, outlined and checked, so it doesn't rely on colour. `ComboboxOptionComponent::Group.new(label:)` groups options. Without JavaScript the visible input submits its text. Needs Turbo in the host app. Helpers `ui_combobox` and `ui_combobox_option`.
 
 ## Interactive components
 
@@ -389,6 +403,31 @@ Metrics for a dashboard (extras: not in Bootstrap). A Stat is a `<dl>` card: `la
 ```
 
 A sortable column heading (an extra: not in Bootstrap): a `<th scope="col">` holding a link. You build `href:`, so it works with any sorting code and with Turbo Frames. `direction:` is the column's current sort: `:asc`, `:desc` or nil. The sorted column gets `aria-sort` and an arrow; the others show a faint icon that darkens on hover and focus. `align: :end` right-aligns numeric columns and shows the icon before the label. `link:` takes options for the `<a>`; other HTML attributes go on the `<th>`. The link answers to 44px on touch screens. Helper `ui_sort_header`.
+
+### Timeline
+
+```erb
+<%= ui_timeline label: "Project activity", id: "activity" do |timeline| %>
+  <% timeline.with_event(time: update.created_at, title: "Proposal approved", variant: :success) { "Dana signed off." } %>
+<% end %>
+
+<%# app/views/updates/create.turbo_stream.erb %>
+<%= turbo_stream.prepend "activity" do %>
+  <%= ui_timeline_event time: @update.created_at, title: @update.title %>
+<% end %>
+```
+
+An activity feed (an extra: not in Bootstrap): an `<ol>` of events, each with a `<time datetime>`. Markers are aria-hidden and `variant:` only tints them, so put what happened in the title or text. `alternate: true` alternates sides from `md:` up and stacks on phones. `time_label:` replaces the default date format, and `with_icon` replaces the dot. Each event is a self-contained `<li>`, so `turbo_stream.prepend` or `append` works. No JavaScript. Helpers `ui_timeline` and `ui_timeline_event`.
+### Chip
+
+```erb
+<%= ui_chip_group label: "Active filters" do |chips| %>
+  <% chips.with_chip(label: "Status: open", remove: admin_projects_path(params.permit(:q))) %>
+  <% chips.with_chip(label: "Ada", variant: :primary, remove: {href: membership_path(@membership), method: :delete}) %>
+<% end %>
+```
+
+A value someone chose or filtered by (an extra: not in Bootstrap). Badge is for statuses. `remove:` with a URL renders a link, the server-driven way to clear a filter. With a non-GET `method:` it renders a `button_to` form. The control is named "Remove <label>", which `remove: {label:}` overrides, and answers to 44px on touch screens. Without `remove:` a chip is a static `<span>`. Removing is a server round trip, so redirect back and let the page put focus where it makes sense. Helpers `ui_chip` and `ui_chip_group`.
 
 ## Overriding
 
