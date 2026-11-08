@@ -31,6 +31,10 @@
 
 - `ComboboxComponent` (`ui_combobox`, `f.combobox`): a text input with server-side suggestions, following the WAI-ARIA 1.2 combobox pattern. After `min_length:` characters and a `delay:`, the `cl-combobox` controller loads `src?q=<text>` into a Turbo Frame. The endpoint answers with `ComboboxOptionComponent` (`ui_combobox_option`) items, optionally inside `ComboboxOptionComponent::Group`, so it never writes ARIA by hand. A hidden input holds the value and the visible input holds the label. `force_selection: true` clears unmatched text on blur.
 - Keys: Down and Up move, Enter chooses, Escape closes and a second Escape clears, Alt+Down opens, Alt+Up chooses, and Tab closes. A polite live region announces the result count, `aria-busy` marks loading, and `cl-combobox:select` carries `{value, label}`. Without JavaScript it's a plain text input in the host form. Needs Turbo.
+### Timeline
+
+- `TimelineComponent` (`ui_timeline`): an activity feed as an ordered list. Each `timeline.with_event(time:, title:, variant:, icon:, time_label:) { body }` renders a `<time datetime>`, an aria-hidden marker that `variant:` tints, and its text. `alternate: true` alternates sides from `md:` up, and `label:` names the list. No JavaScript.
+- `TimelineEventComponent` (`ui_timeline_event`): one self-contained `<li>`, so a Turbo Stream can `prepend` an event into the list. The connector line and the alternate sides are plain CSS, and they stay right when events are added.
 
 ## 0.10.0
 
