@@ -34,7 +34,7 @@ class AppShellTest < ViewComponent::TestCase
     assert_selector "button svg[aria-hidden=true]"
 
     assert_selector "dialog#top-menu[aria-labelledby]", visible: :all
-    assert_selector "dialog#top-menu h5", text: "Menu", visible: :all
+    assert_selector "dialog#top-menu h2", text: "Menu", visible: :all
     assert_selector "dialog#top-menu ul.flex-col a[href='/projects'][aria-current=page]", visible: :all
     assert_no_selector "dialog#account", visible: :all
   end

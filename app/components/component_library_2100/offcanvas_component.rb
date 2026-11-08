@@ -6,7 +6,8 @@ module ComponentLibrary2100
   #
   # A modal <dialog> docked to an edge. Same slots, actions and behaviour as ModalComponent
   # (`trigger`, `footer`, `cl-dialog#open`, `static_backdrop:`, `close:`). placement: :start (default), :end, :top, :bottom.
-  # It slides in with a CSS transition where the browser supports `@starting-style`, and just appears elsewhere.
+  # The panel needs an accessible name: `title:` (shown as a heading) or `aria: {label: "..."}`
+  # (or `aria-labelledby`); without one it raises ArgumentError. It slides in with a CSS transition where the browser supports `@starting-style`, and just appears elsewhere.
   class OffcanvasComponent < ModalComponent
     DOCK = "m-0 max-w-none max-h-none w-auto p-0 text-body bg-surface border-0 border-border-translucent outline-none backdrop:bg-backdrop " \
            "open:flex open:flex-col transition-transform duration-300 transition-discrete motion-reduce:transition-none"
@@ -24,6 +25,7 @@ module ComponentLibrary2100
 
     def initialize(title: nil, placement: :start, static_backdrop: false, close: {}, **html_options)
       super(title: title, static_backdrop: static_backdrop, close: close, **html_options)
+      raise ArgumentError, "OffcanvasComponent needs a title: or aria: {label: ...} to name the dialog" unless title || named?
       @placement = placement
     end
 
@@ -31,6 +33,11 @@ module ComponentLibrary2100
     def call = super # rubocop:disable Lint/UselessMethodDefinition
 
     private
+
+    def named?
+      aria = html_options[:aria] || {}
+      [aria[:label], aria[:labelledby], html_options[:"aria-label"], html_options[:"aria-labelledby"]].any?(&:present?)
+    end
 
     def dialog_css = [DOCK, Variants.fetch(PLACEMENTS, @placement, kind: "placement")]
   end

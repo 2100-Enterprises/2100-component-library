@@ -84,7 +84,7 @@ class InteractiveComponentsTest < ViewComponent::TestCase
 
     assert_selector "[data-controller='cl-dialog'][data-cl-dialog-locked-value=true]"
     assert_selector "button.bg-danger[data-action='cl-dialog#open']", text: "Delete"
-    title_id = page.find("h5", text: "Sure?", visible: :all)[:id]
+    title_id = page.find("h2", text: "Sure?", visible: :all)[:id]
     assert_selector "dialog[aria-labelledby='#{title_id}'].max-w-\\[300px\\].my-auto", visible: :all
     assert_selector "dialog button[data-action='cl-dialog#close'][aria-label=Close]", visible: :all
     assert_selector "dialog", text: "Body", visible: :all
@@ -94,7 +94,7 @@ class InteractiveComponentsTest < ViewComponent::TestCase
   def test_modal_without_title_has_no_header
     render_inline(ModalComponent.new) { "Body" }
 
-    assert_no_selector "dialog h5", visible: :all
+    assert_no_selector "dialog h2", visible: :all
     assert_no_selector "dialog[aria-labelledby]", visible: :all
     assert_selector "dialog.mt-7", visible: :all
   end

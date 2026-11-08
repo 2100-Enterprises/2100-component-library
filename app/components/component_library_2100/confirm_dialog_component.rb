@@ -12,13 +12,15 @@ module ComponentLibrary2100
   # message comes from `data-turbo-confirm`; the title and confirm button text default to
   # `title:` and `accept:`, and a form or its submit button can override them with
   # `data-turbo-confirm-title` and `data-turbo-confirm-accept`. Cancel has focus when it opens,
-  # so pressing Enter by accident doesn't confirm. HTML attributes go on the <dialog>.
+  # so pressing Enter by accident doesn't confirm. The title is a heading, `heading_level:` 1 to 6
+  # (default 2), and the dialog is described by its message. HTML attributes go on the <dialog>.
   class ConfirmDialogComponent < BaseComponent
     TITLE = "m-0 mb-2 text-xl font-medium leading-normal"
     MESSAGE = "m-0"
 
-    def initialize(title: "Are you sure?", accept: "Confirm", cancel: "Cancel", variant: :danger, **html_options)
+    def initialize(title: "Are you sure?", accept: "Confirm", cancel: "Cancel", variant: :danger, heading_level: 2, **html_options)
       super(**html_options)
+      @heading_tag = ModalComponent.heading_tag(heading_level)
       @title = title
       @accept = accept
       @cancel = cancel
@@ -40,7 +42,7 @@ module ComponentLibrary2100
 
     def modal
       ModalComponent.new(size: :sm, **merge_attrs(html_options, nil, id: @id, role: "alertdialog",
-        aria: {labelledby: "#{@id}-title", describedby: "#{@id}-message"},
+        aria: {labelledby: "#{@id}-title"}, description_id: "#{@id}-message",
         data: {cl_confirm_target: "dialog", action: "close->cl-confirm#cancel"}))
     end
 
@@ -53,7 +55,7 @@ module ComponentLibrary2100
 
     def body
       safe_join([
-        tag.h2(@title, id: "#{@id}-title", class: TITLE, data: {cl_confirm_target: "title"}),
+        tag.public_send(@heading_tag, @title, id: "#{@id}-title", class: TITLE, data: {cl_confirm_target: "title"}),
         tag.p(id: "#{@id}-message", class: MESSAGE, data: {cl_confirm_target: "message"})
       ])
     end
