@@ -273,6 +273,31 @@ Initials come from the first and last words of `name:`. `size:` is `:sm` or `:md
 
 An `<ol>` named by `label:`. Each step's `state:` is `:complete`, `:current` or `:upcoming`; or give the stepper `current:` (the 1-based number of the current step) and leave `state:` off. The current step has `aria-current="step"`, and complete steps end with visually hidden `complete_text:` ("(completed)" by default; `nil` for none). A step is plain text, a link (`href:`) or a submit button (`name:` and `value:`); other options (`form:`, `disabled:`, `data:` ...) go on that element. `hint:` adds a line under the label, tied to a link or button with `aria-describedby`. Steps stack by default (mobile first) and switch to a row from `breakpoint:`, which is `:sm`, `:md` (default), `:lg`, `:xl` or `:xxl`; `breakpoint: false` always stacks.
 
+### DescriptionList
+
+<img src="docs/images/description_list.png" width="720" alt="A stacked description list and an inline, two-column one showing a record's details">
+
+```erb
+<%= ui_description_list do |dl| %>
+  <% dl.with_item(term: "Status") { ui_badge "Active", variant: :success } %>
+  <% dl.with_item(term: "Email", description: "ada@example.com") %>
+<% end %>
+```
+
+A `<dl>` of term/description pairs for a record's details (an extra: not in Bootstrap). `layout:` is `:stacked` (default; description under the term) or `:inline` (term and description in columns from the `sm` breakpoint). `dividers:` draws a line between rows (default true). Each item takes `term:` and either a `description:` string or a block for rich content (a badge, a link), plus the usual HTML attributes. Helper `ui_description_list`.
+
+### Skeleton
+
+<img src="docs/images/skeleton.png" width="720" alt="Skeleton placeholders: three text lines, an avatar-and-text row, and a block">
+
+```erb
+<div aria-busy="true">
+  <%= ui_skeleton lines: 3 %>
+</div>
+```
+
+A pulsing placeholder for content that is still loading (an extra: not in Bootstrap). It is decorative, so it is `aria-hidden`; put `aria-busy="true"` on the region it stands in and swap it for the real content when that arrives (for example a lazy Turbo Frame). `shape:` is `:text` (default), `:block` or `:circle`; `lines:` draws that many text rows, the last one shorter. Size it with `class:`. The pulse stops under `prefers-reduced-motion`. Helper `ui_skeleton`.
+
 ## Overriding
 
 | Need | How |

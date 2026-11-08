@@ -168,7 +168,7 @@ EXAMPLES = {
     </div>
   ERB
 
-  "table" => <<~'ERB'
+  "table" => <<~'ERB',
     <%= ui_table striped: true do %>
       <thead>
         <tr><th class="text-left">#</th><th class="text-left">Name</th><th class="text-left">Role</th><th class="text-left">Status</th></tr>
@@ -179,6 +179,31 @@ EXAMPLES = {
         <tr><td>3</td><td>Grace Hopper</td><td>Admiral</td><td><%= ui_badge "Away", variant: :warning %></td></tr>
       </tbody>
     <% end %>
+  ERB
+
+  "description_list" => <<~'ERB',
+    <div class="flex flex-col gap-8 max-w-xl">
+      <%= ui_description_list do |dl| %>
+        <% dl.with_item(term: "Full name", description: "Ada Lovelace") %>
+        <% dl.with_item(term: "Email", description: "ada@example.com") %>
+        <% dl.with_item(term: "Status") { ui_badge "Active", variant: :success } %>
+      <% end %>
+      <%= ui_description_list layout: :inline do |dl| %>
+        <% dl.with_item(term: "Plan", description: "Pro") %>
+        <% dl.with_item(term: "Renews", description: "Jan 1, 2027") %>
+      <% end %>
+    </div>
+  ERB
+
+  "skeleton" => <<~'ERB'
+    <div class="flex flex-col gap-6 max-w-md">
+      <%= ui_skeleton lines: 3 %>
+      <div class="flex items-center gap-3">
+        <%= ui_skeleton shape: :circle %>
+        <div class="grow"><%= ui_skeleton lines: 2 %></div>
+      </div>
+      <%= ui_skeleton shape: :block, class: "h-28" %>
+    </div>
   ERB
 }.freeze
 
@@ -192,7 +217,7 @@ CSS
 # held at its midpoint, where it is fully visible.
 FREEZE_CSS = <<~CSS
   * { transition: none !important; }
-  .animate-spin, .animate-progress-stripes { animation: none !important; }
+  .animate-spin, .animate-progress-stripes, .animate-pulse { animation: none !important; }
   .animate-spinner-grow { animation-delay: -.375s !important; animation-play-state: paused !important; }
 CSS
 

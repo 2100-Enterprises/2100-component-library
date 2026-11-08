@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Building blocks
+
+- Skeleton: a pulsing, `aria-hidden` placeholder for content that is still loading (an extra, not in Bootstrap). `shape:` is `:text` (default), `:block` or `:circle`; `lines:` draws several text rows with a shorter last line. Size it with `class:`; the pulse stops under `prefers-reduced-motion`. Helper `ui_skeleton`.
+- DescriptionList: a `<dl>` of term/description pairs for a record's details (an extra, not in Bootstrap). `layout:` is `:stacked` (default) or `:inline` (columns from `sm`); `dividers:` draws a line between rows (default true). Items take `term:` and either `description:` or a block. Helper `ui_description_list`.
+
 ## 0.6.1
 
 ### Progress
