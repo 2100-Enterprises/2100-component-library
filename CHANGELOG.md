@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Breaking
+
+- `OffcanvasComponent` needs an accessible name: `title:`, `aria: {label: ...}` or `aria: {labelledby: ...}`. Without one it raises `ArgumentError`. Navbar's menu already passes its `menu_label:` (default "Menu") as the title, so a Navbar is unaffected.
+- The title of `ModalComponent`, `OffcanvasComponent` and `ConfirmDialogComponent` is an `<h2>` instead of an `<h5>`. It looks the same. Update any selector or style that targets the `h5`, or pass `heading_level: 5` to keep the old markup.
+
+### Dialogs
+
+- `heading_level:` (1 to 6, default 2) on Modal, Offcanvas and ConfirmDialog.
+- `description_id:` on Modal and Offcanvas sets `aria-describedby`. ConfirmDialog is described by its message.
+- The built-in Modal and Offcanvas triggers get `aria-controls`, and a live `aria-expanded` that `cl-dialog` keeps in step, including on Escape. The dialog always has an id.
+
 ## 0.10.0
 
 ### Dark mode

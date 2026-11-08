@@ -13,7 +13,9 @@ module ComponentLibrary2100
   # and `cl-dialog#close` closes it. HTML attributes go on the <dialog>. The body scrolls when the
   # content is taller than the screen. `static_backdrop: true` ignores clicks outside the dialog.
   # `close:` takes CloseButtonComponent options (`close: {white: true}` on a dark dialog). A trigger with
-  # `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step with the dialog.
+  # `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step with the dialog; the built-in
+  # trigger is one and has `aria-controls`. The title is a heading, `heading_level:` 1 to 6 (default 2;
+  # the size stays the same). `description_id:` points `aria-describedby` at an element inside.
   class ModalComponent < BaseComponent
     SIZES = {sm: "max-w-[300px]", md: "max-w-[500px]", lg: "max-w-[800px]", xl: "max-w-[1140px]"}.freeze
     DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-body bg-surface border border-border-translucent rounded-ui-lg " \
@@ -23,17 +25,29 @@ module ComponentLibrary2100
     BODY = "grow min-h-0 p-4 overflow-y-auto"
     FOOTER = "flex flex-wrap items-center justify-end gap-2 p-3 border-t border-border"
 
+    HEADING_LEVELS = (1..6)
+
+    # The heading tag for a level, so every dialog validates it the same way.
+    def self.heading_tag(level)
+      raise ArgumentError, "heading_level must be 1 to 6, got #{level.inspect}" unless HEADING_LEVELS.cover?(level) && level.is_a?(Integer)
+
+      :"h#{level}"
+    end
+
     renders_one :trigger, ->(**opts) { ButtonComponent.new(**merge_attrs(opts, nil, **trigger_defaults)) }
     renders_one :footer, ->(**opts, &block) { tag.div(**merge_attrs(opts, FOOTER), &block) }
 
-    def initialize(title: nil, size: :md, centered: false, static_backdrop: false, close: {}, **html_options)
+    def initialize(title: nil, size: :md, centered: false, static_backdrop: false, close: {}, heading_level: 2, description_id: nil, **html_options)
       super(**html_options)
+      @heading_tag = self.class.heading_tag(heading_level)
+      @description_id = description_id
       @title = title
       @size = size
       @centered = centered
       @static_backdrop = static_backdrop
       @close = close
       @title_id = generated_id("dialog-title")
+      @dialog_id = html_options[:id] || generated_id("dialog")
     end
 
     def call
@@ -43,8 +57,9 @@ module ComponentLibrary2100
     private
 
     def dialog
-      options = attrs(dialog_css, data: {cl_dialog_target: "dialog", action: "click->cl-dialog#backdrop"})
+      options = attrs(dialog_css, id: @dialog_id, data: {cl_dialog_target: "dialog", action: "click->cl-dialog#backdrop"})
       options[:aria] = {labelledby: @title_id}.merge(options[:aria] || {}) if @title
+      options[:aria] = {describedby: @description_id}.merge(options[:aria] || {}) if @description_id
 
       tag.dialog(safe_join([header, tag.div(content, class: BODY), footer]), **options)
     end
@@ -53,7 +68,7 @@ module ComponentLibrary2100
       return unless @title
 
       close = render(CloseButtonComponent.new(**merge_attrs(@close, nil, data: {action: "cl-dialog#close"})))
-      tag.div(safe_join([tag.h5(@title, id: @title_id, class: TITLE), close]), class: header_css)
+      tag.div(safe_join([tag.public_send(@heading_tag, @title, id: @title_id, class: TITLE), close]), class: header_css)
     end
 
     def dialog_css
@@ -63,7 +78,8 @@ module ComponentLibrary2100
     def header_css = HEADER
 
     def trigger_defaults
-      {variant: :primary, aria: {haspopup: "dialog"}, data: {action: "cl-dialog#open"}}
+      {variant: :primary, aria: {haspopup: "dialog", controls: @dialog_id, expanded: false},
+       data: {action: "cl-dialog#open", cl_dialog_target: "trigger"}}
     end
   end
 end
