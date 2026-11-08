@@ -21,14 +21,14 @@ class PwaInstallComponentTest < ViewComponent::TestCase
     actions = page.find("[data-cl-pwa-install-target=promptActions]", visible: :all)
     assert actions.has_selector?("button[data-action='cl-pwa-install#install']", text: "Get the app", visible: :all)
     assert actions.has_selector?("button[data-action='cl-pwa-install#dismiss']", text: "Not now", visible: :all)
-    assert actions.has_text?("Add 2100 to your home screen", visible: :all)
+    assert actions.has_text?(:all, "Add 2100 to your home screen")
   end
 
   def test_ios_actions_guide_to_add_to_home_screen
     render_inline(PwaInstallComponent.new(app_name: "2100"))
 
     actions = page.find("[data-cl-pwa-install-target=iosActions]", visible: :all)
-    assert actions.has_text?("Tap the Share button, then Add to Home Screen.", visible: :all)
+    assert actions.has_text?(:all, "Tap the Share button, then Add to Home Screen.")
     assert actions.has_selector?("button[data-action='cl-pwa-install#dismiss']", text: "Got it", visible: :all)
   end
 
@@ -56,8 +56,8 @@ class PwaInstallComponentTest < ViewComponent::TestCase
     assert_equal "cl-pwa-install", root["data-controller"]
     assert_equal "cl-pwa-install:shown->analytics#track", root["data-action"]
     assert_equal "7", root["data-cl-pwa-install-dismiss-days-value"]
-    assert root.has_text?("Faster next time.", visible: :all)
-    assert root.has_text?("Use Share.", visible: :all)
+    assert root.has_text?(:all, "Faster next time.")
+    assert root.has_text?(:all, "Use Share.")
   end
 
   def test_buttons_meet_the_touch_target
