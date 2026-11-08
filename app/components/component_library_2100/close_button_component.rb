@@ -6,7 +6,8 @@ module ComponentLibrary2100
 
     ICON = "M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z"
 
-    # label: the accessible name. white: for use on dark backgrounds.
+    # label: the accessible name. white: always white, for a dark fill. Otherwise the close token, which
+    # follows dark mode.
     def initialize(label: "Close", white: false, **html_options)
       super(**html_options)
       @label = label
@@ -14,7 +15,7 @@ module ComponentLibrary2100
     end
 
     def call
-      tag.button(icon, **attrs([BASE, @white ? "text-white" : "text-black"], type: :button, aria: {label: @label}))
+      tag.button(icon, **attrs([BASE, @white ? "text-white" : "text-close"], type: :button, aria: {label: @label}))
     end
 
     private
