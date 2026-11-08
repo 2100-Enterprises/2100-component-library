@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Modal and Offcanvas
+
+- `ModalComponent` (and `ConfirmDialogComponent`, which renders one) fades and drops into place on open, and fades out on close, over 200ms. Its backdrop fades in and out with it.
+- `OffcanvasComponent` slides out on close instead of vanishing, and its backdrop fades in and out.
+- A closing dialog stays in the top layer until its animation ends, by transitioning `display` and `overlay` discretely. Browsers without `@starting-style` open and close instantly, as before, and so does any browser under `prefers-reduced-motion`. Firefox and Safari can't transition `overlay`, so they may close without the fade.
+- System tests can opt into the library's compiled CSS with `render_page(erb, styles: true)`.
+
 ## 0.11.0
 
 ### Breaking

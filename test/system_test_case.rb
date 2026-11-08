@@ -1,4 +1,5 @@
 require "test_helper"
+require "fileutils"
 require "selenium-webdriver"
 
 module ComponentLibrary2100
@@ -6,8 +7,19 @@ module ComponentLibrary2100
   # shell that loads Turbo, Stimulus and the library's controllers through an import map, the way
   # a host app's importmap does. A test can add endpoints with `serve`, for example the URL a
   # Turbo Frame loads.
+  #
+  # The page has no CSS unless a test asks for it with `render_page(erb, styles: true)`. Then it
+  # links a stylesheet Tailwind compiles from engine.css and the components, once per run, as a
+  # host app's build would, so a test can check what the CSS does, such as a transition.
   class SystemTestApp
-    JAVASCRIPT = File.expand_path("../app/javascript", __dir__)
+    ROOT = File.expand_path("..", __dir__)
+    JAVASCRIPT = File.join(ROOT, "app/javascript")
+    STYLESHEET = File.join(ROOT, "tmp/system_test/app.css")
+    TAILWIND_ENTRY = <<~CSS
+      @import "tailwindcss";
+      @import "#{ROOT}/app/assets/tailwind/component_library_2100/engine.css";
+      @source "#{ROOT}/test/system";
+    CSS
     VENDOR = {
       "/vendor/stimulus.js" => ["stimulus-rails", "app/assets/javascripts/stimulus.js"],
       "/vendor/turbo.js" => ["turbo-rails", "app/assets/javascripts/turbo.js"]
@@ -28,6 +40,7 @@ module ComponentLibrary2100
         <head>
           <meta charset="utf-8">
           <title>System test</title>
+          %s
           <script type="importmap">#{JSON.generate(imports: IMPORTS)}</script>
           <script type="module">
             import "@hotwired/turbo"
@@ -45,12 +58,13 @@ module ComponentLibrary2100
     HTML
 
     class << self
-      attr_accessor :page
+      attr_accessor :page, :styles
 
       def routes = (@routes ||= {})
 
       def reset
         self.page = ""
+        self.styles = false
         routes.clear
       end
 
@@ -58,13 +72,25 @@ module ComponentLibrary2100
       def render(erb, **locals)
         ApplicationController.render(inline: erb, locals: locals)
       end
+
+      def stylesheet
+        @stylesheet ||= begin
+          require "tailwindcss/ruby"
+          entry = File.join(File.dirname(STYLESHEET), "entry.css")
+          FileUtils.mkdir_p(File.dirname(entry))
+          File.write(entry, TAILWIND_ENTRY)
+          system(Tailwindcss::Ruby.executable, "-i", entry, "-o", STYLESHEET, exception: true, err: File::NULL)
+          File.read(STYLESHEET)
+        end
+      end
     end
 
     def call(env)
       request = Rack::Request.new(env)
       path = request.path_info
 
-      if path == "/" then html(format(SHELL, self.class.render(self.class.page.to_s)))
+      if path == "/" then html(format(SHELL, stylesheet_link, self.class.render(self.class.page.to_s)))
+      elsif path == "/app.css" then [200, {"content-type" => "text/css"}, [self.class.stylesheet]]
       elsif (route = self.class.routes[path]) then html(route.call(request))
       elsif VENDOR.key?(path) then javascript(vendored(*VENDOR.fetch(path)))
       elsif path.start_with?("/js/") then library_file(path.delete_prefix("/js/"))
@@ -74,6 +100,8 @@ module ComponentLibrary2100
     end
 
     private
+
+    def stylesheet_link = self.class.styles ? %(<link rel="stylesheet" href="/app.css">) : ""
 
     def html(body) = [200, {"content-type" => "text/html; charset=utf-8"}, [body]]
 
@@ -132,8 +160,10 @@ class SystemTestCase < ActiveSupport::TestCase
   end
 
   # Visits a page holding `erb`, and waits until the library's controllers have connected.
-  def render_page(erb)
+  # `styles: true` adds the library's compiled CSS.
+  def render_page(erb, styles: false)
     ComponentLibrary2100::SystemTestApp.page = erb
+    ComponentLibrary2100::SystemTestApp.styles = styles
     visit "/"
     assert_selector "html[data-ready]", visible: :all
   end
