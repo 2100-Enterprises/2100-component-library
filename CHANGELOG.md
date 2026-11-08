@@ -12,6 +12,9 @@
 - `heading_level:` (1 to 6, default 2) on Modal, Offcanvas and ConfirmDialog.
 - `description_id:` on Modal and Offcanvas sets `aria-describedby`. ConfirmDialog is described by its message.
 - The built-in Modal and Offcanvas triggers get `aria-controls`, and a live `aria-expanded` that `cl-dialog` keeps in step, including on Escape. The dialog always has an id.
+### Toast
+
+- Auto-dismiss pauses while a toast is hovered, while focus is inside it, or while the tab is hidden, and resumes with the time that was left, not the full delay (WCAG 2.2.1). `cl-dismiss` dispatches `cl-dismiss:paused` and `cl-dismiss:resumed`. Alerts and toasts without a delay are unchanged.
 
 ## 0.10.0
 

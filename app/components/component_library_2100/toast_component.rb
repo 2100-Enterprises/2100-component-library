@@ -6,6 +6,8 @@ module ComponentLibrary2100
   # `delay` milliseconds (5000 by default; `delay: 0` keeps it until dismissed) and has a close button
   # unless `dismissible: false`. `variant:` tints it like an Alert. `close:` passes options to that button,
   # so `close: {label: "Dismiss"}` renames it.
+  # The countdown pauses while the pointer is over the toast, while focus is inside it and while the tab is
+  # hidden, then resumes with the time that was left.
   class ToastComponent < BaseComponent
     BASE = "relative w-[min(350px,calc(100vw-1.5rem))] text-sm text-body bg-surface/85 bg-clip-padding border border-toast-border rounded-ui shadow-md " \
            "backdrop-blur transition-opacity duration-150 motion-reduce:transition-none data-closing:opacity-0"
