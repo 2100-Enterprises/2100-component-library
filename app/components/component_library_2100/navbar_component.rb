@@ -13,8 +13,9 @@ module ComponentLibrary2100
   # :xxl) the items move into an OffcanvasComponent opened by a menu button; `expand: true` never
   # collapses and `expand: false` always does. `actions` stay in the bar at every width, so an
   # account dropdown is always reachable. theme: :light (default) or :dark, from the light/dark
-  # tokens. `menu_label:` names the menu button and titles the panel; `placement:` docks the panel
-  # (:end default). HTML attributes go on the <nav>.
+  # tokens, or :surface, from the surface and body tokens, which follows dark mode. `menu_label:`
+  # names the menu button and titles the panel; `placement:` docks the panel (:end default). HTML
+  # attributes go on the <nav>.
   class NavbarComponent < BaseComponent
     BASE = "relative flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2"
     LIST = "flex m-0 p-0 list-none"
@@ -38,6 +39,14 @@ module ComponentLibrary2100
         brand: "text-dark-on hover:text-dark-on",
         toggler: "text-dark-on/55 border-dark-on/10 hover:text-dark-on/55",
         close: true
+      },
+      # The page's own surface and text, so the bar follows dark mode.
+      surface: {
+        bar: "bg-surface text-body",
+        link: "text-body-muted hover:text-body aria-[current=page]:text-body",
+        brand: "text-body hover:text-body",
+        toggler: "text-body-muted border-border hover:text-body",
+        close: false
       }
     }.freeze
 

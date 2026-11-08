@@ -15,13 +15,47 @@ class ThemeTokensTest < ViewComponent::TestCase
     "surface-stripe" => "rgb(0 0 0 / 0.05)", "surface-hover" => "rgb(0 0 0 / 0.075)",
     "surface" => "#fff", "surface-subtle" => "#f8f9fa", "backdrop" => "rgb(0 0 0 / 0.5)", "link-hover" => "#0a58ca",
     "tooltip" => "rgb(0 0 0 / 0.9)", "tooltip-on" => "#fff", "toast-border" => "rgb(0 0 0 / 0.1)",
-    "switch" => "rgb(0 0 0 / 0.25)", "popover-header" => "#f0f0f0"
+    "switch" => "rgb(0 0 0 / 0.25)", "popover-header" => "#f0f0f0", "close" => "#000"
   }.freeze
+
+  # The tokens in the first @theme block, and the declarations inside the theme-dark block.
+  LIGHT_TOKENS = ENGINE_CSS[/^@theme \{(.*?)^\}/m, 1].scan(/--color-([a-z-]+):/).flatten
+  DARK_BLOCK = ENGINE_CSS[/^    @variant theme-dark \{(.*?)^    \}/m, 1]
+  DARK_TOKENS = DARK_BLOCK.scan(/--color-([a-z-]+): ([^;]+);/).to_h
+
+  # Absolute colours, the same in either mode, and on-colours whose light value is already dark.
+  UNCHANGED = %w[light dark light-on dark-on warning-on info-on].freeze
 
   GREYS = /#(212529|495057|dee2e6|e9ecef|ced4da|f8f9fa|f0f0f0|0a58ca)|black\/|bg-white|border-b-white|rgb\(0_0_0/
 
   def test_engine_css_defines_each_token_with_the_bootstrap_value
     TOKENS.each { |name, value| assert_includes ENGINE_CSS, "--color-#{name}: #{value};" }
+  end
+
+  def test_dark_mode_sets_every_token_but_the_absolute_ones
+    assert_equal LIGHT_TOKENS.sort - UNCHANGED, DARK_TOKENS.keys.sort
+    assert_includes DARK_BLOCK, "color-scheme: dark;"
+  end
+
+  def test_dark_mode_is_opt_in_by_data_theme
+    assert_match(/@custom-variant theme-dark \{\s*&:where\(\[data-theme="dark"\], \[data-theme="dark"\] \*\)/, ENGINE_CSS)
+    assert_match(/@media \(prefers-color-scheme: dark\) \{\s*&:where\(\[data-theme="system"\], \[data-theme="system"\] \*\)/, ENGINE_CSS)
+    refute_match(/^\s*@media \(prefers-color-scheme: dark\) \{\s*:root/, ENGINE_CSS)
+  end
+
+  # WCAG AA: body text 4.5:1 on each surface, and each fill's text 4.5:1 on that fill, in dark mode.
+  def test_dark_mode_text_meets_contrast
+    %w[surface surface-subtle].each do |surface|
+      %w[body body-muted primary secondary success danger warning info].each do |text|
+        assert_operator contrast(DARK_TOKENS[text], DARK_TOKENS[surface]), :>=, 4.5, "#{text} on #{surface}"
+      end
+    end
+    %w[primary secondary success danger].each do |fill|
+      assert_operator contrast(DARK_TOKENS["#{fill}-on"], DARK_TOKENS[fill]), :>=, 4.5, "#{fill}-on on #{fill}"
+    end
+    %w[primary secondary success danger warning info].each do |name|
+      assert_operator contrast(DARK_TOKENS["#{name}-emphasis"], DARK_TOKENS["#{name}-subtle"]), :>=, 4.5, "#{name} alert"
+    end
   end
 
   def test_components_no_longer_hard_code_the_tokenised_greys
@@ -105,5 +139,19 @@ class ThemeTokensTest < ViewComponent::TestCase
     render_inline(CardComponent.new(class: "border-primary")) { "x" }
 
     assert_selector "div.border-primary:not(.border-border-translucent)"
+  end
+
+  private
+
+  def contrast(first, second)
+    light, dark = [luminance(first), luminance(second)].sort.reverse
+    (light + 0.05) / (dark + 0.05)
+  end
+
+  def luminance(hex)
+    hex = hex.delete("#")
+    hex = hex.chars.map { |c| c * 2 }.join if hex.length == 3
+    r, g, b = hex.scan(/../).map { |pair| pair.to_i(16) / 255.0 }.map { |c| (c <= 0.03928) ? c / 12.92 : ((c + 0.055) / 1.055)**2.4 }
+    0.2126 * r + 0.7152 * g + 0.0722 * b
   end
 end

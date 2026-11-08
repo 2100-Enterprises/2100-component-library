@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Dark mode
+
+- Opt-in dark mode: `data-theme="dark"` on `<html>` turns it on, `data-theme="system"` follows the OS, and no attribute changes nothing. Every colour token gets a dark value, and `color-scheme: dark` is set. Solid fills lighten and take dark `-on` text, so a fill also reads as text on a dark surface. The README's [Dark mode](README.md#dark-mode) section has the details.
+- `theme-dark:` variant, for an app's own classes and dark token values, following the same switch.
+- `--color-close` token (default `#000`): CloseButton's icon uses it instead of `text-black`, so it shows on a dark surface. `white: true` is unchanged.
+- Navbar `theme: :surface`: the bar and its menu panel use `surface` and `body` tokens, so they follow dark mode. `:light` stays the default.
+
 ## 0.9.0
 
 ### Breaking

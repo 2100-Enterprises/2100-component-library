@@ -11,6 +11,20 @@
 @source "../../../components";
 @source "../../../form_builders";
 
+/* Dark mode, opt-in: put data-theme="dark" on <html>, or data-theme="system" to follow the OS.
+   Without the attribute nothing changes. Use theme-dark: for your own classes and
+   `@variant theme-dark { ... }` for your own dark token values, so both follow the same switch. */
+@custom-variant theme-dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}
+
 @theme {
   /* Solid fills */
   --color-primary: #0d6efd;
@@ -83,6 +97,7 @@
   --color-toast-border: rgb(0 0 0 / 0.1);
   --color-switch: rgb(0 0 0 / 0.25);
   --color-popover-header: #f0f0f0;
+  --color-close: #000;
 
   /* Corner radii: rounded-ui, rounded-ui-sm, rounded-ui-lg */
   --radius-ui: 0.25rem;
@@ -113,5 +128,78 @@
 @layer base {
   body:has(dialog:modal) {
     overflow: hidden;
+  }
+}
+
+/* Dark values for every token. Solid fills lighten and take dark text, so a fill also reads as
+   text or an outline on a dark surface (Material 3's approach). Subtle, border and emphasis
+   shades are Bootstrap 5.3's dark ones. The light and dark fills stay as they are. To set your
+   own, write `:root { @variant theme-dark { --color-primary: ...; } }` after this import. */
+@layer base {
+  :root {
+    @variant theme-dark {
+      color-scheme: dark;
+
+      --color-primary: #6ea8fe;
+      --color-secondary: #a7acb1;
+      --color-success: #75b798;
+      --color-danger: #ea868f;
+      --color-warning: #ffda6a;
+      --color-info: #6edff6;
+
+      --color-primary-on: #000;
+      --color-secondary-on: #000;
+      --color-success-on: #000;
+      --color-danger-on: #000;
+
+      --color-primary-subtle: #031633;
+      --color-secondary-subtle: #161719;
+      --color-success-subtle: #051b11;
+      --color-danger-subtle: #2c0b0e;
+      --color-warning-subtle: #332701;
+      --color-info-subtle: #032830;
+      --color-light-subtle: #343a40;
+      --color-dark-subtle: #1a1d20;
+
+      --color-primary-border: #084298;
+      --color-secondary-border: #41464b;
+      --color-success-border: #0f5132;
+      --color-danger-border: #842029;
+      --color-warning-border: #997404;
+      --color-info-border: #087990;
+      --color-light-border: #495057;
+      --color-dark-border: #343a40;
+
+      --color-primary-emphasis: #9ec5fe;
+      --color-secondary-emphasis: #c4c8cb;
+      --color-success-emphasis: #a3cfbb;
+      --color-danger-emphasis: #f1aeb5;
+      --color-warning-emphasis: #ffe69c;
+      --color-info-emphasis: #9eeaf9;
+      --color-light-emphasis: #f8f9fa;
+      --color-dark-emphasis: #dee2e6;
+
+      --color-body: #dee2e6;
+      --color-body-muted: #adb5bd;
+      --color-border: #495057;
+      --color-border-subtle: #343a40;
+      --color-border-input: #6c757d;
+      --color-border-translucent: rgb(255 255 255 / 0.15);
+      --color-surface: #212529;
+      --color-surface-subtle: #2b3035;
+      --color-surface-muted: #343a40;
+      --color-surface-tint: rgb(255 255 255 / 0.03);
+      --color-surface-stripe: rgb(255 255 255 / 0.05);
+      --color-surface-hover: rgb(255 255 255 / 0.075);
+      --color-backdrop: rgb(0 0 0 / 0.6);
+      --color-link-hover: #9ec5fe;
+
+      --color-tooltip: rgb(255 255 255 / 0.9);
+      --color-tooltip-on: #000;
+      --color-toast-border: rgb(255 255 255 / 0.15);
+      --color-switch: rgb(255 255 255 / 0.25);
+      --color-popover-header: #2b3035;
+      --color-close: #fff;
+    }
   }
 }

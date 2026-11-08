@@ -66,6 +66,15 @@ class AppShellTest < ViewComponent::TestCase
     assert_selector "dialog button.text-white[aria-label=Close]", visible: :all
   end
 
+  def test_navbar_surface_theme_follows_the_page_tokens
+    render_navbar(theme: :surface)
+
+    assert_selector "nav.bg-surface.text-body"
+    assert_selector "nav > ul a.text-body-muted", text: "Clients"
+    assert_selector "dialog.bg-surface.text-body", visible: :all
+    assert_selector "dialog button.text-close[aria-label=Close]", visible: :all
+  end
+
   def test_navbar_without_items_has_no_menu
     render_inline(NavbarComponent.new) { |navbar| navbar.with_brand("2100") }
 

@@ -108,7 +108,7 @@ The bar across the top of an app: brand, links, and actions such as an account d
 <% end %>
 ```
 
-It's a `<nav>` landmark named by `label:`. Below the `expand:` breakpoint (`:sm`, `:md`, `:lg` default, `:xl`, `:xxl`) the links move into an Offcanvas opened by a menu button, which has `menu_label:` (default "Menu") as its accessible name, `aria-controls` pointing at the panel, and `aria-expanded` kept in step by `cl-dialog`. `expand: true` never collapses; `expand: false` always does. Actions stay in the bar at every width. `theme:` is `:light` (default) or `:dark`, coloured from the `light`/`dark` tokens; the panel matches. `placement:` docks the panel (`:end` default). HTML attributes go on the `<nav>`; extra item options go on the link.
+It's a `<nav>` landmark named by `label:`. Below the `expand:` breakpoint (`:sm`, `:md`, `:lg` default, `:xl`, `:xxl`) the links move into an Offcanvas opened by a menu button, which has `menu_label:` (default "Menu") as its accessible name, `aria-controls` pointing at the panel, and `aria-expanded` kept in step by `cl-dialog`. `expand: true` never collapses; `expand: false` always does. Actions stay in the bar at every width. `theme:` is `:light` (default) or `:dark`, coloured from the `light`/`dark` tokens, or `:surface`, coloured from `surface` and `body` so it follows [dark mode](#dark-mode); the panel matches. `placement:` docks the panel (`:end` default). HTML attributes go on the `<nav>`; extra item options go on the link.
 
 ### Pagination
 
@@ -396,10 +396,37 @@ It also defines `--radius-ui`, `--radius-ui-sm` and `--radius-ui-lg`, and these 
 | `--color-toast-border` | `rgb(0 0 0 / 0.1)` | Toast edge |
 | `--color-switch` | `rgb(0 0 0 / 0.25)` | Unchecked switch border and knob |
 | `--color-popover-header` | `#f0f0f0` | Popover title bar |
+| `--color-close` | `#000` | CloseButton icon, unless `white:` |
 
-Override them in your `@theme` to retint every component at once. The translucent ones darken whatever is behind them. Not tokens: the CloseButton `white:` icon and the Progress bar's white label and stripes, which are always white on a coloured fill.
+Override them in your `@theme` to retint every component at once. The translucent ones darken whatever is behind them (in dark mode they lighten it). Not tokens: the CloseButton `white:` icon and the Progress bar's white label and stripes, which are always white on a coloured fill.
 
 Your own `@theme` wins over these, so a token with the same name but another purpose changes the components. A pale `--color-success` meant for borders makes success buttons unreadable. Give those tokens other names.
+
+## Dark mode
+
+Opt-in, and off until you ask for it. Put `data-theme` on `<html>`:
+
+| `data-theme` | Result |
+|---|---|
+| none | Light, as before |
+| `"light"` | Light |
+| `"dark"` | Dark |
+| `"system"` | Follows the OS (`prefers-color-scheme`) |
+
+In dark mode `engine.css` gives every token above a dark value and sets `color-scheme: dark`, so native controls and scrollbars match. The neutrals, and the subtle, border and emphasis shades, are Bootstrap 5.3's dark values. The solid fills lighten and take dark `-on` text, as in Material 3's dark scheme, so one colour works as a button fill, as link text and as an outline. `light` and `dark` keep their light-mode fills. Every text token passes WCAG AA on `surface` and `surface-subtle`, and the test suite checks it.
+
+Write your own dark values with the same switch, after the import:
+
+```css
+:root {
+  @variant theme-dark {
+    --color-primary: #38bdf8;
+    --color-surface: #0f172a;
+  }
+}
+```
+
+`theme-dark:` works on any class too (`theme-dark:hidden`), but prefer a token: it changes every component at once. Your page background isn't a component, so set it yourself, for example `class="bg-surface-subtle text-body"` on `<body>`. Navbar's `theme: :surface` follows the mode; `:light` and `:dark` don't.
 
 ## Differences from Bootstrap
 
