@@ -24,10 +24,8 @@ group :test do
   gem "selenium-webdriver"
 end
 
-# Only needed for `rake screenshots`, which regenerates the README images, and `rake lookbook`,
-# which browses the previews in previews/.
+# Only needed for `rake lookbook`, which browses the previews in previews/.
 group :development do
-  gem "ferrum"
   gem "lookbook", "~> 2.3", require: false
   gem "tailwindcss-ruby", "~> 4.0"
 end

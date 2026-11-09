@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Docs
+
+- The README no longer shows component images, and `rake screenshots` (with `script/screenshots.rb`, `docs/images/` and the `ferrum` development gem) is gone. Browse the components with `rake lookbook` instead.
+
 ### Progressive Web App
 
 - `ui_pwa_meta_tags` renders the head tags that make a page installable: the manifest link, `theme-color`, the `apple-*` tags iOS reads and an `apple-touch-icon`. The iOS status bar defaults to opaque.
