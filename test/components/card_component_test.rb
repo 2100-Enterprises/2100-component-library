@@ -32,4 +32,21 @@ class CardComponentTest < ViewComponent::TestCase
     assert_selector "img[src='/a.jpg'][alt=A]"
     assert_selector "img[src='/b.jpg']"
   end
+
+  def test_pop_animation
+    render_inline(CardComponent.new(animation: :pop)) { "Content" }
+    assert_selector ".transition-transform"
+    assert_selector ".hover:scale-[1.02]"
+    assert_selector ".motion-reduce:transition-none"
+  end
+
+  def test_lift_animation
+    render_inline(CardComponent.new(animation: :lift)) { "Content" }
+    assert_selector ".hover:-translate-y-1"
+  end
+
+  def test_fade_animation
+    render_inline(CardComponent.new(animation: :fade)) { "Content" }
+    assert_selector ".hover:opacity-90"
+  end
 end
