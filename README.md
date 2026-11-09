@@ -429,6 +429,45 @@ An activity feed (an extra: not in Bootstrap): an `<ol>` of events, each with a 
 
 A value someone chose or filtered by (an extra: not in Bootstrap). Badge is for statuses. `remove:` with a URL renders a link, the server-driven way to clear a filter. With a non-GET `method:` it renders a `button_to` form. The control is named "Remove <label>", which `remove: {label:}` overrides, and answers to 44px on touch screens. Without `remove:` a chip is a static `<span>`. Removing is a server round trip, so redirect back and let the page put focus where it makes sense. Helpers `ui_chip` and `ui_chip_group`.
 
+## Progressive Web App
+
+Everything a host app needs to install to the home screen with the shared 2100 identity: icons, head tags, a service worker and an install banner. The manifest stays in the host app, since its name and colors are the app's own.
+
+**1. Routes and manifest.** Rails 7.2+ ships `rails/pwa`. Uncomment its routes in `config/routes.rb`, then point `app/views/pwa/manifest.json.erb` at the shared icons with `asset_path` (see [`app/assets/images/component_library_2100/pwa/`](app/assets/images/component_library_2100/pwa/README.md)). On Rails 7.1, serve both files from a controller of your own.
+
+**2. Head tags**, in each layout people might install from:
+
+```erb
+<%= ui_pwa_meta_tags title: "2100", application_name: "2100 Enterprises", theme_color: "#0B1220" %>
+```
+
+They link the manifest (`manifest:`, default `/manifest.json`), set `theme-color`, and add the `apple-*` tags iOS reads instead of the manifest, plus a 180px `apple-touch-icon` (`apple_touch_icon:`, or `false`). `status_bar:` defaults to `"default"`; `"black-translucent"` draws the page under the iOS status bar, so use it only where the top bar pads for `env(safe-area-inset-top)`.
+
+**3. Service worker.** Make `app/views/pwa/service-worker.js.erb` a single line:
+
+```erb
+<%= render "component_library_2100/pwa/service_worker", cache_version: "v1", precache: ["/icon.png"] %>
+```
+
+Pages are network-first, falling back to `offline_url:` (default `/offline.html`, which you provide, self-contained) when offline. Same-origin static assets are stale-while-revalidate. Bump `cache_version:` to retire the old cache. Paths under `skip:` are never cached; the default, `["/rails/active_storage/"]`, keeps signed-in users' files off the device, so keep it when you pass your own list. `cache_prefix:` (default `"2100-pwa"`) names the cache, and activation only deletes caches with that prefix.
+
+Register it from `application.js`. It waits for the page's `load` event and resolves `null` where service workers aren't available:
+
+```js
+import { registerServiceWorker } from "component_library_2100/pwa"
+registerServiceWorker()   // or registerServiceWorker("/sw", { scope: "/app/" })
+```
+
+`isStandalone()` from the same module is true inside the installed app.
+
+**4. Install banner**, once in the layout's `<body>`:
+
+```erb
+<%= ui_pwa_install app_name: "2100 Enterprises" %>
+```
+
+It renders hidden. The `cl-pwa-install` controller shows a one-tap Install button where the browser fires `beforeinstallprompt` (Chromium on Android and desktop), and Add to Home Screen guidance on iOS Safari. It never shows in the installed app, and a dismissal is remembered for `dismiss_days:` (default 30). `icon:` defaults to the shared 192px icon (`false` for none); `message:`, `ios_message:` and `install_label:` change the copy. It dispatches `cl-pwa-install:shown` (`detail.platform` is `"prompt"` or `"ios"`), `:accepted`, `:declined` and `:dismissed` for analytics.
+
 ## Overriding
 
 | Need | How |

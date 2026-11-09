@@ -1,0 +1,82 @@
+<%#
+  The 2100 service worker. A host app renders it from its own app/views/pwa/service-worker.js.erb,
+  which Rails' rails/pwa#service_worker serves from /service-worker so its scope is the whole site.
+  That file holds one output tag that renders this partial: see the README's PWA section.
+
+  Strategy, so a site is never served stale pages:
+    - Navigations (HTML): network-first, falling back to the cached offline page.
+    - Same-origin static assets: stale-while-revalidate, so the shell loads instantly and
+      refreshes in the background.
+    - Anything under a `skip` prefix is never cached. The default keeps Active Storage out, so a
+      signed-in user's private files don't stay on the device.
+
+  Locals (all optional):
+    cache_version: bump it to retire the old cache on the next activation.
+    cache_prefix:  the cache name before the version, so two apps on one origin don't collide.
+    offline_url:   the page shown for a navigation that fails offline. Make it self-contained.
+    precache:      URLs cached at install. The offline page is always included; add anything it
+                   loads, such as its icon.
+    skip:          path prefixes never cached.
+-%>
+<%
+  cache_version = local_assigns.fetch(:cache_version, "v1")
+  cache_prefix = local_assigns.fetch(:cache_prefix, "2100-pwa")
+  offline_url = local_assigns.fetch(:offline_url, "/offline.html")
+  precache = ([offline_url] + Array(local_assigns.fetch(:precache, []))).uniq
+  skip = Array(local_assigns.fetch(:skip, ["/rails/active_storage/"]))
+-%>
+const CACHE_NAME = <%= raw "#{cache_prefix}-#{cache_version}".to_json %>
+const CACHE_PREFIX = <%= raw "#{cache_prefix}-".to_json %>
+const OFFLINE_URL = <%= raw offline_url.to_json %>
+const PRECACHE = <%= raw precache.to_json %>
+const SKIP = <%= raw skip.to_json %>
+const ASSET_PATTERN = /\.(?:css|js|png|jpe?g|gif|svg|webp|avif|ico|woff2?)$/
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(PRECACHE))
+      .then(() => self.skipWaiting())
+  )
+})
+
+// Only this app's old caches are deleted, so another app on the origin keeps its own.
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(
+        keys.filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME).map((key) => caches.delete(key))
+      ))
+      .then(() => self.clients.claim())
+  )
+})
+
+self.addEventListener("fetch", (event) => {
+  const { request } = event
+  if (request.method !== "GET") return
+
+  const url = new URL(request.url)
+  if (url.origin !== self.location.origin) return
+  if (SKIP.some((prefix) => url.pathname.startsWith(prefix))) return
+
+  if (request.mode === "navigate") {
+    event.respondWith(fetch(request).catch(() => caches.match(OFFLINE_URL)))
+    return
+  }
+
+  if (!ASSET_PATTERN.test(url.pathname)) return
+
+  event.respondWith(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const cached = await cache.match(request)
+      const network = fetch(request)
+        .then((response) => {
+          // Opaque or redirected responses can't be checked, so only plain 200s are kept.
+          if (response.ok && !response.redirected) cache.put(request, response.clone())
+          return response
+        })
+        .catch(() => cached)
+      return cached || network
+    })
+  )
+})

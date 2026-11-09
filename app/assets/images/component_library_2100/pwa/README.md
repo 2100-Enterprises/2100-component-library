@@ -27,3 +27,6 @@ These are served through the asset pipeline (Propshaft). Reference them from you
   { "src": "<%= asset_path("component_library_2100/pwa/icon-512-maskable.png") %>", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
 ]
 ```
+
+The head tags, service worker and install banner that go with them are in the main README's
+[Progressive Web App](../../../../../README.md#progressive-web-app) section.
