@@ -48,7 +48,7 @@ module ComponentLibrary2100
     private
 
     def change_tag
-      return unless @change:
+      return unless @change
 
       trend = TRENDS[@trend]
       sr = tag.span("#{trend[:text]} ", class: "sr-only") if trend
@@ -56,7 +56,7 @@ module ComponentLibrary2100
     end
 
     def icon(trend)
-      return unless trend && trend[:icon]:
+      return unless trend && trend[:icon]
 
       tag.svg(tag.path(d: trend[:icon], "fill-rule": "evenodd"), viewBox: "0 0 16 16", fill: "currentColor",
         class: "size-4 shrink-0", aria: {hidden: true})
