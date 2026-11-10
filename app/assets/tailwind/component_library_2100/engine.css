@@ -91,6 +91,10 @@
 
   --animate-spinner-grow: spinner-grow 0.75s linear infinite;
   --animate-progress-stripes: progress-stripes 1s linear infinite;
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-fade-in-delayed: fade-in 0.5s ease-out 0.1s both;
+  --animate-fade-in-delayed-2: fade-in 0.5s ease-out 0.2s both;
+  --animate-fade-in-delayed-3: fade-in 0.5s ease-out 0.3s both;
 
   @keyframes spinner-grow {
     0% {
@@ -105,6 +109,17 @@
   @keyframes progress-stripes {
     0% {
       background-position-x: 1rem;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }

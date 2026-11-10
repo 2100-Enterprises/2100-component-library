@@ -8,12 +8,12 @@ module ComponentLibrary2100
   # change is green when up and red when down; pass `variant:` when down is good (costs, churn).
   # `card: false` drops the border and padding, for use inside your own container.
   class StatComponent < BaseComponent
-    CARD = "m-0 p-4 bg-surface border border-border-translucent rounded-ui"
-    PLAIN = "m-0"
+    CARD = "m-0 p-4 bg-surface border border-border-translucent rounded-ui animate-fade-in"
+    PLAIN = "m-0 animate-fade-in"
     LABEL = "text-sm font-medium text-secondary"
-    VALUE = "m-0 mt-1 text-3xl font-semibold leading-tight text-body"
-    CHANGE = "m-0 mt-1 inline-flex items-center gap-0.5 text-sm font-medium"
-    HINT = "m-0 mt-1 text-sm text-secondary"
+    VALUE = "m-0 mt-1 text-3xl font-semibold leading-tight text-body animate-fade-in-delayed"
+    CHANGE = "m-0 mt-1 inline-flex items-center gap-0.5 text-sm font-medium animate-fade-in-delayed"
+    HINT = "m-0 mt-1 text-sm text-secondary animate-fade-in-delayed"
 
     TRENDS = {
       up: {variant: :success, text: "Increased by", icon: "M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"},

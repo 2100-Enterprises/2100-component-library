@@ -6,7 +6,7 @@ module ComponentLibrary2100
               "[&::-webkit-details-marker]:hidden group-open:bg-primary-subtle group-open:text-primary-emphasis " \
               "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/25"
     CHEVRON = "size-4 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
-    BODY = "px-5 py-4"
+    BODY = "px-5 py-4 animate-fade-in"
 
     def initialize(title:, open: false, group: nil, **html_options)
       super(**html_options)
