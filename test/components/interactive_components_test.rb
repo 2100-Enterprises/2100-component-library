@@ -36,6 +36,16 @@ class InteractiveComponentsTest < ViewComponent::TestCase
     assert_selector "details:not([open]) summary", text: "Two"
   end
 
+  def test_accordion_item_body_keeps_its_padding_so_flush_content_is_not_clipped
+    # The body div absorbs the negative margins that flush content (list groups, tables) uses to
+    # reach the card edge. Without this padding, `overflow-hidden` on the details clips it.
+    render_inline(AccordionComponent.new(always_open: true)) do |accordion|
+      accordion.with_item(title: "One") { "Body" }
+    end
+
+    assert_selector "details > div.px-5.py-4.transition-opacity", text: "Body", visible: :all
+  end
+
   def test_accordion_always_open_has_no_group
     render_inline(AccordionComponent.new(always_open: true)) { |accordion| accordion.with_item(title: "One") { "x" } }
 
