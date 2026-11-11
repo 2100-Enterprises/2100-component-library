@@ -25,6 +25,12 @@ class ReleaseTest < Minitest::Test
       print ENV.fetch("GH_TAGS")
     RUBY
     File.chmod(0o755, File.join(@stubs, "gh"))
+    # Stands in for `git show <sha>:<file>`: prints GIT_SHOW, or the working copy when unset.
+    File.write(File.join(@stubs, "git"), <<~RUBY)
+      #!/usr/bin/env ruby
+      print ENV["GIT_SHOW"] || File.read(ARGV[1].split(":", 2).last)
+    RUBY
+    File.chmod(0o755, File.join(@stubs, "git"))
   end
 
   def teardown = FileUtils.remove_entry(@dir)
@@ -35,12 +41,12 @@ class ReleaseTest < Minitest::Test
     @tags = [tags.map { |name| {name: name} }].to_json
   end
 
-  def release(command)
+  def release(command, git_show: nil)
     @calls = File.join(@dir, "calls")
     File.write(@calls, "")
     Open3.capture2e({
       "PATH" => "#{@stubs}:#{ENV.fetch("PATH")}", "GH_CALLS" => @calls, "GH_TAGS" => @tags,
-      "GITHUB_REPOSITORY" => REPOSITORY, "GITHUB_SHA" => COMMIT
+      "GITHUB_REPOSITORY" => REPOSITORY, "GITHUB_SHA" => COMMIT, "GIT_SHOW" => git_show
     }, SCRIPT, command, chdir: @project)
   end
 
@@ -113,6 +119,14 @@ class ReleaseTest < Minitest::Test
     output, status = release("check")
     refute status.success?, output
     assert_includes output, "no X.Y.Z version"
+  end
+
+  def test_refuses_a_commit_whose_version_file_says_another_version
+    project(version: "0.2.0", changelog: CHANGELOG)
+    output, status = release("publish", git_show: %(module X\n  VERSION = "0.1.0"\nend\n))
+    refute status.success?, output
+    assert_includes output, "not 0.2.0"
+    assert_empty calls
   end
 
   def test_check_passes_a_valid_bump_without_publishing

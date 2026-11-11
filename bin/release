@@ -5,7 +5,8 @@
 #
 #   bin/release check     Fails if a new version can't be released. CI runs this, so a bad
 #                         bump stops at the PR rather than after the merge.
-#   bin/release publish   Releases GITHUB_SHA, unless this version already has a tag.
+#   bin/release publish   Releases GITHUB_SHA, unless this version already has a tag. Refuses a
+#                         commit whose version.rb doesn't say the version being tagged.
 #
 # A version that already has a tag is nothing to do. Tags are never moved or replaced.
 require "json"
@@ -33,6 +34,7 @@ class Release
     return puts("v#{version} is already released.") if released?
 
     verify
+    verify_commit(commit)
     Tempfile.create("notes") do |file|
       file.write(notes)
       file.close
@@ -47,6 +49,12 @@ class Release
     latest = tags.max
     raise Stop, "#{version} isn't newer than the latest release, #{latest}." if latest && latest >= Gem::Version.new(version)
     raise Stop, "#{CHANGELOG} has no notes under \"## #{version}\"." if notes.empty?
+  end
+
+  # The tag lands on this commit, so its version.rb has to say the version being tagged.
+  def verify_commit(commit)
+    tagged = run("git", "show", "#{commit}:#{VERSION_FILE}")[/VERSION = "(\d+\.\d+\.\d+)"/, 1]
+    raise Stop, "#{commit} has version #{tagged.inspect} in #{VERSION_FILE}, not #{version}. Tagging it would repeat v0.12.0." unless tagged == version
   end
 
   def version
