@@ -1,7 +1,7 @@
 # Browses the component previews in previews/ with Lookbook: `bundle exec rake lookbook`, then
 # open http://localhost:4000.
 #
-# A throwaway Rails app, like the ones in test/test_helper.rb and script/screenshots.rb, so the
+# A throwaway Rails app, like the one in test/test_helper.rb, so the
 # engine boots the way it does in a host app. The preview layout loads Turbo, Stimulus and the
 # library's controllers through an import map, and a stylesheet that Tailwind compiles from
 # engine.css. Tailwind watches for changes while the server runs, and Lookbook reloads previews

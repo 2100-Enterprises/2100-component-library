@@ -47,37 +47,9 @@ Every component accepts the Bootstrap vocabulary it has (`variant:`, `size:`, `o
 
 ## Components
 
-### Alert
+Run `bundle exec rake lookbook` to browse a live preview of every component (see [Development](#development)).
 
-<img src="docs/images/alert.png" width="720" alt="Alerts in four variants, plus a dismissible one with a close button">
-
-### Badge
-
-<img src="docs/images/badge.png" width="720" alt="Badges in all eight variants, square and pill">
-
-### Breadcrumb
-
-<img src="docs/images/breadcrumb.png" width="720" alt="Breadcrumb trail: Home / Library / Data">
-
-### Button
-
-<img src="docs/images/button.png" width="720" alt="Solid and outline buttons in each variant, then sizes, disabled and link styles">
-
-### ButtonGroup
-
-<img src="docs/images/button_group.png" width="720" alt="Horizontal solid, horizontal outline and vertical button groups">
-
-### Card
-
-<img src="docs/images/card.png" width="720" alt="Card with a header, title, body copy, button and footer">
-
-### CloseButton
-
-<img src="docs/images/close_button.png" width="720" alt="Close buttons on light and dark backgrounds">
-
-### ListGroup
-
-<img src="docs/images/list_group.png" width="720" alt="List groups showing active, plain, disabled and coloured items">
+Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, ListGroup, Pagination and Spinner take the Bootstrap options listed above, so they have no section of their own.
 
 ### Nav
 
@@ -110,23 +82,11 @@ The bar across the top of an app: brand, links, and actions such as an account d
 
 It's a `<nav>` landmark named by `label:`. Below the `expand:` breakpoint (`:sm`, `:md`, `:lg` default, `:xl`, `:xxl`) the links move into an Offcanvas opened by a menu button, which has `menu_label:` (default "Menu") as its accessible name, `aria-controls` pointing at the panel, and `aria-expanded` kept in step by `cl-dialog`. `expand: true` never collapses; `expand: false` always does. Actions stay in the bar at every width. `theme:` is `:light` (default) or `:dark`, coloured from the `light`/`dark` tokens, or `:surface`, coloured from `surface` and `body` so it follows [dark mode](#dark-mode); the panel matches. `placement:` docks the panel (`:end` default). HTML attributes go on the `<nav>`; extra item options go on the link.
 
-### Pagination
-
-<img src="docs/images/pagination.png" width="720" alt="Pagination at default and small sizes">
-
 ### Progress
-
-<img src="docs/images/progress.png" width="720" alt="Progress bars with labels, stripes and variants">
 
 Unlike Bootstrap's, the bar doesn't animate a change of value: width is a layout property, and animating `scaleX` instead would squash a `label:`. A new value shows at once. Striped bars still move with `animated: true`.
 
-### Spinner
-
-<img src="docs/images/spinner.png" width="720" alt="Border and grow spinners in several colours and sizes">
-
 ### Table
-
-<img src="docs/images/table.png" width="720" alt="Striped table of people with status badges">
 
 ```erb
 <%= ui_table striped: true do |table| %>
@@ -348,8 +308,6 @@ An `<ol>` named by `label:`. Each step's `state:` is `:complete`, `:current` or 
 
 ### DescriptionList
 
-<img src="docs/images/description_list.png" width="720" alt="A stacked description list and an inline, two-column one showing a record's details">
-
 ```erb
 <%= ui_description_list do |dl| %>
   <% dl.with_item(term: "Status") { ui_badge "Active", variant: :success } %>
@@ -361,8 +319,6 @@ A `<dl>` of term/description pairs for a record's details (an extra: not in Boot
 
 ### Skeleton
 
-<img src="docs/images/skeleton.png" width="720" alt="Skeleton placeholders: three text lines, an avatar-and-text row, and a block">
-
 ```erb
 <div aria-busy="true">
   <%= ui_skeleton lines: 3 %>
@@ -372,8 +328,6 @@ A `<dl>` of term/description pairs for a record's details (an extra: not in Boot
 A pulsing placeholder for content that is still loading (an extra: not in Bootstrap). It is decorative, so it is `aria-hidden`; put `aria-busy="true"` on the region it stands in and swap it for the real content when that arrives (for example a lazy Turbo Frame). `shape:` is `:text` (default), `:block` or `:circle`; `lines:` draws that many text rows, the last one shorter. Size it with `class:`. The pulse stops under `prefers-reduced-motion`. Helper `ui_skeleton`.
 
 ### Stat and Stats
-
-<img src="docs/images/stats.png" width="720" alt="Four metric cards: clients; open invoices down and green; revenue up and green; costs up and red">
 
 ```erb
 <%= ui_stats label: "This month" do |stats| %>
@@ -386,8 +340,6 @@ A pulsing placeholder for content that is still loading (an extra: not in Bootst
 Metrics for a dashboard (extras: not in Bootstrap). A Stat is a `<dl>` card: `label:` is the term, `value:` the headline figure, plus optional `change:` and `hint:`. `trend:` (`:up`, `:down` or `:flat`) adds an arrow and visually hidden "Increased by"/"Decreased by" text; the change is green going up and red going down, so pass `variant:` when down is good (`trend: :down, variant: :success` for falling costs). `card: false` drops the border and padding. Stats is a grid: one column on phones, two from `sm`, and `columns:` (2, 3 or 4; default 3) from `lg`. `label:` makes it a `section` named for screen readers. Helpers `ui_stat` and `ui_stats`.
 
 ### SortHeader
-
-<img src="docs/images/sort_header.png" width="720" alt="A table whose Name column is sorted ascending with an arrow, and faint sort icons on the other columns">
 
 ```erb
 <%= ui_table do %>
@@ -428,6 +380,45 @@ An activity feed (an extra: not in Bootstrap): an `<ol>` of events, each with a 
 ```
 
 A value someone chose or filtered by (an extra: not in Bootstrap). Badge is for statuses. `remove:` with a URL renders a link, the server-driven way to clear a filter. With a non-GET `method:` it renders a `button_to` form. The control is named "Remove <label>", which `remove: {label:}` overrides, and answers to 44px on touch screens. Without `remove:` a chip is a static `<span>`. Removing is a server round trip, so redirect back and let the page put focus where it makes sense. Helpers `ui_chip` and `ui_chip_group`.
+
+## Progressive Web App
+
+Everything a host app needs to install to the home screen with the shared 2100 identity: icons, head tags, a service worker and an install banner. The manifest stays in the host app, since its name and colors are the app's own.
+
+**1. Routes and manifest.** Rails 7.2+ ships `rails/pwa`. Uncomment its routes in `config/routes.rb`, then point `app/views/pwa/manifest.json.erb` at the shared icons with `asset_path` (see [`app/assets/images/component_library_2100/pwa/`](app/assets/images/component_library_2100/pwa/README.md)). On Rails 7.1, serve both files from a controller of your own.
+
+**2. Head tags**, in each layout people might install from:
+
+```erb
+<%= ui_pwa_meta_tags title: "2100", application_name: "2100 Enterprises", theme_color: "#0B1220" %>
+```
+
+They link the manifest (`manifest:`, default `/manifest.json`), set `theme-color`, and add the `apple-*` tags iOS reads instead of the manifest, plus a 180px `apple-touch-icon` (`apple_touch_icon:`, or `false`). `status_bar:` defaults to `"default"`; `"black-translucent"` draws the page under the iOS status bar, so use it only where the top bar pads for `env(safe-area-inset-top)`.
+
+**3. Service worker.** Make `app/views/pwa/service-worker.js.erb` a single line:
+
+```erb
+<%= render "component_library_2100/pwa/service_worker", cache_version: "v1", precache: ["/icon.png"] %>
+```
+
+Pages are network-first, falling back to `offline_url:` (default `/offline.html`, which you provide, self-contained) when offline. Same-origin static assets are stale-while-revalidate. Bump `cache_version:` to retire the old cache. Paths under `skip:` are never cached; the default, `["/rails/active_storage/"]`, keeps signed-in users' files off the device, so keep it when you pass your own list. `cache_prefix:` (default `"2100-pwa"`) names the cache, and activation only deletes caches with that prefix.
+
+Register it from `application.js`. It waits for the page's `load` event and resolves `null` where service workers aren't available:
+
+```js
+import { registerServiceWorker } from "component_library_2100/pwa"
+registerServiceWorker()   // or registerServiceWorker("/sw", { scope: "/app/" })
+```
+
+`isStandalone()` from the same module is true inside the installed app.
+
+**4. Install banner**, once in the layout's `<body>`:
+
+```erb
+<%= ui_pwa_install app_name: "2100 Enterprises" %>
+```
+
+It renders hidden. The `cl-pwa-install` controller shows a one-tap Install button where the browser fires `beforeinstallprompt` (Chromium on Android and desktop), and Add to Home Screen guidance on iOS Safari. It never shows in the installed app, and a dismissal is remembered for `dismiss_days:` (default 30). `icon:` defaults to the shared 192px icon (`false` for none); `message:`, `ios_message:` and `install_label:` change the copy. It dispatches `cl-pwa-install:shown` (`detail.platform` is `"prompt"` or `"ios"`), `:accepted`, `:declined` and `:dismissed` for analytics.
 
 ## Overriding
 
@@ -525,8 +516,6 @@ bundle exec rubocop
 Tests boot a tiny in-process Rails app (`test/test_helper.rb`) and render each component with `ViewComponent::TestCase`.
 
 `bundle exec rake test:system` runs the browser tests in `test/system`, which drive the Stimulus controllers in headless Chrome, so it needs Chrome installed. Each test subclasses `SystemTestCase` (`test/system_test_case.rb`), renders ERB with `render_page`, and can add endpoints with `serve`, for example a URL a Turbo Frame loads. The page loads Turbo, Stimulus and the library through an import map, as a host app does, and a JavaScript error in the console fails the test. `rake test` leaves these out.
-
-The images above come from `bundle exec rake screenshots`, which renders the examples in `script/screenshots.rb` and writes `docs/images/`. It needs Chrome installed. Rerun it after changing how a component looks.
 
 `bundle exec rake lookbook` serves a preview of every component with [Lookbook](https://lookbook.build) at http://localhost:4000 (set `PORT` to change it). The previews live in `previews/component_library_2100/`. Each one subclasses `BasePreview`, sets its sidebar group with `@logical_path`, and gets controls from `@param` comments. A preview that needs markup calls `template(:name, **locals)`, which renders `<preview>/<name>.html.erb` beside the class. Use that rather than `render_with_template`, because ViewComponent's own lookup lands in `component_library2100/`. The app lives in `lookbook/config.ru`. It loads Turbo, Stimulus and the library through the same import map as the system tests, turns on styled confirms, compiles `engine.css` with Tailwind and rebuilds it as files change, and answers `/examples/people` for the Combobox previews. The theme menu switches `data-theme` between light and dark. `test/previews_test.rb` renders every preview and fails when a component in `Helpers::NAMES` has none, so add a preview with each new component.
 

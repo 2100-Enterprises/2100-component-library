@@ -32,4 +32,34 @@ class CardComponentTest < ViewComponent::TestCase
     assert_selector "img[src='/a.jpg'][alt=A]"
     assert_selector "img[src='/b.jpg']"
   end
+
+  def test_no_animation_by_default
+    render_inline(CardComponent.new) { "Content" }
+
+    assert_no_selector "[class~='duration-200']"
+  end
+
+  def test_pop_animation
+    render_inline(CardComponent.new(animation: :pop)) { "Content" }
+
+    assert_selector "div[class~='transition-transform'][class~='hover:scale-[1.02]'][class~='motion-reduce:transition-none']"
+  end
+
+  def test_lift_animation
+    render_inline(CardComponent.new(animation: "lift")) { "Content" }
+
+    assert_selector "div[class~='hover:-translate-y-1'][class~='motion-reduce:transition-none']"
+  end
+
+  def test_fade_animation
+    render_inline(CardComponent.new(animation: :fade)) { "Content" }
+
+    assert_selector "div[class~='transition-opacity'][class~='hover:opacity-90'][class~='motion-reduce:transition-none']"
+  end
+
+  def test_unknown_animation_raises
+    error = assert_raises(ArgumentError) { render_inline(CardComponent.new(animation: :spin)) { "Content" } }
+
+    assert_match "Unknown animation :spin", error.message
+  end
 end

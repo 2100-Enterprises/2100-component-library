@@ -31,11 +31,17 @@ class PrTriageWorkflowTest < Minitest::Test
 
   def test_grants_nothing_by_default
     assert_equal({}, workflow.fetch("permissions"))
-    assert_equal({"contents" => "read", "issues" => "write", "pull-requests" => "read"}, jobs.dig("human_review", "permissions"))
+    assert_equal({"contents" => "read", "issues" => "write", "pull-requests" => "write"}, jobs.dig("human_review", "permissions"))
     assert_equal({"contents" => "write", "issues" => "write", "pull-requests" => "write"}, jobs.dig("advance", "permissions"))
   end
 
-  def test_passes_the_event_action_to_the_check
+# A stacked PR retargeted to development has to be checked again, or its skipped check
+# stays green.
+def test_rechecks_a_pr_retargeted_to_development
+  assert_includes workflow.dig(true, "pull_request_target", "types"), "edited"
+end
+
+def test_passes_the_event_action_to_the_check
     step = jobs.dig("human_review", "steps").last
     assert_equal "${{ github.event.action }}", step.dig("env", "EVENT_ACTION")
   end

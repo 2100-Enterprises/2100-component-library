@@ -9,6 +9,7 @@ import DismissController from "component_library_2100/controllers/dismiss_contro
 import FileUploadController from "component_library_2100/controllers/file_upload_controller"
 import PasswordController from "component_library_2100/controllers/password_controller"
 import PopoverController from "component_library_2100/controllers/popover_controller"
+import PwaInstallController from "component_library_2100/controllers/pwa_install_controller"
 import ScrollspyController from "component_library_2100/controllers/scrollspy_controller"
 import TabsController from "component_library_2100/controllers/tabs_controller"
 import TooltipController from "component_library_2100/controllers/tooltip_controller"
@@ -16,7 +17,7 @@ import TooltipController from "component_library_2100/controllers/tooltip_contro
 export {
   AutosubmitController, CarouselController, CollapseController, ComboboxController, ConfirmController,
   CounterController, DialogController, DismissController, FileUploadController, PasswordController, PopoverController,
-  ScrollspyController, TabsController, TooltipController
+  PwaInstallController, ScrollspyController, TabsController, TooltipController
 }
 
 // Registers every controller the library ships. Identifiers are prefixed `cl-`
@@ -33,10 +34,13 @@ export function register(application) {
   application.register("cl-file-upload", FileUploadController)
   application.register("cl-password", PasswordController)
   application.register("cl-popover", PopoverController)
+  application.register("cl-pwa-install", PwaInstallController)
   application.register("cl-scrollspy", ScrollspyController)
   application.register("cl-tabs", TabsController)
   application.register("cl-tooltip", TooltipController)
 }
+
+export { registerServiceWorker, isStandalone } from "component_library_2100/pwa"
 
 // A Turbo confirm method that asks with the page's ConfirmDialogComponent (`ui_confirm_dialog`
 // in your layout) and falls back to window.confirm when there isn't one. It reads optional
