@@ -57,6 +57,16 @@ class OverlayTransitionSystemTest < SystemTestCase
     assert_no_selector "dialog", visible: :visible
   end
 
+  test "a closing modal or offcanvas keeps its column layout while it animates out" do
+    {"Modal" => MODAL, "Offcanvas" => OFFCANVAS}.each do |name, erb|
+      render_page erb, styles: true
+      click_on "Open"
+      settle
+
+      assert_equal({"display" => "flex", "direction" => "column"}, layout_as_it_closes, name)
+    end
+  end
+
   test "under prefers-reduced-motion a modal opens and closes without animating" do
     page.driver.browser.execute_cdp("Emulation.setEmulatedMedia", features: [{name: "prefers-reduced-motion", value: "reduce"}])
     render_page MODAL, styles: true
@@ -102,6 +112,19 @@ class OverlayTransitionSystemTest < SystemTestCase
       const dialog = document.querySelector("dialog")
       const finished = dialog.getAnimations({ subtree: true }).map((animation) => animation.finished.catch(() => {}))
       Promise.all(finished).then(() => done(true))
+    JS
+  end
+
+  # Closes the dialog and reads its layout in the same task, while the exit transition holds
+  # it on screen.
+  def layout_as_it_closes
+    evaluate_script(<<~JS)
+      (() => {
+        const dialog = document.querySelector("dialog")
+        dialog.close()
+        const style = getComputedStyle(dialog)
+        return { display: style.display, direction: style.flexDirection }
+      })()
     JS
   end
 

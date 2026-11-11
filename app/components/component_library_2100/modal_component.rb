@@ -26,7 +26,7 @@ module ComponentLibrary2100
                "backdrop:transition-[opacity,display,overlay] backdrop:duration-200 backdrop:transition-discrete " \
                "motion-reduce:backdrop:transition-none"
     DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-body bg-surface border border-border-translucent rounded-ui-lg " \
-             "outline-none open:flex open:flex-col #{BACKDROP} " \
+             "outline-none open:flex flex-col #{BACKDROP} " \
              "opacity-0 -translate-y-6 open:opacity-100 open:translate-y-0 starting:open:opacity-0 starting:open:-translate-y-6 " \
              "transition-[opacity,translate,display,overlay] duration-200 transition-discrete motion-reduce:transition-none"
     HEADER = "flex items-center justify-between gap-4 p-4 border-b border-border"
