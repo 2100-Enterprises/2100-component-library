@@ -6,7 +6,7 @@ module ComponentLibrary2100
               "[&::-webkit-details-marker]:hidden group-open:bg-primary-subtle group-open:text-primary-emphasis " \
               "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/25"
     CHEVRON = "size-4 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
-    BODY = "px-5 py-4 animate-fade-in animate-fade-in-motion-reduce"
+    BODY = "px-5 py-4"
     CONTENT = "transition-opacity duration-500 ease-out group-open:opacity-100 opacity-0 group-open:transition-opacity"
 
     def initialize(title:, open: false, group: nil, **html_options)
@@ -17,7 +17,7 @@ module ComponentLibrary2100
     end
 
     def call
-      tag.details(safe_join([summary, tag.div(content, class: CONTENT)]), **attrs(BASE, name: @group, open: @open))
+      tag.details(safe_join([summary, tag.div(content, class: "#{BODY} #{CONTENT}")]), **attrs(BASE, name: @group, open: @open))
     end
 
     private
