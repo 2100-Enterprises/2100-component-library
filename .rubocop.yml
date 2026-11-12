@@ -41,9 +41,13 @@ Style/DisableCopsWithinSourceCodeDirective:
 # config are left out: long test classes and setup methods are normal there. Split a method
 # that goes over rather than excluding its file.
 
+# An initializer that only copies its keyword arguments into instance variables reads best
+# whole, however many there are, so `initialize` is left out of the line count.
 Metrics/MethodLength:
   Enabled: true
   Max: 11
+  AllowedMethods:
+    - initialize
   Exclude: &metrics_exclude
     - "test/**/*"
     - "config/**/*"
@@ -63,14 +67,21 @@ Metrics/PerceivedComplexity:
   Max: 6
   Exclude: *metrics_exclude
 
+# A component's class tables are written out per breakpoint for Tailwind's scanner, so each
+# hash, array or heredoc counts as one line.
 Metrics/ClassLength:
   Enabled: true
   Max: 100
+  CountAsOne: &count_as_one
+    - array
+    - hash
+    - heredoc
   Exclude: *metrics_exclude
 
 Metrics/ModuleLength:
   Enabled: true
   Max: 100
+  CountAsOne: *count_as_one
   Exclude: *metrics_exclude
 
 # Keyword arguments name themselves, so only positional ones count. Five leaves room for the
