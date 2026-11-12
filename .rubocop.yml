@@ -1,12 +1,5 @@
-# Catches bugs and unsafe HTML, not style. Rails/OutputSafety fails on html_safe and raw,
+# Catches bugs, unsafe HTML and outsized methods, not style. Rails/OutputSafety fails on html_safe and raw,
 # which matters because PRs that only touch app/components can merge without a person.
-inherit_from: .rubocop_todo.yml
-
-# The todo list's Exclude entries add to the ones below rather than replacing them.
-inherit_mode:
-  merge:
-    - Exclude
-
 plugins:
   - rubocop-rails
 
