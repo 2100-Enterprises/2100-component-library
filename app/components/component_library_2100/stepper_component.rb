@@ -97,10 +97,15 @@ module ComponentLibrary2100
       state = resolve_state(state, number)
       text = block ? capture(&block) : label
       hint_id = generated_id("step-hint") if hint && (href || name)
+      step = Step.new(number: number, state: state, text: text, href: href, name: name, value: value, hint_id: hint_id)
 
-      tag.li(safe_join([target(number, state, text, href, name, value, hint_id, opts), hint_tag(hint, hint_id)].compact),
-        class: [STEP, row(STEP_ROW)], data: {state: state})
+      tag.li(safe_join([target(step, opts), hint_tag(hint, hint_id)].compact), class: [STEP, row(STEP_ROW)], data: {state: state})
     }
+
+    Step = Struct.new(:number, :state, :text, :href, :name, :value, :hint_id, keyword_init: true) do
+      # Links and buttons; a step with neither is plain text.
+      def interactive? = !!(href || name)
+    end
 
     def initialize(label:, current: nil, breakpoint: :md, complete_text: "(completed)", **html_options)
       super(**html_options)
@@ -131,18 +136,24 @@ module ComponentLibrary2100
       end
     end
 
-    def target(number, state, text, href, name, value, hint_id, opts)
-      inner = safe_join([marker(number, state), label_tag(text, state, interactive: href || name)])
-      aria = {current: ("step" if state == :current), describedby: hint_id}.compact
-      css = [TARGET, row(TARGET_ROW), (ACTION if href || name)]
+    def target(step, opts)
+      aria = {current: ("step" if step.state == :current), describedby: step.hint_id}.compact
+      css = [TARGET, row(TARGET_ROW), (ACTION if step.interactive?)]
+      element, attributes = target_element(step)
 
-      if href
-        tag.a(inner, **merge_attrs(opts, css, href: href, aria: aria))
-      elsif name
-        tag.button(inner, **merge_attrs(opts, css, type: :submit, name: name, value: value, aria: aria))
-      else
-        tag.span(inner, **merge_attrs(opts, css, aria: aria))
-      end
+      tag.public_send(element, target_body(step), **merge_attrs(opts, css, **attributes, aria: aria))
+    end
+
+    def target_body(step)
+      safe_join([marker(step.number, step.state), label_tag(step.text, step.state, interactive: step.interactive?)])
+    end
+
+    # A link, a submit button or plain text, with the attributes that make it one.
+    def target_element(step)
+      return [:a, {href: step.href}] if step.href
+      return [:button, {type: :submit, name: step.name, value: step.value}] if step.name
+
+      [:span, {}]
     end
 
     def marker(number, state)

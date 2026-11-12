@@ -42,17 +42,23 @@ module ComponentLibrary2100
     end
 
     def call
-      parts = [
-        legend,
-        (tag.div(@error, id: "#{@id}-error", class: FormFieldComponent::ERROR) if @error),
-        (tag.div(@hint, id: "#{@id}-hint", class: FormFieldComponent::HINT) if @hint),
-        tag.div(safe_join(@choices.each_with_index.map { |choice, index| card(choice, index) }),
-          class: [Variants.fetch(GRID, @columns, kind: "columns"), ("mt-2" if @error || @hint)])
-      ]
+      parts = [legend, *messages, grid]
       tag.fieldset(safe_join(parts.compact), **attrs(FIELDSET, id: @id, aria: {describedby: describedby}.compact))
     end
 
     private
+
+    def messages
+      [
+        (tag.div(@error, id: "#{@id}-error", class: FormFieldComponent::ERROR) if @error),
+        (tag.div(@hint, id: "#{@id}-hint", class: FormFieldComponent::HINT) if @hint)
+      ]
+    end
+
+    def grid
+      tag.div(safe_join(@choices.each_with_index.map { |choice, index| card(choice, index) }),
+        class: [Variants.fetch(GRID, @columns, kind: "columns"), ("mt-2" if @error || @hint)])
+    end
 
     def legend
       return unless @legend
@@ -63,15 +69,22 @@ module ComponentLibrary2100
 
     def card(choice, index)
       input_id = "#{@id}-#{index}"
-      radio = tag.input(type: "radio", name: @name, value: choice.value, id: input_id, class: RADIO,
+      body = safe_join([radio(choice, input_id), tag.span(card_text(choice))])
+
+      tag.label(body, for: input_id, class: ComponentLibrary2100.merge_classes(CARD, (CARD_INVALID if @error)))
+    end
+
+    def radio(choice, input_id)
+      tag.input(type: "radio", name: @name, value: choice.value, id: input_id, class: RADIO,
         checked: choice.value.to_s == @checked.to_s && !@checked.nil?, disabled: choice.disabled,
         required: (@required || nil), aria: {invalid: (true if @error)}.compact)
-      text = safe_join([
+    end
+
+    def card_text(choice)
+      safe_join([
         tag.span(choice.label, class: TITLE),
         (tag.span(choice.description, class: DESCRIPTION) if choice.description)
       ].compact)
-
-      tag.label(safe_join([radio, tag.span(text)]), for: input_id, class: ComponentLibrary2100.merge_classes(CARD, (CARD_INVALID if @error)))
     end
 
     def normalize(choice)

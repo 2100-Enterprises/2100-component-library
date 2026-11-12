@@ -50,15 +50,16 @@ module ComponentLibrary2100
       return if @remove.empty?
 
       href = @remove.fetch(:href)
-      name = @remove[:label] || "Remove #{strip_tags(text.to_s).squish}"
-      button = {class: REMOVE, aria: {label: name}}
-      method = @remove[:method]
+      button = {class: REMOVE, aria: {label: @remove[:label] || "Remove #{strip_tags(text.to_s).squish}"}}
+      return tag.a(x_icon, href: href, **button) unless remove_by_form?
 
-      if method && method.to_s.downcase != "get"
-        button_to(href, method: method, params: @remove[:params] || {}, form: {class: "inline-flex m-0"}, **button) { x_icon }
-      else
-        tag.a(x_icon, href: href, **button)
-      end
+      button_to(href, method: @remove[:method], params: @remove[:params] || {}, form: {class: "inline-flex m-0"}, **button) { x_icon }
+    end
+
+    # A `method:` other than GET needs a form, since a link can only GET.
+    def remove_by_form?
+      method = @remove[:method]
+      method && method.to_s.downcase != "get"
     end
 
     def x_icon

@@ -67,10 +67,14 @@ module ComponentLibrary2100
 
     def dialog
       options = attrs(dialog_css, id: @dialog_id, data: {cl_dialog_target: "dialog", action: "click->cl-dialog#backdrop"})
-      options[:aria] = {labelledby: @title_id}.merge(options[:aria] || {}) if @title
-      options[:aria] = {describedby: @description_id}.merge(options[:aria] || {}) if @description_id
+      options[:aria] = dialog_aria(options[:aria]) if @title || @description_id
 
       tag.dialog(safe_join([header, tag.div(content, class: BODY), footer]), **options)
+    end
+
+    # Your own `aria:` wins over the title and description ids.
+    def dialog_aria(aria)
+      {labelledby: (@title_id if @title), describedby: @description_id}.compact.merge(aria || {})
     end
 
     def header

@@ -34,18 +34,16 @@ module ComponentLibrary2100
     end
 
     def call
-      parts = [
-        tag.dt(@label, class: LABEL),
-        tag.dd(@value, class: VALUE),
-        change_tag,
-        (tag.dd(@hint, class: HINT) if @hint),
-        content.presence && tag.dd(content, class: HINT)
-      ]
+      parts = [tag.dt(@label, class: LABEL), tag.dd(@value, class: VALUE), change_tag, *hints]
 
       tag.dl(safe_join(parts.compact), **attrs(@card ? CARD : PLAIN))
     end
 
     private
+
+    def hints
+      [(tag.dd(@hint, class: HINT) if @hint), (tag.dd(content, class: HINT) if content.present?)]
+    end
 
     def change_tag
       return unless @change

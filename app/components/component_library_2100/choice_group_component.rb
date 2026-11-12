@@ -27,9 +27,7 @@ module ComponentLibrary2100
       inline: false, hidden: true, required: false, **html_options)
       super(**html_options)
       @name = name
-      @type = type.to_sym
-      raise ArgumentError, "type must be :checkbox or :radio" unless %i[checkbox radio].include?(@type)
-
+      @type = choice_type(type)
       @choices = choices.map { |choice| normalize(choice) }
       @legend = legend
       @checked = Array(checked).map(&:to_s)
@@ -43,18 +41,30 @@ module ComponentLibrary2100
     end
 
     def call
-      parts = [
-        legend,
-        (tag.div(@error, id: "#{@id}-error", class: FormFieldComponent::ERROR) if @error),
-        (tag.div(@hint, id: "#{@id}-hint", class: FormFieldComponent::HINT) if @hint),
-        (tag.input(type: "hidden", name: @name, value: "", autocomplete: "off") if @hidden),
-        tag.div(safe_join(@choices.each_with_index.map { |choice, index| row(choice, index) }),
-          class: [(@inline ? LIST_INLINE : LIST), ("mt-1" if @error || @hint)])
-      ]
+      parts = [legend, *messages, (tag.input(type: "hidden", name: @name, value: "", autocomplete: "off") if @hidden), list]
       tag.fieldset(safe_join(parts.compact), **attrs(FIELDSET, id: @id, aria: {describedby: describedby}.compact))
     end
 
     private
+
+    def choice_type(type)
+      type = type.to_sym
+      raise ArgumentError, "type must be :checkbox or :radio" unless %i[checkbox radio].include?(type)
+
+      type
+    end
+
+    def messages
+      [
+        (tag.div(@error, id: "#{@id}-error", class: FormFieldComponent::ERROR) if @error),
+        (tag.div(@hint, id: "#{@id}-hint", class: FormFieldComponent::HINT) if @hint)
+      ]
+    end
+
+    def list
+      tag.div(safe_join(@choices.each_with_index.map { |choice, index| row(choice, index) }),
+        class: [(@inline ? LIST_INLINE : LIST), ("mt-1" if @error || @hint)])
+    end
 
     def legend
       return unless @legend
