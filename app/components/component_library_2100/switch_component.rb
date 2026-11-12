@@ -55,13 +55,14 @@ module ComponentLibrary2100
     end
 
     def call
-      text = content.presence || @label
-      body = tag.div(safe_join([tag.label(text, for: @id, class: LABEL), feedback].compact))
-
-      tag.div(safe_join([hidden_field, input, body].compact), **merge_attrs(@wrapper, @inline ? INLINE : WRAPPER))
+      tag.div(safe_join([hidden_field, input, label_and_feedback].compact), **merge_attrs(@wrapper, @inline ? INLINE : WRAPPER))
     end
 
     private
+
+    def label_and_feedback
+      tag.div(safe_join([tag.label(content.presence || @label, for: @id, class: LABEL), feedback].compact))
+    end
 
     def input
       css = Variants.fetch(INPUTS, @type, kind: "type")

@@ -52,15 +52,23 @@ module ComponentLibrary2100
     def ui_pwa_meta_tags(title:, theme_color:, application_name: title, status_bar: "default",
       manifest: "/manifest.json", apple_touch_icon: "/apple-touch-icon.png")
       safe_join([
-        tag.meta(name: "apple-mobile-web-app-capable", content: "yes"),
-        tag.meta(name: "apple-mobile-web-app-status-bar-style", content: status_bar),
-        tag.meta(name: "apple-mobile-web-app-title", content: title),
+        *apple_web_app_meta_tags(title, status_bar),
         tag.meta(name: "application-name", content: application_name),
         tag.meta(name: "mobile-web-app-capable", content: "yes"),
         tag.meta(name: "theme-color", content: theme_color),
         tag.link(rel: "manifest", href: manifest),
         (tag.link(rel: "apple-touch-icon", href: apple_touch_icon, sizes: "180x180") if apple_touch_icon)
       ].compact, "\n")
+    end
+
+    private
+
+    def apple_web_app_meta_tags(title, status_bar)
+      [
+        tag.meta(name: "apple-mobile-web-app-capable", content: "yes"),
+        tag.meta(name: "apple-mobile-web-app-status-bar-style", content: status_bar),
+        tag.meta(name: "apple-mobile-web-app-title", content: title)
+      ]
     end
   end
 end

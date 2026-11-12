@@ -21,13 +21,17 @@ module ComponentLibrary2100
     end
 
     def call
-      return tag.a(content, **attrs(css, href: @href, **state_attrs)) if @href
-      return tag.button(content, **attrs(css, type: :button, disabled: @disabled, **state_attrs)) if @action
+      return tag.a(content, **item_attrs(href: @href)) if @href
+      return tag.button(content, **item_attrs(type: :button, disabled: @disabled)) if @action
 
-      tag.li(content, **attrs(css, **state_attrs))
+      tag.li(content, **item_attrs)
     end
 
     private
+
+    def item_attrs(**extra)
+      attrs(css, **extra, **state_attrs)
+    end
 
     def css
       [

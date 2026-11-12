@@ -38,6 +38,8 @@ module ComponentLibrary2100
     FIELD_OPTIONS = %i[label hint optional error wrapper counter].freeze
     COMBOBOX_OPTIONS = %i[text min_length delay force_selection frame_id messages listbox_label].freeze
 
+    include ComponentFields
+
     %i[text_field email_field telephone_field phone_field number_field url_field search_field date_field time_field datetime_local_field month_field].each do |helper|
       define_method(helper) do |method, options = {}|
         field(method, options) { |control_options| super(method, control_options) }
@@ -91,34 +93,6 @@ module ComponentLibrary2100
       rich_text_area(method, options)
     end
 
-    # A Bootstrap form-switch for a boolean attribute, rendered by SwitchComponent.
-    # Takes SwitchComponent options (`type: :checkbox` for a plain checkbox, `autosubmit:`, ...).
-    def switch(method, label: nil, error: nil, **options)
-      @template.render(SwitchComponent.new(
-        name: field_name(method), id: options.delete(:id) || field_id(method),
-        label: label_text(method, label), checked: options.key?(:checked) ? options.delete(:checked) : boolean_value(method),
-        error: error.nil? ? error_message(method) : error.presence,
-        **options
-      ))
-    end
-
-    # A plain checkbox in the same layout as `switch`.
-    def check(method, **options)
-      switch(method, type: :checkbox, **options)
-    end
-
-    # A styled native file input (FileUploadComponent) with a staged-file list, size and type
-    # warnings, and an optional dropzone. Takes FileUploadComponent options (`accept:`,
-    # `max_bytes:`, `multiple:`, `dropzone:`, `hint:` ...). The form needs `multipart: true`.
-    def file_upload(method, label: nil, error: nil, **options)
-      @template.render(FileUploadComponent.new(
-        name: field_name(method), id: options.delete(:id) || field_id(method),
-        label: label_text(method, label),
-        error: error.nil? ? error_message(method) : error.presence,
-        **options
-      ))
-    end
-
     # A text input with server-side suggestions (ComboboxComponent), in the usual field wrapper.
     # `src:` is the endpoint that answers `?q=` with a Turbo Frame of ComboboxOptionComponents, and
     # `text:` is the label shown for the current value (default: the value itself).
@@ -132,28 +106,6 @@ module ComponentLibrary2100
           name: field_name(method), src: src, value: value_of(method), input: control_options, **settings
         ))
       end
-    end
-
-    # Radio buttons as cards (RadioCardGroupComponent). `choices` are `[label, value, description]`
-    # arrays, `{value:, label:, description:, disabled:}` hashes or strings. `label:` is the legend.
-    def radio_cards(method, choices, label: nil, error: nil, **options)
-      @template.render(RadioCardGroupComponent.new(
-        name: field_name(method), id: options.delete(:id) || field_id(method), choices: choices,
-        legend: label_text(method, label), checked: options.key?(:checked) ? options.delete(:checked) : value_of(method),
-        error: error.nil? ? error_message(method) : error.presence,
-        **options
-      ))
-    end
-
-    # A group of checkboxes (ChoiceGroupComponent) in a <fieldset>; `label:` is the legend. Submits `""`
-    # when none are checked. Choices are as for `radio_cards`; `inline: true` lays them in a row.
-    def check_boxes(method, choices, label: nil, error: nil, **options)
-      choice_group(:checkbox, method, choices, label, error, options)
-    end
-
-    # A group of radio buttons (ChoiceGroupComponent), like `check_boxes`.
-    def radios(method, choices, label: nil, error: nil, **options)
-      choice_group(:radio, method, choices, label, error, options)
     end
 
     # The object's errors, each linked to its field. Renders nothing when there are none.
@@ -182,26 +134,19 @@ module ComponentLibrary2100
     def field(method, options, kind: :control)
       options = options.to_h.symbolize_keys
       config = options.extract!(*FIELD_OPTIONS)
-      error = config.key?(:error) ? config[:error].presence : error_message(method)
-
-      component = FormFieldComponent.new(
-        control_id: options[:id] || field_id(method), label: label_text(method, config[:label]),
-        hint: config[:hint], error: error, optional: config[:optional],
-        counter: config[:counter], **(config[:wrapper] || {})
-      )
+      component = field_component(method, options[:id], config)
       control_options = component.control_options(options, kind: kind)
       return yield(control_options) if config[:wrapper] == false
 
       @template.render(component) { yield(control_options) }
     end
 
-    def choice_group(type, method, choices, label, error, options)
-      @template.render(ChoiceGroupComponent.new(
-        name: field_name(method, multiple: type == :checkbox), id: options.delete(:id) || field_id(method), choices: choices, type: type,
-        legend: label_text(method, label), checked: options.key?(:checked) ? options.delete(:checked) : value_of(method),
-        error: error.nil? ? error_message(method) : error.presence,
-        **options
-      ))
+    def field_component(method, id, config)
+      FormFieldComponent.new(
+        control_id: id || field_id(method), label: label_text(method, config[:label]),
+        error: config.key?(:error) ? config[:error].presence : error_message(method),
+        **config.slice(:hint, :optional, :counter), **(config[:wrapper] || {})
+      )
     end
 
     def label_text(method, label)
@@ -219,10 +164,6 @@ module ComponentLibrary2100
 
     def value_of(method)
       object.public_send(method) if object.respond_to?(method)
-    end
-
-    def boolean_value(method)
-      ActiveModel::Type::Boolean.new.cast(value_of(method)) || false
     end
 
     def password_toggle(input_id)

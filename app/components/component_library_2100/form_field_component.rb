@@ -77,11 +77,11 @@ module ComponentLibrary2100
       options = options.to_h.symbolize_keys.merge(attributes)
       aria = {describedby: describedby, invalid: (true if error?)}.compact
 
-      options.merge(
+      with_counter_target(options.merge(
         id: options[:id] || control_id,
         class: ComponentLibrary2100.merge_classes(Variants.fetch(CONTROLS, kind, kind: "control kind"), options[:class]),
         aria: aria.merge(options[:aria] || {})
-      ).then { |merged| @counter ? merged.merge(data: (merged[:data] || {}).merge(cl_counter_target: "input")) : merged }
+      ))
     end
 
     def call
@@ -91,16 +91,21 @@ module ComponentLibrary2100
     # The rule a counter enforces, as the hint renders it: "Up to 2,000 characters."
     def counter_rule
       return unless @counter
-      return @counter[:hint] if @counter[:hint]
+      @counter[:hint] || length_rule(*@counter.values_at(:min, :max).map { |n| number(n) if n })
+    end
 
-      min, max = @counter.values_at(:min, :max).map { |n| number(n) if n }
+    private
+
+    def length_rule(min, max)
       if min && max then "Between #{min} and #{max} characters."
       elsif max then "Up to #{max} characters."
       else "At least #{min} characters."
       end
     end
 
-    private
+    def with_counter_target(options)
+      @counter ? options.merge(data: (options[:data] || {}).merge(cl_counter_target: "input")) : options
+    end
 
     def normalize_counter(counter)
       return unless counter

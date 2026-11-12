@@ -49,7 +49,7 @@ module ComponentLibrary2100
       @label = label
       @hint = hint
       @error = error.presence
-      @accept = Array(accept).flat_map { |value| value.to_s.split(/[\s,]+/) }.compact_blank.join(",").presence
+      @accept = accept_list(accept)
       @max_bytes = max_bytes
       @max_label = max_label || (human_size(max_bytes) if max_bytes)
       @multiple = multiple
@@ -63,6 +63,11 @@ module ComponentLibrary2100
     end
 
     private
+
+    # "image/*, .pdf" or ["image/*", ".pdf"] become "image/*,.pdf".
+    def accept_list(accept)
+      Array(accept).flat_map { |value| value.to_s.split(/[\s,]+/) }.compact_blank.join(",").presence
+    end
 
     def root_data
       {controller: "cl-file-upload", cl_file_upload_max_bytes_value: @max_bytes, cl_file_upload_max_label_value: @max_label,

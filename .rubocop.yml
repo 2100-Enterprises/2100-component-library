@@ -1,4 +1,4 @@
-# Catches bugs and unsafe HTML, not style. Rails/OutputSafety fails on html_safe and raw,
+# Catches bugs, unsafe HTML and outsized methods, not style. Rails/OutputSafety fails on html_safe and raw,
 # which matters because PRs that only touch app/components can merge without a person.
 plugins:
   - rubocop-rails
@@ -28,3 +28,63 @@ Style/DisableCopsWithinSourceCodeDirective:
   Enabled: true
   AllowedCops:
     - Lint/UselessMethodDefinition
+
+# Size and complexity ceilings. Each Max sits just above the library's 95th percentile on
+# 2026-11-12, so they catch the outliers without failing ordinary component code. Tests and
+# config are left out: long test classes and setup methods are normal there. Split a method
+# that goes over rather than excluding its file.
+
+# An initializer that only copies its keyword arguments into instance variables reads best
+# whole, however many there are, so `initialize` is left out of the line count.
+Metrics/MethodLength:
+  Enabled: true
+  Max: 11
+  AllowedMethods:
+    - initialize
+  Exclude: &metrics_exclude
+    - "test/**/*"
+    - "config/**/*"
+
+Metrics/AbcSize:
+  Enabled: true
+  Max: 16
+  Exclude: *metrics_exclude
+
+Metrics/CyclomaticComplexity:
+  Enabled: true
+  Max: 6
+  Exclude: *metrics_exclude
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 6
+  Exclude: *metrics_exclude
+
+# A component's class tables are written out per breakpoint for Tailwind's scanner, so each
+# hash, array or heredoc counts as one line.
+Metrics/ClassLength:
+  Enabled: true
+  Max: 100
+  CountAsOne: &count_as_one
+    - array
+    - hash
+    - heredoc
+  Exclude: *metrics_exclude
+
+Metrics/ModuleLength:
+  Enabled: true
+  Max: 100
+  CountAsOne: *count_as_one
+  Exclude: *metrics_exclude
+
+# Keyword arguments name themselves, so only positional ones count. Five leaves room for the
+# form builder's overrides, which keep Rails' own positional signatures.
+Metrics/ParameterLists:
+  Enabled: true
+  Max: 5
+  CountKeywordArgs: false
+  Exclude: *metrics_exclude
+
+Metrics/BlockNesting:
+  Enabled: true
+  Max: 3
