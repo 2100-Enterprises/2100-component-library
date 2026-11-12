@@ -96,12 +96,9 @@ module ComponentLibrary2100
 
       def call(env)
         path = env["PATH_INFO"]
-        file =
-          if path == "/assets/lookbook.css" then STYLESHEET
-          elsif path.start_with?("/vendor/") then vendored(path.delete_prefix("/vendor/"))
-          elsif path.start_with?("/js/") then library_file(path.delete_prefix("/js/"))
-          end
         return [204, {}, []] if path == "/favicon.ico"
+
+        file = file_for(path)
         return @app.call(env) unless file
 
         type = file.end_with?(".css") ? "text/css" : "text/javascript"
@@ -109,6 +106,13 @@ module ComponentLibrary2100
       end
 
       private
+
+      def file_for(path)
+        if path == "/assets/lookbook.css" then STYLESHEET
+        elsif path.start_with?("/vendor/") then vendored(path.delete_prefix("/vendor/"))
+        elsif path.start_with?("/js/") then library_file(path.delete_prefix("/js/"))
+        end
+      end
 
       def vendored(name)
         gem, file = VENDOR[name]
