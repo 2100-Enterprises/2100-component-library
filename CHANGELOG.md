@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+## 0.12.2
+
+- Restores the `px-5 py-4` padding on the `AccordionItemComponent` body, which 0.12.0 dropped. Without it, flush content such as list groups and tables that uses negative margins to reach the card edge was clipped by the item's `overflow-hidden`.
+
 ## 0.12.1
 
 - Fixes the version file. The v0.12.0 tag pointed at a commit whose `version.rb` still said 0.11.0, so Dependabot kept trying to repin apps that already used v0.12.0. Use v0.12.1; its tag and `version.rb` agree.
