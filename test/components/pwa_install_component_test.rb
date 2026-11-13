@@ -38,6 +38,14 @@ class PwaInstallComponentTest < ViewComponent::TestCase
     assert_selector "button[aria-label='Dismiss install prompt'][data-action='cl-pwa-install#dismiss']", visible: :all
   end
 
+  def test_close_options_reach_the_close_button
+    render_inline(PwaInstallComponent.new(app_name: "2100", close: {label: "Hide", class: "p-3.5", data: {action: "x#y"}}))
+
+    button = page.find("button[aria-label='Hide']", visible: :all)
+    assert_includes button[:class], "p-3.5"
+    assert_equal "cl-pwa-install#dismiss x#y", button["data-action"]
+  end
+
   def test_uses_the_shared_icon_unless_told_otherwise
     render_inline(PwaInstallComponent.new(app_name: "2100"))
     assert_selector "img[src*='component_library_2100/pwa/icon-192'][alt='']", visible: :all

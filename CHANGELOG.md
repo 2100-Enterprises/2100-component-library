@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `ModalComponent` and `OffcanvasComponent` stop scrolling inside the panel, or over its backdrop, from scrolling the page behind (`overscroll-behavior: contain`; Safari doesn't support it yet).
+- A `TableComponent` with `responsive:` and a caption wraps the table in a focusable `role="region"` named by the caption, so keyboard users can scroll it. Without a caption the wrapper is unchanged.
+- `PwaInstallComponent` takes `close:`, options for its close button, as `ToastComponent` does.
+
 ## 0.12.2
 
 - Restores the `px-5 py-4` padding on the `AccordionItemComponent` body, which 0.12.0 dropped. Without it, flush content such as list groups and tables that uses negative margins to reach the card edge was clipped by the item's `overflow-hidden`.

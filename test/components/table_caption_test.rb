@@ -35,6 +35,27 @@ class TableCaptionTest < ViewComponent::TestCase
     assert_selector "div > table > caption:first-child", text: "Clients"
   end
 
+  def test_responsive_table_with_caption_is_a_focusable_region_named_by_it
+    render_inline(TableComponent.new(responsive: :md)) { |table| table.with_caption(visible: false) { "Clients" } }
+
+    region = page.find("div[role=region][tabindex='0']")
+    assert_equal page.find("caption", visible: :all)[:id], region["aria-labelledby"]
+    assert region["aria-labelledby"].present?
+  end
+
+  def test_caption_keeps_an_id_you_pass
+    render_inline(TableComponent.new(responsive: true)) { |table| table.with_caption("Clients", id: "clients-caption") }
+
+    assert_selector "div[role=region][aria-labelledby=clients-caption] > table > caption#clients-caption"
+  end
+
+  def test_responsive_table_without_caption_is_a_plain_scroller
+    render_inline(TableComponent.new(responsive: true)) { "<tbody></tbody>".html_safe }
+
+    assert_no_selector "[role=region]"
+    assert_no_selector "[tabindex]"
+  end
+
   def test_table_without_caption_is_unchanged
     render_inline(TableComponent.new) { "<tbody></tbody>".html_safe }
 

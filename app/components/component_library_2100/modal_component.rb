@@ -21,8 +21,11 @@ module ComponentLibrary2100
   class ModalComponent < BaseComponent
     SIZES = {sm: "max-w-[300px]", md: "max-w-[500px]", lg: "max-w-[800px]", xl: "max-w-[1140px]"}.freeze
     # The backdrop fades in and out. `display` and `overlay` transition discretely, so a closing
-    # dialog stays in the top layer until its fade ends. Offcanvas shares this.
-    BACKDROP = "backdrop:bg-backdrop backdrop:opacity-0 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 " \
+    # dialog stays in the top layer until its fade ends. The overscroll rules stop scrolling in the
+    # dialog, or over the backdrop (which needs overflow-hidden to count), from scrolling the page
+    # behind; Safari ignores them for now. Offcanvas shares this.
+    BACKDROP = "overscroll-contain backdrop:overflow-hidden backdrop:overscroll-contain " \
+               "backdrop:bg-backdrop backdrop:opacity-0 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 " \
                "backdrop:transition-[opacity,display,overlay] backdrop:duration-200 backdrop:transition-discrete " \
                "motion-reduce:backdrop:transition-none"
     DIALOG = "mx-auto w-[calc(100%-1rem)] max-h-[calc(100%-3.5rem)] p-0 text-body bg-surface border border-border-translucent rounded-ui-lg " \
