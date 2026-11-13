@@ -8,7 +8,7 @@ Bootstrap 5-style components for Rails, built with [ViewComponent](https://viewc
 
 ```ruby
 # Gemfile
-gem "component_library_2100", github: "the-codetrane/2100-component-library", tag: "v0.12.2"
+gem "component_library_2100", github: "the-codetrane/2100-component-library", tag: "v0.12.3"
 ```
 
 ```sh
