@@ -96,7 +96,7 @@ Unlike Bootstrap's, the bar doesn't animate a change of value: width is a layout
 <% end %>
 ```
 
-Give every table a name: `with_caption` renders a `<caption>`, visible unless `visible: false`, or pass `aria: {label: ...}`. `ui_table_header` is a `<th>` with `scope` (`:col` by default, `:row` for row headers). Use `ui_sort_header` for sortable columns.
+Give every table a name: `with_caption` renders a `<caption>`, visible unless `visible: false`, or pass `aria: {label: ...}`. `ui_table_header` is a `<th>` with `scope` (`:col` by default, `:row` for row headers). Use `ui_sort_header` for sortable columns. With `responsive:` and a caption, the scrolling wrapper is a focusable region named by the caption, so keyboard users can scroll it; without a caption it stays a plain `div`.
 
 ## Forms
 
@@ -211,7 +211,7 @@ These lean on the platform instead of re-implementing it, so there is little Jav
 | Scrollspy | `cl-scrollspy` | A nav (items via `spy.with_item(label, href: "#id")`) whose active link follows the section in view via IntersectionObserver. `smooth:` scrolls on click, `offset:` clears a sticky header. |
 | Collapse | grid-rows transition | `cl-collapse` toggles attributes; no heights are measured. |
 | Dropdown, Popover | popover API (`popover="auto"`) | Browser handles outside click, Escape and focus return; `cl-popover` places it and adds arrow-key navigation for menus. |
-| Modal, Offcanvas | `<dialog>` + `showModal()` | Focus trap, inert page and Escape come from the browser. `static_backdrop: true` ignores backdrop clicks. `close:` takes CloseButton options (`close: {white: true}` on a dark panel). A trigger with `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step, as the built-in trigger does, along with `aria-controls`. The title is an `<h2>`, or `heading_level:` 1 to 6. `description_id:` sets `aria-describedby`. Offcanvas needs `title:` or `aria: {label:}`, and raises without one. |
+| Modal, Offcanvas | `<dialog>` + `showModal()` | Focus trap, inert page and Escape come from the browser. Scrolling inside the panel or over its backdrop doesn't scroll the page behind (not yet in Safari). `static_backdrop: true` ignores backdrop clicks. `close:` takes CloseButton options (`close: {white: true}` on a dark panel). A trigger with `data-cl-dialog-target="trigger"` gets `aria-expanded` kept in step, as the built-in trigger does, along with `aria-controls`. The title is an `<h2>`, or `heading_level:` 1 to 6. `description_id:` sets `aria-describedby`. Offcanvas needs `title:` or `aria: {label:}`, and raises without one. |
 | Tabs | WAI-ARIA tabs pattern | `cl-tabs`; tabs and panels pair by position. |
 | Toast | `cl-dismiss` + `aria-live` container | Render toasts inside a `ToastContainerComponent`. `delay: 0` keeps one open. The countdown pauses on hover, on focus and while the tab is hidden, then resumes with the time left. `close:` takes options for the close button, which is small by default. |
 | Tooltip | popover API (`popover="manual"`) | Wrap something focusable. Shows on hover and keyboard focus. |
@@ -418,7 +418,7 @@ registerServiceWorker()   // or registerServiceWorker("/sw", { scope: "/app/" })
 <%= ui_pwa_install app_name: "2100 Enterprises" %>
 ```
 
-It renders hidden. The `cl-pwa-install` controller shows a one-tap Install button where the browser fires `beforeinstallprompt` (Chromium on Android and desktop), and Add to Home Screen guidance on iOS Safari. It never shows in the installed app, and a dismissal is remembered for `dismiss_days:` (default 30). `icon:` defaults to the shared 192px icon (`false` for none); `message:`, `ios_message:` and `install_label:` change the copy. It dispatches `cl-pwa-install:shown` (`detail.platform` is `"prompt"` or `"ios"`), `:accepted`, `:declined` and `:dismissed` for analytics.
+It renders hidden. The `cl-pwa-install` controller shows a one-tap Install button where the browser fires `beforeinstallprompt` (Chromium on Android and desktop), and Add to Home Screen guidance on iOS Safari. It never shows in the installed app, and a dismissal is remembered for `dismiss_days:` (default 30). `icon:` defaults to the shared 192px icon (`false` for none); `message:`, `ios_message:` and `install_label:` change the copy, and `close:` takes options for the close button, which reaches 44px only on touch screens unless you size it (`close: {class: "size-4 p-3.5"}`). It dispatches `cl-pwa-install:shown` (`detail.platform` is `"prompt"` or `"ios"`), `:accepted`, `:declined` and `:dismissed` for analytics.
 
 ## Overriding
 
