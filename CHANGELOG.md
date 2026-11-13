@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.12.3
+
 - `ModalComponent` and `OffcanvasComponent` stop scrolling inside the panel, or over its backdrop, from scrolling the page behind (`overscroll-behavior: contain`; Safari doesn't support it yet).
 - A `TableComponent` with `responsive:` and a caption wraps the table in a focusable `role="region"` named by the caption, so keyboard users can scroll it. Without a caption the wrapper is unchanged.
 - `PwaInstallComponent` takes `close:`, options for its close button, as `ToastComponent` does.
