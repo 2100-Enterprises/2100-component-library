@@ -1,0 +1,5 @@
+<div class="max-w-md">
+  <label for="collaborators" class="mb-2 inline-block">Collaborators</label>
+  <%= ui_combobox name: "post[collaborators][]", multiple: true, max: max, allow_free_text: allow_free_text, values: %w[ada],
+        label: "Collaborators", src: "/examples/people", frame_id: "people", input: {id: "collaborators", placeholder: "Search or type a name"} %>
+</div>

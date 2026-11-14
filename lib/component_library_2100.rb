@@ -33,6 +33,19 @@ module ComponentLibrary2100
       merger.merge(classes.flatten.compact.join(" "))
     end
 
+    # The data attributes that wire a control to the `cl-autosubmit` controller, or {} when
+    # `autosubmit` is falsy. `true` submits on `change`; `{delay: 300}` waits that many
+    # milliseconds after the last `input` event, so a text field can submit as you type.
+    def autosubmit_data(autosubmit)
+      return {} unless autosubmit
+
+      delay = autosubmit.respond_to?(:to_h) ? autosubmit.to_h.symbolize_keys[:delay].to_i : 0
+      event = delay.positive? ? "input" : "change"
+      data = {controller: "cl-autosubmit", action: "#{event}->cl-autosubmit#submit"}
+      data[:cl_autosubmit_delay_value] = delay if delay.positive?
+      data
+    end
+
     def write_tailwind_entry(root)
       output = Pathname(root).join(TAILWIND_ENTRY)
       engine_css = Engine.root.join("app/assets/tailwind/component_library_2100/engine.css")

@@ -24,6 +24,22 @@ module ComponentLibrary2100
   # FormBuilder does) or `aria: {label:}`. `invalid: true` sets `aria-invalid`. `messages:` replaces
   # the live-region texts (`none`, `one`, and `many` with `%{count}`).
   #
+  # `multiple: true` is a tags mode: chosen values are ChipComponents (each with a "Remove <value>"
+  # button) inside the field before the text input, and the component submits one hidden input per
+  # value, named `name:` (`[]` is added when missing), after an empty one so clearing every chip
+  # still submits an empty list. `values:` are the initial values (strings, or `[label, value]`
+  # pairs), `max:` caps how many there can be, and `allow_free_text: true` lets Enter or a comma turn
+  # the typed text into a chip. Choosing a suggestion adds it, Backspace in the empty input removes
+  # the last chip, and chosen values aren't suggested again. At `max:` the input is hidden, focus
+  # moves to the last chip and a polite live region says "Maximum of 3 reached". Removing a chip
+  # returns focus to the input. `label:` names the chip list (`role="group"`) and, unless `input:`
+  # names it, the input. `options:` (strings or `[label, value]` pairs) are static suggestions,
+  # filtered in the browser, for when there's no `src:`. The live region announces "Ada added" and
+  # "Ada removed"; `messages:` also takes `added`, `removed` and `max`.
+  #
+  # <%= render ComboboxComponent.new(name: "post[collaborators][]", multiple: true, max: 3,
+  #       allow_free_text: true, values: %w[ada grace], label: "Collaborators", src: nil) %>
+  #
   # Without JavaScript or Turbo the input stays a plain text input named `name:` inside the host
   # form and submits what was typed. The component doesn't wrap its own <form>, since forms can't
   # nest.
@@ -33,20 +49,22 @@ module ComponentLibrary2100
               "border border-border-translucent rounded-ui shadow-lg aria-busy:opacity-70"
     INDICATOR = "pointer-events-none absolute inset-y-0 right-3 flex items-center text-secondary"
     SPINNER = "size-4 rounded-full border-2 border-current border-r-transparent animate-spin motion-reduce:animate-none"
-    MESSAGES = {none: "No results", one: "1 result", many: "%{count} results"}.freeze
-
+    MESSAGES = {none: "No results", one: "1 result", many: "%{count} results",
+                added: "%{value} added", removed: "%{value} removed", max: "Maximum of %{max} reached"}.freeze
     attr_reader :frame_id
 
-    def initialize(name:, src:, value: nil, text: nil, frame_id: nil, min_length: 1, delay: 250, force_selection: false,
-      invalid: false, input: {}, listbox_label: "Suggestions", messages: {}, **html_options)
+    TAGS_OPTIONS = %i[max allow_free_text values label].freeze
+
+    def initialize(name:, src: nil, value: nil, text: nil, frame_id: nil, min_length: 1, delay: 250, force_selection: false,
+      invalid: false, input: {}, listbox_label: "Suggestions", messages: {}, multiple: false, options: [], **html_options)
+      @tags = html_options.extract!(*TAGS_OPTIONS)
       super(**html_options)
+      @multiple = multiple
+      @options = options
       @name = name
-      @src = src
       @value = value
       @text = text || value
-      @min_length = min_length
-      @delay = delay
-      @force_selection = force_selection
+      @settings = {src: src, min_length: min_length, delay: delay, force_selection: force_selection}
       @invalid = invalid
       @input_options = input.to_h.symbolize_keys
       @listbox_label = listbox_label
@@ -56,19 +74,44 @@ module ComponentLibrary2100
     end
 
     def call
-      tag.div(safe_join([input, hidden, indicator, listbox, status]), **attrs(ROOT, data: {
-        controller: "cl-combobox",
-        cl_combobox_src_value: @src,
-        cl_combobox_min_length_value: @min_length,
-        cl_combobox_delay_value: @delay,
-        cl_combobox_force_selection_value: @force_selection,
-        cl_combobox_none_message_value: @messages[:none],
-        cl_combobox_one_message_value: @messages[:one],
-        cl_combobox_many_message_value: @messages[:many]
-      }))
+      tag.div(safe_join([field, indicator, listbox, status, limit_status]), **attrs(ROOT, data: controller_data))
     end
 
     private
+
+    # Multiple mode submits an array, so the name ends in `[]`.
+    def list_name = (@multiple && !@name.to_s.end_with?("[]")) ? "#{@name}[]" : @name
+
+    def static_options = Array(@options).map { |item| ComboboxTagsComponent.pair(item) }
+
+    # The input and its hidden value, or in multiple mode the chips, input and hidden values.
+    def field
+      return safe_join([input, hidden]) unless @multiple
+
+      render(ComboboxTagsComponent.new(name: list_name, input: @input_options, input_id: input_id, listbox_id: listbox_id,
+        invalid: @invalid, **@tags))
+    end
+
+    def controller_data
+      {controller: "cl-combobox", cl_combobox_src_value: @settings[:src], cl_combobox_min_length_value: @settings[:min_length],
+       cl_combobox_delay_value: @settings[:delay], cl_combobox_force_selection_value: @settings[:force_selection],
+       cl_combobox_none_message_value: @messages[:none], cl_combobox_one_message_value: @messages[:one],
+       cl_combobox_many_message_value: @messages[:many], **tags_data}
+    end
+
+    def tags_data
+      return {} unless @multiple
+
+      {cl_combobox_multiple_value: true, cl_combobox_max_value: @tags[:max], cl_combobox_allow_free_text_value: @tags[:allow_free_text],
+       cl_combobox_added_message_value: @messages[:added], cl_combobox_removed_message_value: @messages[:removed],
+       cl_combobox_max_message_value: @messages[:max]}
+    end
+
+    def limit_status
+      return unless @multiple
+
+      tag.div(class: "sr-only", role: "status", aria: {live: "polite", atomic: true}, data: {cl_combobox_target: "limit"})
+    end
 
     def input_id = @input_options[:id] || "#{@id}-input"
     def listbox_id = "#{@id}-listbox"
@@ -98,7 +141,7 @@ module ComponentLibrary2100
     end
 
     def frame
-      tag.turbo_frame(id: frame_id, data: {
+      tag.turbo_frame(safe_join(static_options.map { |label, value| render(ComboboxOptionComponent.new(value: value, label: label)) }), id: frame_id, data: {
         cl_combobox_target: "frame",
         action: "turbo:before-fetch-request->cl-combobox#loading turbo:frame-load->cl-combobox#loaded turbo:fetch-request-error->cl-combobox#failed"
       })

@@ -84,4 +84,12 @@ class ChipGroupComponentTest < ViewComponent::TestCase
     assert_selector "li:first-child a[aria-label='Remove Open']"
     assert_selector "li:last-child span.bg-primary-subtle", text: "Ada"
   end
+
+  def test_remove_button_true_renders_a_plain_button
+    render_inline(ChipComponent.new(label: "Ada", remove: {button: true, data: {action: "x#y"}}))
+
+    assert_selector "button[type=button][aria-label='Remove Ada'][data-action='x#y']"
+    assert_no_selector "a"
+    assert_no_selector "form"
+  end
 end
