@@ -74,6 +74,17 @@ module ComponentLibrary2100
       def boolean_value(method)
         ActiveModel::Type::Boolean.new.cast(value_of(method)) || false
       end
+
+      # Merges the `autosubmit:` option into the control's data attributes, keeping the caller's own.
+      def with_autosubmit(options, autosubmit)
+        data = ComponentLibrary2100.autosubmit_data(autosubmit)
+        return options if data.empty?
+
+        mine = options[:data] || {}
+        data[:action] = [data[:action], mine[:action]].compact.join(" ")
+        data[:controller] = [data[:controller], mine[:controller]].compact.join(" ")
+        options.merge(data: mine.merge(data))
+      end
     end
   end
 end
