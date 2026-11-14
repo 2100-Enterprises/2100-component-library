@@ -1,0 +1,23 @@
+<div data-controller="cl-bulk-select">
+  <%= ui_table do %>
+    <thead>
+      <tr>
+        <th><%= ui_select_all_checkbox %></th>
+        <th>Post</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% ["Launch notes", "Weekly update", "Hiring"].each_with_index do |title, i| %>
+        <tr>
+          <td><%= ui_selection_checkbox label: "Select #{title}", value: i + 1 %></td>
+          <td><%= title %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  <% end %>
+
+  <%= ui_bulk_action_bar label: "Post actions", noun: "post", noun_plural: "posts" do |bar| %>
+    <% bar.with_action { ui_button "Archive", variant: :secondary, size: :sm } %>
+    <% bar.with_action { ui_button "Delete", variant: :danger, size: :sm } %>
+  <% end %>
+</div>

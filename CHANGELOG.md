@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Adds bulk selection: the `cl-bulk-select` Stimulus controller, `BulkActionBarComponent` (`ui_bulk_action_bar`), and the `ui_selection_checkbox` and `ui_select_all_checkbox` helpers. The bar shows only while rows are selected, with a live count, a Clear button and an `actions` slot.
+
 ## 0.12.3
 
 - `ModalComponent` and `OffcanvasComponent` stop scrolling inside the panel, or over its backdrop, from scrolling the page behind (`overscroll-behavior: contain`; Safari doesn't support it yet).

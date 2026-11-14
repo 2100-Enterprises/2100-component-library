@@ -240,6 +240,35 @@ useStyledConfirm(Turbo)
 
 `useStyledConfirm` sets `Turbo.config.forms.confirm` (Turbo 8) or calls `Turbo.setConfirmMethod` (older Turbo). To do it by hand, pass `confirmMethod` from the same import to either. The method returns a Promise that resolves `true` on Confirm and `false` on Cancel, Escape or a backdrop click, and falls back to `window.confirm` on a page without the dialog. A form or its submit button can set `data-turbo-confirm-title` and `data-turbo-confirm-accept` to change the title and the confirm button's text. The dialog has `role="alertdialog"` and opens with Cancel focused.
 
+### Bulk select
+
+Bulk actions on a list or table: row checkboxes, a select-all, and a bar that appears while something is selected. Put `cl-bulk-select` on a container; the bar goes inside it.
+
+```erb
+<%= form_with url: bulk_posts_path, data: {controller: "cl-bulk-select"} do %>
+  <%= ui_table do %>
+    <thead><tr>
+      <th><%= ui_select_all_checkbox label: "Select all posts" %></th>
+      <th>Post</th>
+    </tr></thead>
+    <tbody>
+      <% @posts.each do |post| %>
+        <tr>
+          <td><%= ui_selection_checkbox label: "Select #{post.title}", value: post.id %></td>
+          <td><%= post.title %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  <% end %>
+
+  <%= ui_bulk_action_bar label: "Post actions", noun: "post", noun_plural: "posts" do |bar| %>
+    <% bar.with_action { ui_button "Delete", type: :submit, variant: :danger } %>
+  <% end %>
+<% end %>
+```
+
+`ui_selection_checkbox` requires `label:` (its accessible name) and submits `ids[]` by default (`name:`). The bar is hidden until one row is selected, shows "2 posts selected", has a Clear button, and sits at the bottom of the viewport (`position: :top` for the top). A visually hidden live region announces the count. The select-all checkbox is indeterminate when only some rows are checked. The controller keeps `data-cl-bulk-select-count-value` current, and rows that Turbo adds or replaces are counted automatically. Targets: `item`, `all`, `bar`, `count`, `status`; actions: `toggleAll`, `update`, `clear`.
+
 ## Extras
 
 These go beyond Bootstrap 5. They follow the same conventions (`class:` merging, HTML attributes on the root, a `ui_*` helper).
