@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.13.0
+
 - Fixes `bin/rails g component_library_2100:install` and `component_library_2100:eject`, which Rails couldn't find: it derived the namespace `component_library2100` from the class name, which doesn't match the generators' folder. Both now declare their documented namespace.
 - Adds `bin/rails component_library_2100:install`, a rake task that runs the install generator against the app. Running the install again leaves the files as they are.
 - `ComboboxComponent` and `f.combobox` take `multiple: true` (tags mode), with `max:`, `allow_free_text:`, `values:`, `label:` and static `options:`. Chosen values are removable `ChipComponent`s in a labelled group, submitted as one hidden input each (after an empty one); Enter or a comma adds free text, Backspace removes the last chip, chosen values aren't suggested again, and a live region announces adds, removes and "Maximum of N reached". `ChipComponent` accepts `remove: {button: true}` for a plain button. Single-value behaviour is unchanged.
