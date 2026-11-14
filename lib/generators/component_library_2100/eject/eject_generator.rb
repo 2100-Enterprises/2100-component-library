@@ -8,6 +8,10 @@ module ComponentLibrary2100
     # paths before engines', so the copy replaces the gem's version. Prefer subclassing
     # (`class MyButton < ComponentLibrary2100::ButtonComponent`) when you only need small changes.
     class EjectGenerator < Rails::Generators::Base
+      # Rails derives "component_library2100" from the class name, but the file lives under
+      # generators/component_library_2100/, so the documented name would find nothing.
+      namespace "component_library_2100:eject"
+
       desc "Copies library components into your app so you can change them freely."
       argument :names, type: :array, banner: "button card ..."
 

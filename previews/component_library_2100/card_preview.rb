@@ -11,5 +11,15 @@ module ComponentLibrary2100
     def flush
       template(:flush)
     end
+
+    # `with_media` holds any top content in a fixed aspect ratio (`:video`, `:square`, `:auto` or "4/3").
+    def media
+      template(:media)
+    end
+
+    # `href:` and `link_label:` make the whole card a link; the Archive button opts out with `relative z-10`.
+    def linked
+      template(:linked)
+    end
   end
 end

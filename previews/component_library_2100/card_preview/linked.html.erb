@@ -1,0 +1,6 @@
+<%= ui_card href: "#", link_label: "Launch announcement", class: "w-72" do |card| %>
+  <% card.with_media(aspect: "4/3", class: "grid place-items-center bg-surface-tint text-secondary") { "Map" } %>
+  <h5 class="mb-2 text-xl font-medium">Launch announcement</h5>
+  <p class="mb-3">Click anywhere on the card to open it.</p>
+  <%= ui_button "Archive", variant: :secondary, outline: true, class: "relative z-10" %>
+<% end %>

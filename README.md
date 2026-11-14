@@ -13,10 +13,10 @@ gem "component_library_2100", github: "the-codetrane/2100-component-library", ta
 
 ```sh
 bundle install
-bin/rails g component_library_2100:install
+bin/rails component_library_2100:install   # or: bin/rails g component_library_2100:install
 ```
 
-The generator does three things (do them by hand if your files differ). The third is the `.gitignore` entry in step 1.
+The task runs the install generator, which does three things (do them by hand if your files differ). Running it again changes nothing. The third is the `.gitignore` entry in step 1.
 
 1. Adds `@import "./component_library_2100.css";` to `app/assets/tailwind/application.css`, after `@import "tailwindcss"`. That file is written by `rake component_library_2100:tailwind` (it runs automatically before `tailwindcss:build` / `tailwindcss:watch`) and points Tailwind at the gem's theme tokens and component sources. It holds an absolute path, so the generator also adds it to `.gitignore`.
 2. Registers the Stimulus controllers in `app/javascript/controllers/index.js`:
@@ -51,6 +51,18 @@ Run `bundle exec rake lookbook` to browse a live preview of every component (see
 
 Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, ListGroup, Pagination and Spinner take the Bootstrap options listed above, so they have no section of their own.
 
+**Card media and links.** `card.with_media(aspect:) { ... }` renders any top content (a `<video>`, a map, a placeholder) in a box clipped to the card's top corners. `aspect:` is `:video` (16/9), `:square`, `:auto` (default) or a ratio string such as `"4/3"`; `<img>` and `<video>` children fill the box. Use it instead of `image_top`.
+
+`href:` with `link_label:` makes the whole card one link, using the stretched-link technique: the card renders a single empty `<a>` that covers it (`absolute inset-0`), named by `link_label:`, so no `<a>` is nested in another. Word the label like the card's title. The link shows a focus ring and the card gets one too while it has keyboard focus. A control inside that must stay clickable (a button, a menu, another link) opts in with the plain Tailwind classes `relative z-10`:
+
+```erb
+<%= ui_card href: post_path(post), link_label: post.title do |card| %>
+  <% card.with_media(aspect: :video) { video_tag(post.clip, controls: true, class: "relative z-10") } %>
+  <h5><%= post.title %></h5>
+  <%= ui_button "Archive", href: archive_path(post), class: "relative z-10" %>
+<% end %>
+```
+
 ### Nav
 
 Tabs or pills made of links, for moving between pages (TabsComponent switches panels on one page, and looks the same).
@@ -74,6 +86,10 @@ The bar across the top of an app: brand, links, and actions such as an account d
   <% navbar.with_brand(href: root_path) { "2100" } %>                <%# or with_brand("2100") for plain text %>
   <% navbar.with_item("Projects", href: projects_path, active: true) %>   <%# aria-current="page" %>
   <% navbar.with_item("Clients", href: clients_path) %>
+  <% navbar.with_menu("Content") do |menu| %>                              <%# a group of links %>
+    <% menu.with_item("Planned posts", href: posts_path, active: true) %>
+    <% menu.with_item("Drafts", href: drafts_path) %>
+  <% end %>
   <% navbar.with_actions do %>
     <%= ui_dropdown(placement: "bottom-end") { |menu| menu.with_trigger { "Account" }; menu.with_item("Sign out", href: session_path, method: :delete) } %>
   <% end %>
@@ -81,6 +97,8 @@ The bar across the top of an app: brand, links, and actions such as an account d
 ```
 
 It's a `<nav>` landmark named by `label:`. Below the `expand:` breakpoint (`:sm`, `:md`, `:lg` default, `:xl`, `:xxl`) the links move into an Offcanvas opened by a menu button, which has `menu_label:` (default "Menu") as its accessible name, `aria-controls` pointing at the panel, and `aria-expanded` kept in step by `cl-dialog`. `expand: true` never collapses; `expand: false` always does. Actions stay in the bar at every width. `theme:` is `:light` (default) or `:dark`, coloured from the `light`/`dark` tokens, or `:surface`, coloured from `surface` and `body` so it follows [dark mode](#dark-mode); the panel matches. `placement:` docks the panel (`:end` default). HTML attributes go on the `<nav>`; extra item options go on the link.
+
+`with_menu(label, active: false, **opts) { |menu| menu.with_item(...) }` groups links. Items and menus render in the order you add them. From the breakpoint up a menu is a [Dropdown](#dropdown) (native popover, arrow keys, Escape) in the bar, its trigger styled like a link with a caret; `opts` go on the dropdown. The trigger gets `data-current` and an underline when `active: true` or any child is active (the button itself never takes `aria-current`); active children keep `aria-current="page"`. Below the breakpoint the group is a labelled list in the panel (`<li><span id>Content</span><ul aria-labelledby>...</ul></li>`) with no dropdown. Ids are generated, or derive from `id:` (`content`, `content-label`).
 
 ### Progress
 
@@ -129,13 +147,14 @@ Every field helper (`text_field`, `email_field`, `password_field`, `telephone_fi
 | `optional:` | `true` adds "(optional)" to the label; a string changes the wording |
 | `error:` | Replaces the message from `object.errors`; `false` hides it |
 | `wrapper:` | HTML attributes for the field's `<div>` (`wrapper: {class: "mb-3"}`), or `false` for just the styled control |
+| `autosubmit:` | `true` submits the form on change; `{delay: 300}` submits 300 ms after the last keystroke (`f.search_field :q, autosubmit: {delay: 300}`) |
 
 Everything else (`class:`, `data:`, `required:` ...) goes on the control, and `class:` merges. For `select`, put these options in the options hash (the third argument), as Rails does. `rich_text_area` gets the same label/hint/error wrapper when the app has Action Text; the gem doesn't depend on it.
 
 Pieces you can use without the builder:
 
 - **FormField** wraps any control: `ui_form_field(label: "Email", control_id: "email", hint: "...", error: @error) { |field| email_field_tag "email", nil, **field.control_options }`. `control_options(class: ..., kind: :select)` returns the id, classes and aria attributes.
-- **Switch** is Bootstrap's form-check: `ui_switch name: "user[newsletter]", label: "Email me", checked: true` (`type: :checkbox` or `:radio`, `inline: true`, `hint:`, `error:`). A switch is a checkbox with `role="switch"`. Checkboxes and switches with a `name:` include a hidden `unchecked_value:` ("0"; `false` for none), like Rails' `check_box`. HTML attributes go on the `<input>`; `wrapper:` takes the `<div>`'s. `autosubmit: true` submits the surrounding form on change (`cl-autosubmit`), for a toggle that saves itself inside a `form_with`.
+- **Switch** is Bootstrap's form-check: `ui_switch name: "user[newsletter]", label: "Email me", checked: true` (`type: :checkbox` or `:radio`, `inline: true`, `hint:`, `error:`). A switch is a checkbox with `role="switch"`. Checkboxes and switches with a `name:` include a hidden `unchecked_value:` ("0"; `false` for none), like Rails' `check_box`. HTML attributes go on the `<input>`; `wrapper:` takes the `<div>`'s. `autosubmit: true` submits the surrounding form on change (`cl-autosubmit`), for a toggle that saves itself inside a `form_with`. `autosubmit: {delay: 300}` waits 300 ms after the last `input` event instead (a debounce).
 - **RadioCardGroup** is a `<fieldset>` of radio cards: `ui_radio_card_group name: "plan", legend: "Plan", checked: "pro", choices: [{value: "pro", label: "Pro", description: "Unlimited"}]`. Choices can also be `[label, value, description]` arrays or strings.
 - **ErrorSummary**: `ui_error_summary errors: @user.errors` (or an array of messages and `[message, href]` pairs). It renders nothing when there are no errors.
 - **InputGroup** joins a control with add-ons into one connected control. `with_prepend`/`with_append` add-ons (plain text is wrapped in the styled span; pass a block for a `ui_button`) sit around `with_control`, whose input carries `ComponentLibrary2100::InputGroupComponent::CONTROL`; `size:` is `:sm`/`:lg`:
@@ -200,6 +219,16 @@ A native file input, so it works without JavaScript and the server re-checks siz
 
 Server-side suggestions (PrimeVue's AutoComplete) on the WAI-ARIA 1.2 combobox pattern: `role=combobox` with `aria-autocomplete`, `aria-expanded`, `aria-controls` and `aria-activedescendant`, and a `listbox` of options. Typing loads `src?q=` into a Turbo Frame after `delay:` (250ms) once `min_length:` (1) is reached. A polite live region says "3 results" or "No results" (`messages:` replaces them). Down and Up move, Enter chooses, Escape closes and a second Escape clears, Alt+Down opens, and Tab chooses nothing. The active option is filled, outlined and checked, so it doesn't rely on colour. `ComboboxOptionComponent::Group.new(label:)` groups options. Without JavaScript the visible input submits its text. Needs Turbo in the host app. Helpers `ui_combobox` and `ui_combobox_option`.
 
+#### Multiple values (tags)
+
+```erb
+<%= f.combobox :collaborators, multiple: true, max: 3, allow_free_text: true, label: "Collaborators", src: collaborator_search_path %>
+<%= ui_combobox name: "post[collaborators][]", multiple: true, max: 3, allow_free_text: true,
+      values: %w[ada grace], label: "Collaborators", options: %w[ada grace linus] %>
+```
+
+`multiple: true` turns the field into a chip input. Chosen values are `ui_chip`s with a "Remove <value>" button inside the field, before the text input, in a `role="group"` named by `label:` (the FormBuilder defaults it to the humanized attribute). The form submits one hidden input per value, named `name[]`, after an empty one so clearing every chip still sends an empty list. `values:` are the initial values (strings or `[label, value]` pairs); with the FormBuilder they come from the attribute. Choosing a suggestion adds it, from `src:` exactly as in single mode or from static `options:` filtered in the browser (no `src:` needed). With `allow_free_text: true`, Enter or a comma adds the typed text. Backspace in the empty input removes the last chip, and chosen values aren't suggested again. At `max:` the input is hidden, focus moves to the last chip and a polite live region says "Maximum of 3 reached"; removing a chip brings the input back and returns focus to it. Each change is announced ("Ada added", "Ada removed"; `messages:` takes `added`, `removed` and `max`), and a `change` event bubbles from the form, so `autosubmit` works. `cl-combobox:select` still fires for each addition. Single-value behaviour is unchanged.
+
 ## Interactive components
 
 These lean on the platform instead of re-implementing it, so there is little JavaScript to maintain:
@@ -240,6 +269,35 @@ useStyledConfirm(Turbo)
 
 `useStyledConfirm` sets `Turbo.config.forms.confirm` (Turbo 8) or calls `Turbo.setConfirmMethod` (older Turbo). To do it by hand, pass `confirmMethod` from the same import to either. The method returns a Promise that resolves `true` on Confirm and `false` on Cancel, Escape or a backdrop click, and falls back to `window.confirm` on a page without the dialog. A form or its submit button can set `data-turbo-confirm-title` and `data-turbo-confirm-accept` to change the title and the confirm button's text. The dialog has `role="alertdialog"` and opens with Cancel focused.
 
+### Bulk select
+
+Bulk actions on a list or table: row checkboxes, a select-all, and a bar that appears while something is selected. Put `cl-bulk-select` on a container; the bar goes inside it.
+
+```erb
+<%= form_with url: bulk_posts_path, data: {controller: "cl-bulk-select"} do %>
+  <%= ui_table do %>
+    <thead><tr>
+      <th><%= ui_select_all_checkbox label: "Select all posts" %></th>
+      <th>Post</th>
+    </tr></thead>
+    <tbody>
+      <% @posts.each do |post| %>
+        <tr>
+          <td><%= ui_selection_checkbox label: "Select #{post.title}", value: post.id %></td>
+          <td><%= post.title %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  <% end %>
+
+  <%= ui_bulk_action_bar label: "Post actions", noun: "post", noun_plural: "posts" do |bar| %>
+    <% bar.with_action { ui_button "Delete", type: :submit, variant: :danger } %>
+  <% end %>
+<% end %>
+```
+
+`ui_selection_checkbox` requires `label:` (its accessible name) and submits `ids[]` by default (`name:`). The bar is hidden until one row is selected, shows "2 posts selected", has a Clear button, and sits at the bottom of the viewport (`position: :top` for the top). A visually hidden live region announces the count. The select-all checkbox is indeterminate when only some rows are checked. The controller keeps `data-cl-bulk-select-count-value` current, and rows that Turbo adds or replaces are counted automatically. Targets: `item`, `all`, `bar`, `count`, `status`; actions: `toggleAll`, `update`, `clear`.
+
 ## Extras
 
 These go beyond Bootstrap 5. They follow the same conventions (`class:` merging, HTML attributes on the root, a `ui_*` helper).
@@ -259,6 +317,16 @@ These go beyond Bootstrap 5. They follow the same conventions (`class:` merging,
 ```
 
 Actions sit to the right from the `sm` breakpoint and wrap under the title on narrow screens. `level:` picks the heading tag (default `h1`). Block content renders under the subtitle.
+
+`back: {href:, label:}` adds a labelled back link (chevron and visible text) above the title; name the destination ("Planned posts"), not "Back". `with_pager` adds Previous and Next icon links for stepping through records:
+
+```erb
+<%= ui_page_header title: "Launch post", back: {href: posts_path, label: "Planned posts"} do |header| %>
+  <% header.with_pager(prev: {href: post_path(1), label: "Previous post"}, next: {label: "Next post"}) %>
+<% end %>
+```
+
+Each side's `label:` is its accessible name (`aria-label`). A side that is `nil` is left out; one without an `href:` renders disabled (`aria-disabled`), so the other side keeps its place. The links sit in a `<nav aria-label="Pagination">`; `label:` renames it. The icon links are 36px, 44px on touch screens.
 
 ### EmptyState
 
@@ -520,6 +588,18 @@ Tests boot a tiny in-process Rails app (`test/test_helper.rb`) and render each c
 `bundle exec rake lookbook` serves a preview of every component with [Lookbook](https://lookbook.build) at http://localhost:4000 (set `PORT` to change it). The previews live in `previews/component_library_2100/`. Each one subclasses `BasePreview`, sets its sidebar group with `@logical_path`, and gets controls from `@param` comments. A preview that needs markup calls `template(:name, **locals)`, which renders `<preview>/<name>.html.erb` beside the class. Use that rather than `render_with_template`, because ViewComponent's own lookup lands in `component_library2100/`. The app lives in `lookbook/config.ru`. It loads Turbo, Stimulus and the library through the same import map as the system tests, turns on styled confirms, compiles `engine.css` with Tailwind and rebuilds it as files change, and answers `/examples/people` for the Combobox previews. The theme menu switches `data-theme` between light and dark. `test/previews_test.rb` renders every preview and fails when a component in `Helpers::NAMES` has none, so add a preview with each new component.
 
 CI runs on every PR: the tests on each supported Ruby and on the oldest gem versions the gemspec allows (`gemfiles/oldest.gemfile`, so keep the two in step), RuboCop, `bundler-audit`, a gem build and a workflow audit. A weekly run repeats this against the latest gems and opens an issue if it fails.
+
+### ToggleGroup
+
+```erb
+<%= ui_toggle_group name: "platforms", type: :checkbox, label: "Platforms", style: :pills do |group| %>
+  <% group.with_option("Instagram", value: "instagram", checked: true, variant: :primary) %>
+  <% group.with_option("TikTok", value: "tiktok") %>
+  <% group.with_option(value: "grid", icon_only: true, label: "Grid view") { icon_svg } %>
+<% end %>
+```
+
+Checkboxes (`type: :checkbox`, names become `platforms[]`) or radios (`type: :radio`) drawn as pills or a joined segmented control (`style: :segmented`), the form-field counterpart of Chip. It renders a `<fieldset>` whose `<legend>` is `label:` (required; `legend_visible: false` hides it with `sr-only`). Each option is a `<label>` around a visually hidden native input and a styled span, so keyboard and screen reader behaviour is the browser's. The checked state shows a fill, a bold label and a check mark, and options answer to 44px on touch screens. `size:` is `:sm` or `:md`; `variant:` colours the checked state per option or as the group default. An `icon_only: true` option takes the icon as its block and needs `label:` as its hidden accessible name. `autosubmit: true` submits the surrounding form on change. `f.toggle_group :platforms, [["Instagram", "instagram"]], label: "Platforms"` does the same from the form builder. Helper `ui_toggle_group`.
 
 ### Merging
 

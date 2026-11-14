@@ -9,7 +9,7 @@ module ComponentLibrary2100
   # so unchecking it submits a value, as Rails' `check_box` does.
   #
   # Inside a form (`form_with`, or the `ComponentLibrary2100::FormBuilder` via `f.switch`) it
-  # submits with the form. `autosubmit: true` submits the surrounding form as soon as it changes,
+  # submits with the form. `autosubmit: true` (or `{delay: 300}`) submits the surrounding form as soon as it changes,
   # for a settings toggle that saves itself:
   #
   #   <%= form_with url: notifications_path, method: :patch do %>
@@ -75,7 +75,7 @@ module ComponentLibrary2100
         role: ("switch" if @type == :switch),
         name: @name, value: @value, id: @id, checked: @checked, disabled: @disabled,
         aria: {describedby: describedby, invalid: (true if @error)}.compact,
-        data: (@autosubmit ? {action: "change->cl-autosubmit#submit", controller: "cl-autosubmit"} : {})
+        data: ComponentLibrary2100.autosubmit_data(@autosubmit)
       }
     end
 

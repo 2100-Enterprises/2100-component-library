@@ -171,6 +171,36 @@ class FormComponentsTest < ViewComponent::TestCase
     assert_selector "#n-hint", text: "Daily"
   end
 
+  def test_switch_autosubmit_with_delay
+    render_inline(SwitchComponent.new(name: "on", id: "n", autosubmit: {delay: 300})) { "On" }
+
+    input = page.find("input#n")
+    assert_equal "cl-autosubmit", input["data-controller"]
+    assert_equal "input->cl-autosubmit#submit", input["data-action"]
+    assert_equal "300", input["data-cl-autosubmit-delay-value"]
+  end
+
+  def test_builder_autosubmit
+    form do |f|
+      safe_join([
+        f.search_field(:name, autosubmit: {delay: 300}, data: {action: "focus->x#y", controller: "x"}),
+        f.text_field(:email, autosubmit: true),
+        f.select(:role, %w[a b], {}, autosubmit: true),
+        f.text_field(:phone)
+      ])
+    end
+
+    name = page.find("input#user_name")
+    assert_equal "cl-autosubmit x", name["data-controller"]
+    assert_equal "input->cl-autosubmit#submit focus->x#y", name["data-action"]
+    assert_equal "300", name["data-cl-autosubmit-delay-value"]
+    email = page.find("input#user_email")
+    assert_equal "change->cl-autosubmit#submit", email["data-action"]
+    assert_nil email["data-cl-autosubmit-delay-value"]
+    assert_equal "change->cl-autosubmit#submit", page.find("select#user_role")["data-action"]
+    assert_nil page.find("input#user_phone")["data-controller"]
+  end
+
   def test_radio_and_inline_check
     render_inline(SwitchComponent.new(name: "size", value: "s", type: :radio, inline: true, checked: true)) { "Small" }
 

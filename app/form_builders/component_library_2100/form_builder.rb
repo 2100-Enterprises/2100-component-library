@@ -33,10 +33,12 @@ module ComponentLibrary2100
   # reach number, date, time, datetime-local and month fields.
   #   counter:  {max: 2000} or {min: 12}, a live character count (see FormFieldComponent);
   #             `html: true` counts rich text. Needs the wrapper, so it is ignored with `wrapper: false`
+  #   autosubmit: true submits the form when the control changes (`cl-autosubmit`); `{delay: 300}`
+  #             submits 300ms after the last keystroke, for search and text fields
   # Everything else (class:, data:, required: ...) goes on the control as usual.
   class FormBuilder < ActionView::Helpers::FormBuilder
     FIELD_OPTIONS = %i[label hint optional error wrapper counter].freeze
-    COMBOBOX_OPTIONS = %i[text min_length delay force_selection frame_id messages listbox_label].freeze
+    COMBOBOX_OPTIONS = %i[text min_length delay force_selection frame_id messages listbox_label multiple max allow_free_text options].freeze
 
     include ComponentFields
 
@@ -95,16 +97,15 @@ module ComponentLibrary2100
 
     # A text input with server-side suggestions (ComboboxComponent), in the usual field wrapper.
     # `src:` is the endpoint that answers `?q=` with a Turbo Frame of ComboboxOptionComponents, and
-    # `text:` is the label shown for the current value (default: the value itself).
-    def combobox(method, src:, **options)
+    # `text:` is the label shown for the current value (default: the value itself). `src:` may be
+    # left out with static `options:`. With `multiple: true` (and `max:`, `allow_free_text:`) the
+    # attribute holds a list: its values show as chips and submit as `name[]`.
+    def combobox(method, src: nil, **options)
       options = options.to_h.symbolize_keys
-      settings = options.extract!(*COMBOBOX_OPTIONS)
-      settings[:text] ||= value_of(method)
+      settings = combobox_settings(method, options)
 
       field(method, options) do |control_options|
-        @template.render(ComboboxComponent.new(
-          name: field_name(method), src: src, value: value_of(method), input: control_options, **settings
-        ))
+        @template.render(ComboboxComponent.new(src: src, input: control_options, **settings))
       end
     end
 
@@ -134,6 +135,7 @@ module ComponentLibrary2100
     def field(method, options, kind: :control)
       options = options.to_h.symbolize_keys
       config = options.extract!(*FIELD_OPTIONS)
+      options = with_autosubmit(options, options.delete(:autosubmit))
       component = field_component(method, options[:id], config)
       control_options = component.control_options(options, kind: kind)
       return yield(control_options) if config[:wrapper] == false
@@ -160,6 +162,15 @@ module ComponentLibrary2100
       return unless object.respond_to?(:errors)
 
       object.errors.full_messages_for(method).to_sentence.presence
+    end
+
+    def combobox_settings(method, options)
+      label = options[:label]
+      settings = options.extract!(*COMBOBOX_OPTIONS)
+      value = value_of(method)
+      return settings.merge(name: field_name(method), value: value, text: settings[:text] || value) unless settings[:multiple]
+
+      settings.merge(name: field_name(method, multiple: true), values: Array(value), label: label || method.to_s.humanize)
     end
 
     def value_of(method)

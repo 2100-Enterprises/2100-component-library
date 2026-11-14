@@ -1,4 +1,5 @@
 import AutosubmitController from "component_library_2100/controllers/autosubmit_controller"
+import BulkSelectController from "component_library_2100/controllers/bulk_select_controller"
 import CarouselController from "component_library_2100/controllers/carousel_controller"
 import CollapseController from "component_library_2100/controllers/collapse_controller"
 import ComboboxController from "component_library_2100/controllers/combobox_controller"
@@ -15,7 +16,7 @@ import TabsController from "component_library_2100/controllers/tabs_controller"
 import TooltipController from "component_library_2100/controllers/tooltip_controller"
 
 export {
-  AutosubmitController, CarouselController, CollapseController, ComboboxController, ConfirmController,
+  AutosubmitController, BulkSelectController, CarouselController, CollapseController, ComboboxController, ConfirmController,
   CounterController, DialogController, DismissController, FileUploadController, PasswordController, PopoverController,
   PwaInstallController, ScrollspyController, TabsController, TooltipController
 }
@@ -24,6 +25,7 @@ export {
 // so they cannot collide with the host app's own controllers.
 export function register(application) {
   application.register("cl-autosubmit", AutosubmitController)
+  application.register("cl-bulk-select", BulkSelectController)
   application.register("cl-carousel", CarouselController)
   application.register("cl-collapse", CollapseController)
   application.register("cl-combobox", ComboboxController)

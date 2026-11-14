@@ -14,8 +14,8 @@ module ComponentLibrary2100
       nav switch form_field radio_card_group error_summary confirm_dialog
       page_header empty_state avatar navbar stepper
       skeleton description_list stat stats sort_header
-      carousel scrollspy input_group floating_label range table_header choice_group file_upload combobox combobox_option timeline timeline_event chip chip_group
-      pwa_install
+      carousel scrollspy input_group floating_label range table_header choice_group file_upload combobox combobox_option timeline timeline_event chip chip_group toggle_group
+      pwa_install bulk_action_bar
     ].freeze
 
     NAMES.each do |name|
@@ -30,6 +30,22 @@ module ComponentLibrary2100
           render(component)
         end
       end
+    end
+
+    CHECKBOX = "size-4 pointer-coarse:size-6 shrink-0 cursor-pointer accent-primary disabled:cursor-default " \
+               "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/25"
+
+    # A row checkbox for `cl-bulk-select`. `label:` is required: it is the accessible name
+    # (aria-label), such as "Select Ada Lovelace". Extra options become HTML attributes.
+    #
+    #   <%= ui_selection_checkbox label: "Select #{post.title}", value: post.id %>
+    def ui_selection_checkbox(label:, value:, name: "ids[]", **options)
+      bulk_checkbox("item", label, name: name, value: value, **options)
+    end
+
+    # The select-all checkbox for `cl-bulk-select`. It has no name, so it isn't submitted.
+    def ui_select_all_checkbox(label: "Select all", **options)
+      bulk_checkbox("all", label, action: "change->cl-bulk-select#toggleAll", **options)
     end
 
     # `form_with` using ComponentLibrary2100::FormBuilder:
@@ -62,6 +78,14 @@ module ComponentLibrary2100
     end
 
     private
+
+    def bulk_checkbox(target, label, action: "change->cl-bulk-select#update", **options)
+      raise ArgumentError, "label: is required, it names the checkbox for screen readers" if label.blank?
+
+      data = {cl_bulk_select_target: target, action: action}.merge(options.delete(:data) || {})
+      css = ComponentLibrary2100.merge_classes(CHECKBOX, options.delete(:class))
+      tag.input(type: "checkbox", class: css, data: data, aria: {label: label}.merge(options.delete(:aria) || {}), **options)
+    end
 
     def apple_web_app_meta_tags(title, status_bar)
       [

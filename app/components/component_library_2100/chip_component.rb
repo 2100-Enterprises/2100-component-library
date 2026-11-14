@@ -12,6 +12,8 @@ module ComponentLibrary2100
   # `remove:` takes a URL, or a hash of `href:`, `method:`, `label:` and `params:`. With only an href
   # the control is a link (the server-driven case: the URL is the page without this filter). With a
   # `method:` other than GET it is a small form with a submit button, so the CSRF token is kept.
+  # `remove: {button: true}` renders a plain `<button type="button">` instead, for a host that wires
+  # removal in JavaScript (a Combobox in `multiple:` mode); `data:` on the hash goes on the button.
   # The control is named "Remove <label>"; set `remove: {label:}` to change it.
   #
   # The control is a real link or button, so it is reachable and operable by keyboard with no JS.
@@ -49,8 +51,13 @@ module ComponentLibrary2100
     def remove_control(text)
       return if @remove.empty?
 
-      href = @remove.fetch(:href)
       button = {class: REMOVE, aria: {label: @remove[:label] || "Remove #{strip_tags(text.to_s).squish}"}}
+      return tag.button(x_icon, type: :button, data: @remove[:data], **button) if @remove[:button]
+
+      remove_link_or_form(@remove.fetch(:href), button)
+    end
+
+    def remove_link_or_form(href, button)
       return tag.a(x_icon, href: href, **button) unless remove_by_form?
 
       button_to(href, method: @remove[:method], params: @remove[:params] || {}, form: {class: "inline-flex m-0"}, **button) { x_icon }

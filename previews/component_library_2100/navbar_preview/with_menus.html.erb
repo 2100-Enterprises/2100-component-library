@@ -1,0 +1,14 @@
+<%= ui_navbar label: "Main", theme: theme, expand: expand do |navbar| %>
+  <% navbar.with_brand(href: "#") { "2100" } %>
+  <% navbar.with_item("Dashboard", href: "#") %>
+  <% navbar.with_menu("Content") do |menu| %>
+    <% menu.with_item("Planned Posts", href: "#", active: true) %>
+    <% menu.with_item("Drafts", href: "#") %>
+    <% menu.with_item("Published", href: "#") %>
+  <% end %>
+  <% navbar.with_menu("Settings") do |menu| %>
+    <% menu.with_item("Accounts", href: "#") %>
+    <% menu.with_item("Team", href: "#") %>
+  <% end %>
+  <% navbar.with_item("Help", href: "#") %>
+<% end %>

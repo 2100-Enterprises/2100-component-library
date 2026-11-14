@@ -1,0 +1,6 @@
+<%= ui_page_header title: "Launch announcement", subtitle: "Scheduled for Friday", back: {href: "#", label: "Planned posts"} do |header| %>
+  <% header.with_pager(prev: {label: "Previous post"}, next: {href: "#", label: "Next post"}) %>
+  <% header.with_actions do %>
+    <%= ui_button "Edit", variant: :secondary, outline: true %>
+  <% end %>
+<% end %>

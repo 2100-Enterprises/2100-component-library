@@ -7,6 +7,7 @@ class BuilderComboboxTest < ViewComponent::TestCase
     include ActiveModel::Attributes
 
     attribute :person_id, :string
+    attribute :collaborators, default: -> { [] }
 
     validates :person_id, presence: {message: "Choose a person"}
 
@@ -39,5 +40,23 @@ class BuilderComboboxTest < ViewComponent::TestCase
 
     assert_selector "input[role=combobox][aria-invalid=true]"
     assert_text "Choose a person"
+  end
+
+  def test_multiple_names_values_as_an_array_and_labels_the_group
+    form(Membership.new(collaborators: %w[ada])) do |f|
+      f.combobox :collaborators, multiple: true, max: 3, allow_free_text: true, label: "Collaborators"
+    end
+
+    assert_selector "label[for=membership_collaborators]", text: "Collaborators"
+    assert_selector "input[type=hidden][name='membership[collaborators][]']", visible: :all, count: 2
+    assert_selector "input[type=hidden][value=ada]", visible: :all
+    assert_selector "[role=group][aria-label=Collaborators] [data-value=ada]"
+    assert_selector "[data-cl-combobox-max-value='3']"
+  end
+
+  def test_multiple_group_label_defaults_to_the_humanized_attribute
+    form { |f| f.combobox :collaborators, multiple: true }
+
+    assert_selector "[role=group][aria-label=Collaborators]"
   end
 end

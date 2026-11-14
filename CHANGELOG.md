@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- Fixes `bin/rails g component_library_2100:install` and `component_library_2100:eject`, which Rails couldn't find: it derived the namespace `component_library2100` from the class name, which doesn't match the generators' folder. Both now declare their documented namespace.
+- Adds `bin/rails component_library_2100:install`, a rake task that runs the install generator against the app. Running the install again leaves the files as they are.
+- `ComboboxComponent` and `f.combobox` take `multiple: true` (tags mode), with `max:`, `allow_free_text:`, `values:`, `label:` and static `options:`. Chosen values are removable `ChipComponent`s in a labelled group, submitted as one hidden input each (after an empty one); Enter or a comma adds free text, Backspace removes the last chip, chosen values aren't suggested again, and a live region announces adds, removes and "Maximum of N reached". `ChipComponent` accepts `remove: {button: true}` for a plain button. Single-value behaviour is unchanged.
+- Adds bulk selection: the `cl-bulk-select` Stimulus controller, `BulkActionBarComponent` (`ui_bulk_action_bar`), and the `ui_selection_checkbox` and `ui_select_all_checkbox` helpers. The bar shows only while rows are selected, with a live count, a Clear button and an `actions` slot.
+- `NavbarComponent#with_menu(label, active:, **opts)` groups links: a dropdown in the bar (trigger styled as a link, `data-current` when active or any child is) and a labelled list in the offcanvas panel. Items and menus render in call order; `with_item` is unchanged. Navbar links and menu triggers also get 44px touch targets on coarse pointers.
+- Adds `ToggleGroupComponent` (`ui_toggle_group`, `f.toggle_group`): checkboxes or radios drawn as pills or a segmented control, with per-option variants, icon-only options, a visually hidden legend option and `autosubmit:`.
+- `CardComponent#with_media(aspect:)` renders arbitrary top content (video, map, placeholder) in a box with an aspect ratio (`:video`, `:square`, `:auto` or a ratio string like `"4/3"`), clipped to the rounded top corners.
+- `CardComponent` takes `href:` and `link_label:` to make the whole card a link (stretched link: one empty `<a>` covering the card, so nothing nests in an `<a>`). The link has a focus ring and the card a ring while it has keyboard focus. Interactive content inside opts in to staying clickable with `relative z-10`. `href:` without `link_label:` raises.
+
+- `PageHeaderComponent` takes `back: {href:, label:}`, a labelled back link (chevron and visible text) above the title.
+- `PageHeaderComponent#with_pager(prev:, next:, label:)` renders Previous and Next icon links with accessible names inside a `<nav aria-label="Pagination">`. A nil side is omitted; a side without `href:` renders disabled (`aria-disabled`). 44px touch targets on coarse pointers.
+
+- `cl-autosubmit` takes a `delay` value (milliseconds, default 0, which submits at once as before). With `data-cl-autosubmit-delay-value="300"` and `data-action="input->cl-autosubmit#submit"` a search or text field submits once typing pauses. A pending submit is cancelled when the form is submitted another way and when the controller disconnects.
+- `FormBuilder` fields take `autosubmit: true` (submit on change) or `autosubmit: {delay: 300}` (debounced, on input); `SwitchComponent` accepts the `{delay:}` form too. Your own `data-controller` and `data-action` are kept.
+
 ## 0.12.3
 
 - `ModalComponent` and `OffcanvasComponent` stop scrolling inside the panel, or over its backdrop, from scrolling the page behind (`overscroll-behavior: contain`; Safari doesn't support it yet).

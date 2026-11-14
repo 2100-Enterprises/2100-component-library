@@ -3,6 +3,10 @@ require "rails/generators"
 module ComponentLibrary2100
   module Generators
     class InstallGenerator < Rails::Generators::Base
+      # Rails derives "component_library2100" from the class name, but the file lives under
+      # generators/component_library_2100/, so the documented name would find nothing.
+      namespace "component_library_2100:install"
+
       desc "Wires ComponentLibrary2100 into a host app: Tailwind theme import and Stimulus controllers."
 
       CSS_FILE = "app/assets/tailwind/application.css".freeze
