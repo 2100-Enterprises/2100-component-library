@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `NavbarComponent#with_menu(label, active:, **opts)` groups links: a dropdown in the bar (trigger styled as a link, `data-current` when active or any child is) and a labelled list in the offcanvas panel. Items and menus render in call order; `with_item` is unchanged. Navbar links and menu triggers also get 44px touch targets on coarse pointers.
+
 ## 0.12.3
 
 - `ModalComponent` and `OffcanvasComponent` stop scrolling inside the panel, or over its backdrop, from scrolling the page behind (`overscroll-behavior: contain`; Safari doesn't support it yet).

@@ -74,6 +74,10 @@ The bar across the top of an app: brand, links, and actions such as an account d
   <% navbar.with_brand(href: root_path) { "2100" } %>                <%# or with_brand("2100") for plain text %>
   <% navbar.with_item("Projects", href: projects_path, active: true) %>   <%# aria-current="page" %>
   <% navbar.with_item("Clients", href: clients_path) %>
+  <% navbar.with_menu("Content") do |menu| %>                              <%# a group of links %>
+    <% menu.with_item("Planned posts", href: posts_path, active: true) %>
+    <% menu.with_item("Drafts", href: drafts_path) %>
+  <% end %>
   <% navbar.with_actions do %>
     <%= ui_dropdown(placement: "bottom-end") { |menu| menu.with_trigger { "Account" }; menu.with_item("Sign out", href: session_path, method: :delete) } %>
   <% end %>
@@ -81,6 +85,8 @@ The bar across the top of an app: brand, links, and actions such as an account d
 ```
 
 It's a `<nav>` landmark named by `label:`. Below the `expand:` breakpoint (`:sm`, `:md`, `:lg` default, `:xl`, `:xxl`) the links move into an Offcanvas opened by a menu button, which has `menu_label:` (default "Menu") as its accessible name, `aria-controls` pointing at the panel, and `aria-expanded` kept in step by `cl-dialog`. `expand: true` never collapses; `expand: false` always does. Actions stay in the bar at every width. `theme:` is `:light` (default) or `:dark`, coloured from the `light`/`dark` tokens, or `:surface`, coloured from `surface` and `body` so it follows [dark mode](#dark-mode); the panel matches. `placement:` docks the panel (`:end` default). HTML attributes go on the `<nav>`; extra item options go on the link.
+
+`with_menu(label, active: false, **opts) { |menu| menu.with_item(...) }` groups links. Items and menus render in the order you add them. From the breakpoint up a menu is a [Dropdown](#dropdown) (native popover, arrow keys, Escape) in the bar, its trigger styled like a link with a caret; `opts` go on the dropdown. The trigger gets `data-current` and an underline when `active: true` or any child is active (the button itself never takes `aria-current`); active children keep `aria-current="page"`. Below the breakpoint the group is a labelled list in the panel (`<li><span id>Content</span><ul aria-labelledby>...</ul></li>`) with no dropdown. Ids are generated, or derive from `id:` (`content`, `content-label`).
 
 ### Progress
 
