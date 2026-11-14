@@ -219,6 +219,16 @@ A native file input, so it works without JavaScript and the server re-checks siz
 
 Server-side suggestions (PrimeVue's AutoComplete) on the WAI-ARIA 1.2 combobox pattern: `role=combobox` with `aria-autocomplete`, `aria-expanded`, `aria-controls` and `aria-activedescendant`, and a `listbox` of options. Typing loads `src?q=` into a Turbo Frame after `delay:` (250ms) once `min_length:` (1) is reached. A polite live region says "3 results" or "No results" (`messages:` replaces them). Down and Up move, Enter chooses, Escape closes and a second Escape clears, Alt+Down opens, and Tab chooses nothing. The active option is filled, outlined and checked, so it doesn't rely on colour. `ComboboxOptionComponent::Group.new(label:)` groups options. Without JavaScript the visible input submits its text. Needs Turbo in the host app. Helpers `ui_combobox` and `ui_combobox_option`.
 
+#### Multiple values (tags)
+
+```erb
+<%= f.combobox :collaborators, multiple: true, max: 3, allow_free_text: true, label: "Collaborators", src: collaborator_search_path %>
+<%= ui_combobox name: "post[collaborators][]", multiple: true, max: 3, allow_free_text: true,
+      values: %w[ada grace], label: "Collaborators", options: %w[ada grace linus] %>
+```
+
+`multiple: true` turns the field into a chip input. Chosen values are `ui_chip`s with a "Remove <value>" button inside the field, before the text input, in a `role="group"` named by `label:` (the FormBuilder defaults it to the humanized attribute). The form submits one hidden input per value, named `name[]`, after an empty one so clearing every chip still sends an empty list. `values:` are the initial values (strings or `[label, value]` pairs); with the FormBuilder they come from the attribute. Choosing a suggestion adds it, from `src:` exactly as in single mode or from static `options:` filtered in the browser (no `src:` needed). With `allow_free_text: true`, Enter or a comma adds the typed text. Backspace in the empty input removes the last chip, and chosen values aren't suggested again. At `max:` the input is hidden, focus moves to the last chip and a polite live region says "Maximum of 3 reached"; removing a chip brings the input back and returns focus to it. Each change is announced ("Ada added", "Ada removed"; `messages:` takes `added`, `removed` and `max`), and a `change` event bubbles from the form, so `autosubmit` works. `cl-combobox:select` still fires for each addition. Single-value behaviour is unchanged.
+
 ## Interactive components
 
 These lean on the platform instead of re-implementing it, so there is little JavaScript to maintain:

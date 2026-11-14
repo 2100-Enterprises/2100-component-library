@@ -38,7 +38,7 @@ module ComponentLibrary2100
   # Everything else (class:, data:, required: ...) goes on the control as usual.
   class FormBuilder < ActionView::Helpers::FormBuilder
     FIELD_OPTIONS = %i[label hint optional error wrapper counter].freeze
-    COMBOBOX_OPTIONS = %i[text min_length delay force_selection frame_id messages listbox_label].freeze
+    COMBOBOX_OPTIONS = %i[text min_length delay force_selection frame_id messages listbox_label multiple max allow_free_text options].freeze
 
     include ComponentFields
 
@@ -97,16 +97,15 @@ module ComponentLibrary2100
 
     # A text input with server-side suggestions (ComboboxComponent), in the usual field wrapper.
     # `src:` is the endpoint that answers `?q=` with a Turbo Frame of ComboboxOptionComponents, and
-    # `text:` is the label shown for the current value (default: the value itself).
-    def combobox(method, src:, **options)
+    # `text:` is the label shown for the current value (default: the value itself). `src:` may be
+    # left out with static `options:`. With `multiple: true` (and `max:`, `allow_free_text:`) the
+    # attribute holds a list: its values show as chips and submit as `name[]`.
+    def combobox(method, src: nil, **options)
       options = options.to_h.symbolize_keys
-      settings = options.extract!(*COMBOBOX_OPTIONS)
-      settings[:text] ||= value_of(method)
+      settings = combobox_settings(method, options)
 
       field(method, options) do |control_options|
-        @template.render(ComboboxComponent.new(
-          name: field_name(method), src: src, value: value_of(method), input: control_options, **settings
-        ))
+        @template.render(ComboboxComponent.new(src: src, input: control_options, **settings))
       end
     end
 
@@ -163,6 +162,15 @@ module ComponentLibrary2100
       return unless object.respond_to?(:errors)
 
       object.errors.full_messages_for(method).to_sentence.presence
+    end
+
+    def combobox_settings(method, options)
+      label = options[:label]
+      settings = options.extract!(*COMBOBOX_OPTIONS)
+      value = value_of(method)
+      return settings.merge(name: field_name(method), value: value, text: settings[:text] || value) unless settings[:multiple]
+
+      settings.merge(name: field_name(method, multiple: true), values: Array(value), label: label || method.to_s.humanize)
     end
 
     def value_of(method)
