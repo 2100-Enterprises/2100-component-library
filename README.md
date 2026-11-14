@@ -13,10 +13,10 @@ gem "component_library_2100", github: "the-codetrane/2100-component-library", ta
 
 ```sh
 bundle install
-bin/rails g component_library_2100:install
+bin/rails component_library_2100:install   # or: bin/rails g component_library_2100:install
 ```
 
-The generator does three things (do them by hand if your files differ). The third is the `.gitignore` entry in step 1.
+The task runs the install generator, which does three things (do them by hand if your files differ). Running it again changes nothing. The third is the `.gitignore` entry in step 1.
 
 1. Adds `@import "./component_library_2100.css";` to `app/assets/tailwind/application.css`, after `@import "tailwindcss"`. That file is written by `rake component_library_2100:tailwind` (it runs automatically before `tailwindcss:build` / `tailwindcss:watch`) and points Tailwind at the gem's theme tokens and component sources. It holds an absolute path, so the generator also adds it to `.gitignore`.
 2. Registers the Stimulus controllers in `app/javascript/controllers/index.js`:
