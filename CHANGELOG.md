@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Adds bulk selection: the `cl-bulk-select` Stimulus controller, `BulkActionBarComponent` (`ui_bulk_action_bar`), and the `ui_selection_checkbox` and `ui_select_all_checkbox` helpers. The bar shows only while rows are selected, with a live count, a Clear button and an `actions` slot.
+- `NavbarComponent#with_menu(label, active:, **opts)` groups links: a dropdown in the bar (trigger styled as a link, `data-current` when active or any child is) and a labelled list in the offcanvas panel. Items and menus render in call order; `with_item` is unchanged. Navbar links and menu triggers also get 44px touch targets on coarse pointers.
 
 ## 0.12.3
 
