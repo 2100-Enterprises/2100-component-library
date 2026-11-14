@@ -220,6 +220,23 @@ class ComboboxMultipleSystemTest < SystemTestCase
     assert_selector "[role=status]", text: "one removed", visible: :all
   end
 
+  test "a search still in flight when the text becomes a chip doesn't announce or open" do
+    serve("/people") do |_request|
+      sleep 0.4 # lands after the comma below has committed the text
+      render_html(%(<turbo-frame id="people"><%= render ComponentLibrary2100::ComboboxOptionComponent.new(value: "1", label: "Someone") %></turbo-frame>))
+    end
+    render_tags(", allow_free_text: true")
+    input.send_keys("one")
+    sleep 0.1 # past the 20ms debounce, so the request has started
+    input.send_keys(",")
+
+    assert_equal %w[one], chips
+    sleep 0.6 # past the slow response
+    assert_selector "[role=status]", text: "one added", visible: :all
+    assert_no_selector "[role=option]"
+    assert_equal "false", input["aria-expanded"]
+  end
+
   test "Backspace on an empty input removes the last chip" do
     render_tags(", allow_free_text: true")
     input.send_keys("one,", "two,")

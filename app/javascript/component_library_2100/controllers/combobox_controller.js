@@ -168,6 +168,9 @@ export default class extends Controller {
     const count = this.#options.length
     const move = this.moveOnLoad
     this.moveOnLoad = null
+    // The text was committed as a chip or cleared while the request was in flight, so these
+    // results answer nothing: don't announce them over what just happened, or open them.
+    if (this.inputTarget.value.length < this.minLengthValue) return this.#close()
     this.#deactivate()
     this.#announce(count)
 
@@ -279,6 +282,7 @@ export default class extends Controller {
   get #full() { return this.hasMaxValue && this.chosen.length >= this.maxValue }
 
   #addChip(value, label) {
+    clearTimeout(this.timer)
     this.inputTarget.value = ""
     this.#close()
     if (this.chosen.includes(value) || this.#full) return
@@ -331,6 +335,7 @@ export default class extends Controller {
   }
 
   #clear() {
+    clearTimeout(this.timer)
     if (this.multipleValue) {
       this.inputTarget.value = ""
       return this.#close()
