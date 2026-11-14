@@ -556,6 +556,18 @@ Tests boot a tiny in-process Rails app (`test/test_helper.rb`) and render each c
 
 CI runs on every PR: the tests on each supported Ruby and on the oldest gem versions the gemspec allows (`gemfiles/oldest.gemfile`, so keep the two in step), RuboCop, `bundler-audit`, a gem build and a workflow audit. A weekly run repeats this against the latest gems and opens an issue if it fails.
 
+### ToggleGroup
+
+```erb
+<%= ui_toggle_group name: "platforms", type: :checkbox, label: "Platforms", style: :pills do |group| %>
+  <% group.with_option("Instagram", value: "instagram", checked: true, variant: :primary) %>
+  <% group.with_option("TikTok", value: "tiktok") %>
+  <% group.with_option(value: "grid", icon_only: true, label: "Grid view") { icon_svg } %>
+<% end %>
+```
+
+Checkboxes (`type: :checkbox`, names become `platforms[]`) or radios (`type: :radio`) drawn as pills or a joined segmented control (`style: :segmented`), the form-field counterpart of Chip. It renders a `<fieldset>` whose `<legend>` is `label:` (required; `legend_visible: false` hides it with `sr-only`). Each option is a `<label>` around a visually hidden native input and a styled span, so keyboard and screen reader behaviour is the browser's. The checked state shows a fill, a bold label and a check mark, and options answer to 44px on touch screens. `size:` is `:sm` or `:md`; `variant:` colours the checked state per option or as the group default. An `icon_only: true` option takes the icon as its block and needs `label:` as its hidden accessible name. `autosubmit: true` submits the surrounding form on change. `f.toggle_group :platforms, [["Instagram", "instagram"]], label: "Platforms"` does the same from the form builder. Helper `ui_toggle_group`.
+
 ### Merging
 
 Once CI is green, `bin/pr-triage` merges a PR into `development` unless one of these applies. Nothing reaches an app until a person bumps the version.
