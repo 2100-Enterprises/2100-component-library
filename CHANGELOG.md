@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `CardComponent#with_media(aspect:)` renders arbitrary top content (video, map, placeholder) in a box with an aspect ratio (`:video`, `:square`, `:auto` or a ratio string like `"4/3"`), clipped to the rounded top corners.
+- `CardComponent` takes `href:` and `link_label:` to make the whole card a link (stretched link: one empty `<a>` covering the card, so nothing nests in an `<a>`). The link has a focus ring and the card a ring while it has keyboard focus. Interactive content inside opts in to staying clickable with `relative z-10`. `href:` without `link_label:` raises.
+
 - `PageHeaderComponent` takes `back: {href:, label:}`, a labelled back link (chevron and visible text) above the title.
 - `PageHeaderComponent#with_pager(prev:, next:, label:)` renders Previous and Next icon links with accessible names inside a `<nav aria-label="Pagination">`. A nil side is omitted; a side without `href:` renders disabled (`aria-disabled`). 44px touch targets on coarse pointers.
 

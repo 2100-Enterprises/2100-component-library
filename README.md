@@ -51,6 +51,18 @@ Run `bundle exec rake lookbook` to browse a live preview of every component (see
 
 Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CloseButton, ListGroup, Pagination and Spinner take the Bootstrap options listed above, so they have no section of their own.
 
+**Card media and links.** `card.with_media(aspect:) { ... }` renders any top content (a `<video>`, a map, a placeholder) in a box clipped to the card's top corners. `aspect:` is `:video` (16/9), `:square`, `:auto` (default) or a ratio string such as `"4/3"`; `<img>` and `<video>` children fill the box. Use it instead of `image_top`.
+
+`href:` with `link_label:` makes the whole card one link, using the stretched-link technique: the card renders a single empty `<a>` that covers it (`absolute inset-0`), named by `link_label:`, so no `<a>` is nested in another. Word the label like the card's title. The link shows a focus ring and the card gets one too while it has keyboard focus. A control inside that must stay clickable (a button, a menu, another link) opts in with the plain Tailwind classes `relative z-10`:
+
+```erb
+<%= ui_card href: post_path(post), link_label: post.title do |card| %>
+  <% card.with_media(aspect: :video) { video_tag(post.clip, controls: true, class: "relative z-10") } %>
+  <h5><%= post.title %></h5>
+  <%= ui_button "Archive", href: archive_path(post), class: "relative z-10" %>
+<% end %>
+```
+
 ### Nav
 
 Tabs or pills made of links, for moving between pages (TabsComponent switches panels on one page, and looks the same).
