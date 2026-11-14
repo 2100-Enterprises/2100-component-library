@@ -40,6 +40,17 @@ module ComponentLibrary2100
         choice_group(:radio, method, choices, **options)
       end
 
+      # A group of checkboxes (`type: :checkbox`, the default) or radios as pills or a segmented control
+      # (ToggleGroupComponent). `choices` are `[label, value]` pairs, `{value:, label:, disabled:}` hashes
+      # or strings. `label:` is the legend. A checkbox group submits `""` when none are checked.
+      def toggle_group(method, choices, type: :checkbox, label: nil, **options)
+        checked = checked_option(options, value_of(method))
+        @template.render(ToggleGroupComponent.new(
+          name: options.delete(:name) || field_name(method, multiple: type.to_sym == :checkbox), id: options.delete(:id) || field_id(method),
+          label: label_text(method, label), type: type, choices: choices, checked: checked, hidden: type.to_sym == :checkbox, **options
+        ))
+      end
+
       private
 
       # Renders the component with its name, id, label (or legend) and error filled in from the

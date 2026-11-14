@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Adds `ToggleGroupComponent` (`ui_toggle_group`, `f.toggle_group`): checkboxes or radios drawn as pills or a segmented control, with per-option variants, icon-only options, a visually hidden legend option and `autosubmit:`.
+
 ## 0.12.3
 
 - `ModalComponent` and `OffcanvasComponent` stop scrolling inside the panel, or over its backdrop, from scrolling the page behind (`overscroll-behavior: contain`; Safari doesn't support it yet).
