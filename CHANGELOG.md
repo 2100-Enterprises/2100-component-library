@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `cl-autosubmit` takes a `delay` value (milliseconds, default 0, which submits at once as before). With `data-cl-autosubmit-delay-value="300"` and `data-action="input->cl-autosubmit#submit"` a search or text field submits once typing pauses. A pending submit is cancelled when the form is submitted another way and when the controller disconnects.
+- `FormBuilder` fields take `autosubmit: true` (submit on change) or `autosubmit: {delay: 300}` (debounced, on input); `SwitchComponent` accepts the `{delay:}` form too. Your own `data-controller` and `data-action` are kept.
+
 ## 0.12.3
 
 - `ModalComponent` and `OffcanvasComponent` stop scrolling inside the panel, or over its backdrop, from scrolling the page behind (`overscroll-behavior: contain`; Safari doesn't support it yet).

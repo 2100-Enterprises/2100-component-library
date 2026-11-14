@@ -33,6 +33,8 @@ module ComponentLibrary2100
   # reach number, date, time, datetime-local and month fields.
   #   counter:  {max: 2000} or {min: 12}, a live character count (see FormFieldComponent);
   #             `html: true` counts rich text. Needs the wrapper, so it is ignored with `wrapper: false`
+  #   autosubmit: true submits the form when the control changes (`cl-autosubmit`); `{delay: 300}`
+  #             submits 300ms after the last keystroke, for search and text fields
   # Everything else (class:, data:, required: ...) goes on the control as usual.
   class FormBuilder < ActionView::Helpers::FormBuilder
     FIELD_OPTIONS = %i[label hint optional error wrapper counter].freeze
@@ -134,6 +136,7 @@ module ComponentLibrary2100
     def field(method, options, kind: :control)
       options = options.to_h.symbolize_keys
       config = options.extract!(*FIELD_OPTIONS)
+      options = with_autosubmit(options, options.delete(:autosubmit))
       component = field_component(method, options[:id], config)
       control_options = component.control_options(options, kind: kind)
       return yield(control_options) if config[:wrapper] == false
