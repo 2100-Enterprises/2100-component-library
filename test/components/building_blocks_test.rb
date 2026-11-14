@@ -83,6 +83,37 @@ class BuildingBlocksTest < ViewComponent::TestCase
     assert_no_selector "p"
   end
 
+  def test_page_header_back_link
+    render_inline(PageHeaderComponent.new(title: "Launch post", back: {href: "/posts", label: "Planned posts"}))
+
+    assert_selector "a[href='/posts']", text: "Planned posts"
+    assert_selector "a[href='/posts'] svg[aria-hidden=true]"
+    assert_selector "a[href='/posts'] ~ div h1", text: "Launch post"
+    assert_no_selector "nav"
+  end
+
+  def test_page_header_pager
+    render_inline(PageHeaderComponent.new(title: "Post 2")) do |header|
+      header.with_pager(prev: {href: "/posts/1", label: "Previous post"}, next: {href: "/posts/3", label: "Next post"})
+      header.with_actions { "buttons" }
+    end
+
+    assert_selector "nav[aria-label=Pagination] a[href='/posts/1'][aria-label='Previous post'][rel=prev]"
+    assert_selector "nav[aria-label=Pagination] a[href='/posts/3'][aria-label='Next post'][rel=next]"
+    assert_selector "a.pointer-coarse\\:size-11 svg[aria-hidden=true]", count: 2
+    assert_selector "nav + div", text: "buttons"
+  end
+
+  def test_page_header_pager_omits_and_disables_sides
+    render_inline(PageHeaderComponent.new(title: "Post 1")) do |header|
+      header.with_pager(label: "Posts", prev: {label: "Previous post"}, next: nil)
+    end
+
+    assert_selector "nav[aria-label=Posts] span[role=link][aria-disabled=true][aria-label='Previous post']"
+    assert_no_selector "nav a"
+    assert_selector "nav > *", count: 1
+  end
+
   def test_empty_state
     render_inline(EmptyStateComponent.new(title: "No projects", text: "Create one.")) do |empty|
       empty.with_icon { "<svg></svg>".html_safe }

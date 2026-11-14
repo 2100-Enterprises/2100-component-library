@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `PageHeaderComponent` takes `back: {href:, label:}`, a labelled back link (chevron and visible text) above the title.
+- `PageHeaderComponent#with_pager(prev:, next:, label:)` renders Previous and Next icon links with accessible names inside a `<nav aria-label="Pagination">`. A nil side is omitted; a side without `href:` renders disabled (`aria-disabled`). 44px touch targets on coarse pointers.
+
 - `cl-autosubmit` takes a `delay` value (milliseconds, default 0, which submits at once as before). With `data-cl-autosubmit-delay-value="300"` and `data-action="input->cl-autosubmit#submit"` a search or text field submits once typing pauses. A pending submit is cancelled when the form is submitted another way and when the controller disconnects.
 - `FormBuilder` fields take `autosubmit: true` (submit on change) or `autosubmit: {delay: 300}` (debounced, on input); `SwitchComponent` accepts the `{delay:}` form too. Your own `data-controller` and `data-action` are kept.
 

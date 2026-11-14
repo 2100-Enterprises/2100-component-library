@@ -261,6 +261,16 @@ These go beyond Bootstrap 5. They follow the same conventions (`class:` merging,
 
 Actions sit to the right from the `sm` breakpoint and wrap under the title on narrow screens. `level:` picks the heading tag (default `h1`). Block content renders under the subtitle.
 
+`back: {href:, label:}` adds a labelled back link (chevron and visible text) above the title; name the destination ("Planned posts"), not "Back". `with_pager` adds Previous and Next icon links for stepping through records:
+
+```erb
+<%= ui_page_header title: "Launch post", back: {href: posts_path, label: "Planned posts"} do |header| %>
+  <% header.with_pager(prev: {href: post_path(1), label: "Previous post"}, next: {label: "Next post"}) %>
+<% end %>
+```
+
+Each side's `label:` is its accessible name (`aria-label`). A side that is `nil` is left out; one without an `href:` renders disabled (`aria-disabled`), so the other side keeps its place. The links sit in a `<nav aria-label="Pagination">`; `label:` renames it. The icon links are 36px, 44px on touch screens.
+
 ### EmptyState
 
 ```erb
